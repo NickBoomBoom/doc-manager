@@ -22,4 +22,9 @@ export abstract class User extends Base {
 
   @Column({ type: 'enum', enum: Status, default: Status.ENABLED })
   status: Status;
+
+  @Column({
+    nullable: true,
+  })
+  rootCategoryId: number | null;
 }

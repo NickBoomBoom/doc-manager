@@ -4,38 +4,34 @@ import { Note } from './entities/note.entity';
 import { Repository } from 'typeorm';
 import { CreateNoteDTO } from './dto/create-note.dto';
 import { v4 as uuidV4 } from 'uuid';
-import { UserService } from '../user/user.service';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { TagsResponseDTO } from './dto/tag-response.dto';
-import { CategoryService } from '../category/category.service';
 @Injectable()
 export class NoteService {
   constructor(
     @InjectRepository(Note)
     private readonly notesRepository: Repository<Note>,
-    private readonly categoryService: CategoryService,
-    private readonly usersService: UserService,
   ) {}
 
   async create(userId: number, createNoteDto: CreateNoteDTO): Promise<Note> {
     const shareCode = uuidV4();
-    const { categoryId, ...other } = createNoteDto;
     const obj: any = {
-      ...other,
+      ...createNoteDto,
       shareCode,
-      user: await this.usersService.findOne(userId),
+      userId,
     };
-    await this._findBindCategory(categoryId, obj, userId);
-    return await this.notesRepository.save(obj);
+    const note = await this.notesRepository.create(obj);
+    await this.notesRepository.save(note);
+    return note[0];
   }
 
   async findOne(userId: number, noteId: string | number): Promise<Note> {
     return await this.notesRepository.findOne({
       where: {
         id: +noteId,
-        user: {
-          id: userId,
-        },
+        // user: {
+        //   id: userId,
+        // },
       },
       relations: ['user', 'category'],
     });
@@ -59,9 +55,9 @@ export class NoteService {
       throw new Error('笔记不存在或非本人笔记');
     }
     const { categoryId, ...other } = updateNoteDto;
-    if (note.category?.id !== categoryId) {
-      await this._findBindCategory(categoryId, other, userId);
-    }
+    // if (note.category?.id !== categoryId) {
+    //   await this._findBindCategory(categoryId, other, userId);
+    // }
     await this.notesRepository.update(noteId, other);
     return true;
   }
@@ -69,9 +65,9 @@ export class NoteService {
   async findTags(userId: number): Promise<TagsResponseDTO> {
     const notes = await this.notesRepository.find({
       where: {
-        user: {
-          id: userId,
-        },
+        // user: {
+        //   id: userId,
+        // },
       },
     });
 
@@ -100,9 +96,9 @@ export class NoteService {
   async getAll(userId: number) {
     return await this.notesRepository.find({
       where: {
-        user: {
-          id: userId,
-        },
+        // user: {
+        //   id: userId,
+        // },
       },
     });
   }
@@ -121,14 +117,14 @@ export class NoteService {
     target: any,
     userId: number,
   ) {
-    if (categoryId) {
-      const category = await this.categoryService.findOne(userId, categoryId);
-      if (!category) {
-        throw new Error(`category id: ${categoryId} does not exist`);
-      } else {
-        target.category = category;
-      }
-    }
+    // if (categoryId) {
+    //   const category = await this.categoryService.findOne(userId, categoryId);
+    //   if (!category) {
+    //     throw new Error(`category id: ${categoryId} does not exist`);
+    //   } else {
+    //     target.category = category;
+    //   }
+    // }
     return target;
   }
 
@@ -138,5 +134,13 @@ export class NoteService {
       throw new Error(`note id: ${noteId} does not exist`);
     }
     return note;
+  }
+
+  async findCountByCategoryId(userId: number, categoryId): Promise<number> {
+    const [arr, count] = await this.notesRepository.findAndCountBy({
+      userId,
+      categoryId,
+    });
+    return count;
   }
 }

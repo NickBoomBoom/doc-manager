@@ -1,7 +1,7 @@
-import { Base } from 'src/common/entity/base.entity';
-import { Column, Entity, JoinTable, ManyToOne, OneToMany } from 'typeorm';
-import { Note } from '../../note/entities/note.entity';
-import { User } from 'src/modules/user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
+import { Base } from '../../../common/entity/base.entity';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+
 @Entity({ name: 't_category' })
 export abstract class Category extends Base {
   @Column({})
@@ -15,12 +15,14 @@ export abstract class Category extends Base {
   @Column({
     default: 0,
   })
-  level: number;
+  order: number;
 
-  @OneToMany(() => Note, (note) => note.category)
-  notes: Note[];
+  @Column({
+    default: null,
+  })
+  userId: number;
 
   @ManyToOne(() => User)
-  @JoinTable({ name: 'userId' })
+  @JoinColumn({ name: 'userId' })
   user: User;
 }

@@ -24,9 +24,15 @@ export abstract class Note extends Base {
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Category, (category) => category.notes)
+  @Column({})
+  userId: number;
+
+  @ManyToOne(() => Category)
   @JoinColumn({ name: 'categoryId' })
   category: Category;
+
+  @Column({})
+  categoryId: number;
 
   @Column({
     type: 'varchar',

@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-export class UpdateCategoryDTO {
+import { BaseDTO } from '../../../common/dto/base.dto';
+
+export class UpdateCategoryDTO extends BaseDTO {
   @ApiProperty({
     description: '名称',
   })
@@ -8,5 +10,10 @@ export class UpdateCategoryDTO {
   @ApiProperty({
     description: '父级分类',
   })
-  parentId: number | null;
+  parentId?: number;
+
+  @ApiProperty({
+    description: '下标',
+  })
+  order: number;
 }

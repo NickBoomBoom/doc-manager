@@ -13,7 +13,7 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
-import { Public } from 'src/common/decorator/public.decorator';
+import { Public } from '../../common/decorator/public.decorator';
 
 @Controller('user')
 @ApiTags('用户管理')

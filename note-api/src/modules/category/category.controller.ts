@@ -5,9 +5,7 @@ import {
   Request,
   Patch,
   Param,
-  Get,
   Delete,
-  Query,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { CategoryService } from './category.service';
@@ -27,8 +25,9 @@ export class CategoryController {
     @Request() request,
   ) {
     const {
-      user: { id },
+      user: { id, rootCategoryId },
     } = request;
+    createCategoryDto.parentId = createCategoryDto.parentId || rootCategoryId;
     return await this.categoryService.create(id, createCategoryDto);
   }
 
@@ -57,21 +56,4 @@ export class CategoryController {
     } = request;
     return this.categoryService.delete(+categoryId, id);
   }
-
-  // @Post('bind')
-  // @ApiOperation({
-  //   summary: '绑定父级分类',
-  // })
-  // async bindParentCategory(
-  //   @Body('parentId') parentId: number,
-  //   @Body('categoryId') categoryId: number,
-  //   @Request() request,
-  // ) {
-  //   const {
-  //     user: { id },
-  //   } = request;
-  //   return this.categoryService.update(+categoryId, id, {
-  //     parentId: +parentId,
-  //   });
-  // }
 }

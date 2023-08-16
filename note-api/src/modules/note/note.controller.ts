@@ -45,9 +45,13 @@ export class NoteController {
   })
   async create(@Body() createNoteDto: CreateNoteDTO, @Request() request) {
     const {
-      user: { id },
+      user: { id, rootCategoryId },
     } = request;
-    return this.notesService.create(id, createNoteDto);
+
+    return this.notesService.create(id, {
+      ...createNoteDto,
+      categoryId: createNoteDto.categoryId || rootCategoryId,
+    });
   }
 
   @Patch(':noteId')

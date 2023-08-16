@@ -11,7 +11,6 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
 import { NoteModule } from './modules/note/note.module';
 import { CategoryModule } from './modules/category/category.module';
-import { MenuModule } from './modules/menu/menu.module';
 
 @Module({
   imports: [
@@ -21,7 +20,6 @@ import { MenuModule } from './modules/menu/menu.module';
     UserModule,
     CategoryModule,
     NoteModule,
-    MenuModule,
   ],
   controllers: [AppController],
   providers: [
