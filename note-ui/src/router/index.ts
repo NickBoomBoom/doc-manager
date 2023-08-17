@@ -8,13 +8,18 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: HomeView
-    }, 
+    },
     {
       path: '/login',
-      name:"Login", 
-      component:LoginView
+      name: 'Login',
+      component: LoginView
     }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  console.log(to, from, next)
+  next()
 })
 
 export default router
