@@ -10,9 +10,4 @@ export class CreateCategoryDTO extends BaseDTO {
     description: '父级分类',
   })
   parentId: number;
-
-  @ApiProperty({
-    description: '下标',
-  })
-  order?: number;
 }

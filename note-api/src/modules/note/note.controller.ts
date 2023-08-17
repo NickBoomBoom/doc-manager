@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Get,
+  Delete,
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NoteService } from './note.service';
@@ -16,17 +17,6 @@ import { UpdateNoteDTO } from './dto/update-note.dto';
 @ApiTags('笔记管理')
 export class NoteController {
   constructor(private readonly notesService: NoteService) {}
-
-  @Get()
-  @ApiOperation({
-    summary: '获取当前用户所有笔记',
-  })
-  async getAll(@Request() request) {
-    const {
-      user: { id },
-    } = request;
-    return this.notesService.getAll(id);
-  }
 
   @Get(':noteId')
   @ApiOperation({
@@ -69,6 +59,17 @@ export class NoteController {
     return this.notesService.update(id, +noteId, updateNoteDto);
   }
 
+  @Delete(':noteId')
+  @ApiOperation({
+    summary: '删除笔记',
+  })
+  async delete(@Param('noteId') noteId: string, @Request() request) {
+    const {
+      user: { id },
+    } = request;
+    return this.notesService.delete(id, +noteId);
+  }
+
   @Get('tags')
   @ApiOperation({
     summary: '所有笔记的tags',
@@ -79,19 +80,4 @@ export class NoteController {
     } = request;
     return this.notesService.findTags(id);
   }
-
-  // @Post('bind/category/:categoryId/:noteId')
-  // @ApiOperation({
-  //   summary: '绑定分类',
-  // })
-  // async bindCategory(
-  //   @Request() request,
-  //   @Param('categoryId') categoryId,
-  //   @Param('noteId') noteId,
-  // ) {
-  //   const {
-  //     user: { id },
-  //   } = request;
-  //   return this.notesService.bindCategory(id, categoryId, noteId);
-  // }
 }

@@ -4,20 +4,20 @@ export class UpdateNoteDTO extends BaseDTO {
   @ApiProperty({
     description: '标题',
   })
-  title: string;
+  title?: string;
 
   @ApiProperty({
     description: '内容',
   })
-  content: string;
+  content?: string;
 
   @ApiProperty({
     description: '标签',
   })
-  tags: string | null;
+  tags?: string | null;
 
   @ApiProperty({
     description: '分类id',
   })
-  categoryId: number | null;
+  categoryId?: number | null;
 }

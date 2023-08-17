@@ -41,9 +41,12 @@ export class CategoryController {
     @Request() request,
   ) {
     const {
-      user: { id },
+      user: { id, rootCategoryId },
     } = request;
-    return this.categoryService.update(+categoryId, id, updateCategoryDto);
+    return this.categoryService.update(+categoryId, id, {
+      parentId: rootCategoryId,
+      ...updateCategoryDto,
+    });
   }
 
   @Delete(':categoryId')

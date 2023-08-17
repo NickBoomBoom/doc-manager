@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Note } from './entities/note.entity';
 import { Repository } from 'typeorm';
@@ -6,11 +6,14 @@ import { CreateNoteDTO } from './dto/create-note.dto';
 import { v4 as uuidV4 } from 'uuid';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { TagsResponseDTO } from './dto/tag-response.dto';
+import { CategoryNoteService } from '../category-note/category-note.service';
 @Injectable()
 export class NoteService {
   constructor(
     @InjectRepository(Note)
-    private readonly notesRepository: Repository<Note>,
+    public readonly notesRepository: Repository<Note>,
+    @Inject(forwardRef(() => CategoryNoteService))
+    private readonly categoryNoteService: CategoryNoteService,
   ) {}
 
   async create(userId: number, createNoteDto: CreateNoteDTO): Promise<Note> {
@@ -21,17 +24,22 @@ export class NoteService {
       userId,
     };
     const note = await this.notesRepository.create(obj);
-    await this.notesRepository.save(note);
-    return note[0];
+    const res: any = await this.notesRepository.save(note);
+    console.log(44444, note, res);
+    await this.categoryNoteService.create({
+      userId,
+      noteId: res.id,
+      belongCategoryId: createNoteDto.categoryId,
+    });
+
+    return res;
   }
 
-  async findOne(userId: number, noteId: string | number): Promise<Note> {
+  async findOne(userId: number, noteId: number): Promise<Note> {
     return await this.notesRepository.findOne({
       where: {
         id: +noteId,
-        // user: {
-        //   id: userId,
-        // },
+        userId,
       },
       relations: ['user', 'category'],
     });
@@ -54,20 +62,15 @@ export class NoteService {
     if (!note) {
       throw new Error('笔记不存在或非本人笔记');
     }
-    const { categoryId, ...other } = updateNoteDto;
-    // if (note.category?.id !== categoryId) {
-    //   await this._findBindCategory(categoryId, other, userId);
-    // }
-    await this.notesRepository.update(noteId, other);
+
+    await this.notesRepository.update(noteId, updateNoteDto);
     return true;
   }
 
   async findTags(userId: number): Promise<TagsResponseDTO> {
     const notes = await this.notesRepository.find({
       where: {
-        // user: {
-        //   id: userId,
-        // },
+        userId,
       },
     });
 
@@ -86,61 +89,16 @@ export class NoteService {
     return res;
   }
 
-  async bindCategory(userId: number, categoryId: number, noteId: number) {
-    const note = await this._findCheckNote(userId, noteId);
-    await this._findBindCategory(categoryId, note, userId);
-    await this.notesRepository.save(note);
-    return true;
-  }
-
-  async getAll(userId: number) {
-    return await this.notesRepository.find({
-      where: {
-        // user: {
-        //   id: userId,
-        // },
-      },
-    });
-  }
-
-  async getNoCategoryNotes(userId: number) {
-    return await this.notesRepository
-      .createQueryBuilder('note')
-      .leftJoinAndSelect('note.user', 'user')
-      .where('user.id = :userId', { userId })
-      .andWhere('note.categoryId IS NULL')
-      .getMany();
-  }
-
-  async _findBindCategory(
-    categoryId: number | null,
-    target: any,
-    userId: number,
-  ) {
-    // if (categoryId) {
-    //   const category = await this.categoryService.findOne(userId, categoryId);
-    //   if (!category) {
-    //     throw new Error(`category id: ${categoryId} does not exist`);
-    //   } else {
-    //     target.category = category;
-    //   }
-    // }
-    return target;
-  }
-
-  async _findCheckNote(userId: number, noteId: number): Promise<Note> {
-    const note = await this.findOne(userId, noteId);
-    if (!note) {
-      throw new Error(`note id: ${noteId} does not exist`);
-    }
-    return note;
-  }
-
-  async findCountByCategoryId(userId: number, categoryId): Promise<number> {
-    const [arr, count] = await this.notesRepository.findAndCountBy({
+  async delete(userId: number, noteId: number) {
+    const target = await this.findOne(userId, noteId);
+    const bol = await this.categoryNoteService.delete({
       userId,
-      categoryId,
+      belongCategoryId: target.categoryId,
+      noteId,
     });
-    return count;
+    if (bol) {
+      await this.notesRepository.delete(noteId);
+    }
+    return true;
   }
 }

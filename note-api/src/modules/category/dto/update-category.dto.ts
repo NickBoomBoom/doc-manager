@@ -10,10 +10,5 @@ export class UpdateCategoryDTO extends BaseDTO {
   @ApiProperty({
     description: '父级分类',
   })
-  parentId?: number;
-
-  @ApiProperty({
-    description: '下标',
-  })
-  order: number;
+  parentId: number;
 }

@@ -4,11 +4,13 @@ import { Repository } from 'typeorm';
 import { CreateCategoryDTO } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDTO } from './dto/update-category.dto';
+import { CategoryNoteService } from '../category-note/category-note.service';
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
-    private readonly categoryRepository: Repository<Category>,
+    public readonly categoryRepository: Repository<Category>,
+    private readonly categoryNoteService: CategoryNoteService,
   ) {}
 
   async create(
@@ -20,18 +22,19 @@ export class CategoryService {
       userId,
     };
     const { parentId } = createCategoryDto;
-    const [, count] = await this.categoryRepository.findAndCountBy({
-      userId,
-      parentId,
-    });
     const category = await this.categoryRepository.create(obj);
-    // const noteCount = await this.noteService.findCountByCategoryId(
-    //   userId,
-    //   category.id,
-    // );
-    // obj.order = count + noteCount;
+    const res = await this.categoryRepository.save(category);
+
+    if (parentId) {
+      await this.categoryNoteService.create({
+        userId,
+        categoryId: res.id,
+        belongCategoryId: parentId,
+      });
+    }
     console.log(3333, obj, category);
-    return await this.categoryRepository.save(category);
+
+    return res;
   }
 
   async findOne(userId: number, id: number): Promise<Category> {
@@ -54,7 +57,6 @@ export class CategoryService {
     updateCategoryDto: UpdateCategoryDTO,
   ) {
     const target = await this.findOne(userId, categoryId);
-
     await this.categoryRepository.update(categoryId, {
       ...target,
       ...updateCategoryDto,
@@ -62,28 +64,17 @@ export class CategoryService {
     return true;
   }
 
-  async save(category: Category) {
-    return await this.categoryRepository.save(category);
-  }
-
-  async getAll(userId: number) {
-    return await this.categoryRepository.findBy({
-      userId,
-    });
-  }
-
   async delete(categoryId: number, userId: number): Promise<boolean> {
-    const res = await this.categoryRepository.findOne({
-      where: {
-        id: categoryId,
-        userId,
-      },
-      // relations: ['notes'],
+    const target = await this.findOne(userId, categoryId);
+
+    const bol = await this.categoryNoteService.delete({
+      userId,
+      belongCategoryId: categoryId,
+      categoryId,
     });
-    // if (res.notes.length > 0) {
-    //   throw new Error('你好,该分类下存在笔记,请先删除笔记再删除');
-    // }
-    await this.categoryRepository.delete(categoryId);
+    if (bol) {
+      await this.categoryRepository.delete(categoryId);
+    }
     return true;
   }
 }

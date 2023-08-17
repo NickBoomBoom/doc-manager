@@ -11,7 +11,6 @@ import { CategoryModule } from '../category/category.module';
     TypeOrmModule.forFeature([User]),
     JwtModule.register(env.JWT_CONFIG),
     forwardRef(() => CategoryModule),
-    // CategoryModule,
   ],
   controllers: [UserController],
   providers: [UserService],
