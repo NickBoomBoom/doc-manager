@@ -6,14 +6,14 @@ import { CreateNoteDTO } from './dto/create-note.dto';
 import { v4 as uuidV4 } from 'uuid';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { TagsResponseDTO } from './dto/tag-response.dto';
-import { CategoryNoteService } from '../category-note/category-note.service';
+import { MenuService } from '../menu/menu.service';
 @Injectable()
 export class NoteService {
   constructor(
     @InjectRepository(Note)
     public readonly notesRepository: Repository<Note>,
-    @Inject(forwardRef(() => CategoryNoteService))
-    private readonly categoryNoteService: CategoryNoteService,
+    @Inject(forwardRef(() => MenuService))
+    private readonly menuService: MenuService,
   ) {}
 
   async create(userId: number, createNoteDto: CreateNoteDTO): Promise<Note> {
@@ -25,13 +25,11 @@ export class NoteService {
     };
     const note = await this.notesRepository.create(obj);
     const res: any = await this.notesRepository.save(note);
-    console.log(44444, note, res);
-    await this.categoryNoteService.create({
+    await this.menuService.createByNote(
       userId,
-      noteId: res.id,
-      belongCategoryId: createNoteDto.categoryId,
-    });
-
+      res.id,
+      createNoteDto.categoryId,
+    );
     return res;
   }
 
@@ -90,15 +88,8 @@ export class NoteService {
   }
 
   async delete(userId: number, noteId: number) {
-    const target = await this.findOne(userId, noteId);
-    const bol = await this.categoryNoteService.delete({
-      userId,
-      belongCategoryId: target.categoryId,
-      noteId,
-    });
-    if (bol) {
-      await this.notesRepository.delete(noteId);
-    }
+    await this.menuService.deleteByNote(userId, noteId);
+    await this.notesRepository.delete(noteId);
     return true;
   }
 }

@@ -3,13 +3,10 @@ import { Note } from './entities/note.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NoteController } from './note.controller';
 import { NoteService } from './note.service';
-import { CategoryNoteModule } from '../category-note/category-note.module';
+import { MenuModule } from '../menu/menu.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Note]),
-    forwardRef(() => CategoryNoteModule),
-  ],
+  imports: [TypeOrmModule.forFeature([Note]), forwardRef(() => MenuModule)],
   controllers: [NoteController],
   providers: [NoteService],
   exports: [NoteService],

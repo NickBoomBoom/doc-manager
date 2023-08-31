@@ -57,6 +57,6 @@ export class CategoryController {
     const {
       user: { id },
     } = request;
-    return this.categoryService.delete(+categoryId, id);
+    return this.categoryService.delete(id, +categoryId);
   }
 }

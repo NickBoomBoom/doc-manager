@@ -11,13 +11,13 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
 import { NoteModule } from './modules/note/note.module';
 import { CategoryModule } from './modules/category/category.module';
-import { CategoryNoteModule } from './modules/category-note/category-note.module';
+import { MenuModule } from './modules/menu/menu.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(env.DATABASE_CONFIG),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    CategoryNoteModule,
+    MenuModule,
     CategoryModule,
     NoteModule,
     UserModule,

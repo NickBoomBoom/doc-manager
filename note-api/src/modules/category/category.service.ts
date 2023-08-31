@@ -4,13 +4,13 @@ import { Repository } from 'typeorm';
 import { CreateCategoryDTO } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDTO } from './dto/update-category.dto';
-import { CategoryNoteService } from '../category-note/category-note.service';
+import { MenuService } from '../menu/menu.service';
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectRepository(Category)
     public readonly categoryRepository: Repository<Category>,
-    private readonly categoryNoteService: CategoryNoteService,
+    private readonly menuService: MenuService,
   ) {}
 
   async create(
@@ -24,16 +24,9 @@ export class CategoryService {
     const { parentId } = createCategoryDto;
     const category = await this.categoryRepository.create(obj);
     const res = await this.categoryRepository.save(category);
-
     if (parentId) {
-      await this.categoryNoteService.create({
-        userId,
-        categoryId: res.id,
-        belongCategoryId: parentId,
-      });
+      await this.menuService.createByCategory(userId, res.id, parentId);
     }
-    console.log(3333, obj, category);
-
     return res;
   }
 
@@ -64,17 +57,9 @@ export class CategoryService {
     return true;
   }
 
-  async delete(categoryId: number, userId: number): Promise<boolean> {
-    const target = await this.findOne(userId, categoryId);
-
-    const bol = await this.categoryNoteService.delete({
-      userId,
-      belongCategoryId: categoryId,
-      categoryId,
-    });
-    if (bol) {
-      await this.categoryRepository.delete(categoryId);
-    }
+  async delete(userId: number, categoryId: number): Promise<boolean> {
+    await this.menuService.deleteByCategory(userId, categoryId);
+    await this.categoryRepository.delete(categoryId);
     return true;
   }
 }
