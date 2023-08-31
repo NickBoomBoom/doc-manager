@@ -152,7 +152,7 @@ export class MenuService {
         if (isLast) {
           const newTarget = [];
           target
-            .filter((t) => t.children?.length > 0)
+            .filter((t) => t.isCategory)
             .forEach((t) => {
               if (t.children?.length) {
                 newTarget.push(...t.children);
