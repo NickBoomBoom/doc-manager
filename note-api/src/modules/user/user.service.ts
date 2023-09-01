@@ -96,4 +96,13 @@ export class UserService {
     }
     return moment().add(30, 'days').toDate();
   }
+
+  async checkEmail(email: string): Promise<boolean> {
+    const count = await this.usersRepository.count({
+      where: {
+        email,
+      },
+    });
+    return !!count;
+  }
 }
