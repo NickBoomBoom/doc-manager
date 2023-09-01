@@ -140,10 +140,6 @@ export class MenuService {
         prevId: IsNull(),
       });
 
-      console.log('-----', userId, belongId);
-      console.log(111, JSON.stringify(firstItem));
-      console.log(222, JSON.stringify(item));
-
       if (firstItem?.curId === item.curId) {
         throw new Error('当前移动目标已在其中');
       }
