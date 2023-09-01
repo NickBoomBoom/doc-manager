@@ -7,6 +7,7 @@ import {
   Delete,
   Request,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -20,15 +21,6 @@ import { Public } from '../../common/decorator/public.decorator';
 export class UserController {
   constructor(private readonly usersService: UserService) {}
 
-  @Get()
-  @ApiOperation({ summary: '获取当前用户信息' })
-  async get(@Request() request) {
-    const {
-      user: { id },
-    } = request;
-    return this.usersService.findOne(+id);
-  }
-
   @Public()
   @Post()
   @ApiOperation({ summary: '注册' })
@@ -41,6 +33,22 @@ export class UserController {
   @ApiOperation({ summary: '登录' })
   async login(@Body() loginUserDto: LoginUserDTO) {
     return this.usersService.login(loginUserDto);
+  }
+
+  @Public()
+  @Get('check/email')
+  @ApiOperation({ summary: '检测email' })
+  async checkEmail(@Query('email') email: string) {
+    return this.usersService.checkEmail(email);
+  }
+
+  @Get()
+  @ApiOperation({ summary: '获取当前用户信息' })
+  async get(@Request() request) {
+    const {
+      user: { id },
+    } = request;
+    return this.usersService.findOne(+id);
   }
 
   @Patch()
