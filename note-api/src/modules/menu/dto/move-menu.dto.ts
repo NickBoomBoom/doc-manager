@@ -1,12 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 export class MoveMenuDTO {
   @ApiProperty({
-    description: '当前id(category-{number}  note-{number})',
+    description: '目标menu id',
   })
-  targetId: string;
+  menuId: number;
 
   @ApiProperty({
-    description: '上一级id(category-{number}  note-{number})',
+    description: '上一级menu id',
   })
-  preId: string;
+  prevMenuId: number | null;
+
+  @ApiProperty({
+    description: '所属哪个分类下',
+  })
+  belongId: number;
 }

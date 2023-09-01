@@ -6,7 +6,8 @@ export enum KEY {
 export interface MenuItem {
   isCategory: boolean;
   isNote: boolean;
-  id: number;
+  menuId: number;
+  targetId: number;
   children?: MenuItem[];
   data:
     | {

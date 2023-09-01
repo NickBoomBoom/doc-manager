@@ -1,6 +1,6 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { Menu } from './entities/menu.entity';
 import { CategoryService } from '../category/category.service';
 import { NoteService } from '../note/note.service';
@@ -76,23 +76,120 @@ export class MenuService {
     return this.create(userId, curId, belongId);
   }
 
-  async move(userId: number, rootCategoryId: number, dto: MoveMenuDTO) {
+  async move(userId: number, { menuId, prevMenuId, belongId }: MoveMenuDTO) {
+    const item: Menu = await this.menuRepository.findOneBy({
+      id: menuId,
+    });
+
+    // 解绑之前的关系
+    const oldPrevItem: Menu | null = item.prevId
+      ? await this.menuRepository.findOneBy({
+          userId,
+          belongId: item.belongId,
+          curId: item.prevId,
+        })
+      : null;
+    const oldNextItem: Menu | null = item.nextId
+      ? await this.menuRepository.findOneBy({
+          userId,
+          belongId: item.belongId,
+          curId: item.nextId,
+        })
+      : null;
+
+    if (oldPrevItem) {
+      oldPrevItem.nextId = item.nextId;
+      await this.menuRepository.update(oldPrevItem.id, oldPrevItem);
+    }
+
+    if (oldNextItem) {
+      oldNextItem.prevId = item.prevId;
+      await this.menuRepository.update(oldNextItem.id, oldNextItem);
+    }
+    item.belongId = belongId;
+
+    if (prevMenuId) {
+      const prevItem: Menu = await this.menuRepository.findOneBy({
+        id: prevMenuId,
+      });
+
+      if (item.prevId === prevItem.nextId) {
+        throw new Error('当前移动目标已在其后');
+      }
+
+      item.prevId = prevItem.curId;
+      item.nextId = prevItem.nextId;
+      prevItem.nextId = item.curId;
+      await this.menuRepository.update(prevItem.id, prevItem);
+
+      if (item.nextId) {
+        const nextItem: Menu = await this.menuRepository.findOneBy({
+          userId,
+          belongId: prevItem.belongId,
+          curId: item.nextId,
+        });
+
+        nextItem.prevId = item.curId;
+        await this.menuRepository.update(nextItem.id, nextItem);
+      }
+    } else {
+      // 如果prevId 不存在,那么item就是当前第一个, 找到当前第一个item
+      const firstItem: Menu | null = await this.menuRepository.findOneBy({
+        userId,
+        belongId,
+        prevId: IsNull(),
+      });
+
+      console.log('-----', userId, belongId);
+      console.log(111, JSON.stringify(firstItem));
+      console.log(222, JSON.stringify(item));
+
+      if (firstItem?.curId === item.curId) {
+        throw new Error('当前移动目标已在其中');
+      }
+
+      // 上下交换
+      if (firstItem?.nextId === item.curId) {
+        const secondItem = await this.menuRepository.findOneBy({
+          userId,
+          belongId,
+          curId: item.nextId,
+        });
+        firstItem.nextId = item.nextId;
+        secondItem.prevId = firstItem.curId;
+        await this.menuRepository.update(secondItem.id, secondItem);
+      } else {
+        item.nextId = firstItem?.curId || null;
+        item.prevId = null;
+        if (firstItem) {
+          firstItem.prevId = item.curId;
+        }
+      }
+
+      if (firstItem) {
+        await this.menuRepository.update(firstItem.id, firstItem);
+      }
+    }
+
+    await this.menuRepository.update(item.id, item);
+
     return true;
   }
 
-  async _getItem(userId: number, item): Promise<MenuItem> {
-    const { curId, nextId } = item;
-    const { isCategory, isNote, id } = this.getType(curId);
+  private async _getItem(userId: number, item): Promise<MenuItem> {
+    const { curId, nextId, id: menuId } = item;
+    const { isCategory, isNote, id: targetId } = this.getType(curId);
     const res: MenuItem = {
       isCategory,
       isNote,
-      id,
+      menuId,
+      targetId,
       data: null,
     };
 
     if (isCategory) {
       res.children = [];
-      const data = await this.categoryService.findOne(userId, id);
+      const data = await this.categoryService.findOne(userId, targetId);
       res.data = {
         name: data.name,
         parentId: data.parentId,
@@ -100,7 +197,7 @@ export class MenuService {
     }
 
     if (isNote) {
-      const data = await this.noteService.findOne(userId, id);
+      const data = await this.noteService.findOne(userId, targetId);
       res.data = {
         title: data.title,
         tags: data.tags,
@@ -112,7 +209,7 @@ export class MenuService {
     return res;
   }
 
-  async _getRows(userId: number, belongId: number): Promise<MenuList> {
+  private async _getRows(userId: number, belongId: number): Promise<MenuList> {
     const res: MenuList = [];
     const menus = await this.menuRepository.findBy({
       userId,
@@ -131,6 +228,7 @@ export class MenuService {
 
     return res;
   }
+
   async get(
     userId: number,
     belongId: number,
@@ -147,7 +245,7 @@ export class MenuService {
         const item = target[n];
         const isLast = n === target.length - 1;
         if (item.isCategory) {
-          item.children = await this._getRows(userId, item.id);
+          item.children = await this._getRows(userId, item.targetId);
         }
         if (isLast) {
           const newTarget = [];

@@ -21,12 +21,17 @@ export class MenuController {
   @ApiOperation({
     summary: '分类,笔记移动',
   })
-  async move(@Body() dto: MoveMenuDTO, @Request() request) {
+  async move(@Request() request, @Body() dto: MoveMenuDTO) {
     const {
       user: { id, rootCategoryId },
     } = request;
 
-    return this.menuService.move(id, rootCategoryId, dto);
+    if (!dto.belongId) {
+      dto.belongId = rootCategoryId;
+    }
+    console.log(3333, dto);
+
+    return this.menuService.move(id, dto);
   }
 
   @Get()
