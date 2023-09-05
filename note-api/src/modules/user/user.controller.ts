@@ -36,9 +36,9 @@ export class UserController {
   }
 
   @Public()
-  @Get('check/email')
+  @Get('check/email/:email')
   @ApiOperation({ summary: '检测email' })
-  async checkEmail(@Query('email') email: string) {
+  async checkEmail(@Param('email') email: string) {
     return this.usersService.checkEmail(email);
   }
 

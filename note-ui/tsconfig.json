@@ -1,11 +1,11 @@
 {
-  "files": [],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    },
-    {
-      "path": "./tsconfig.app.json"
+  "extends": "@quasar/app-vite/tsconfig-preset",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "api": ["src/api/index.ts"],
+      "api/*": ["src/api/*"]
     }
-  ]
+  },
+  "include": ["./src/auto-imports.d.ts", "./src/components.d.ts"]
 }
