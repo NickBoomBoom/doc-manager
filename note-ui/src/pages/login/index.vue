@@ -1,32 +1,42 @@
 <template>
   <div class="flex justify-center items-center h-screen">
-    <q-form @submit="onSubmit" class="q-gutter-md w-md -mt-120">
+    <q-form @submit="onSubmit" class="w-md -mt-120">
       <q-input
         v-model="params.email"
+        ref="emailInputRef"
         label="邮箱 *"
+        :hint="emailHint"
         autofocus
-        hint="输入邮箱(未注册邮箱会在输入密码后自动注册)"
         :rules="rules.email"
       />
 
       <q-input
-        v-if="isPassword"
+        v-if="isShowPassword"
         type="password"
         v-model="params.password"
         label="密码 *"
+        hint="请输入6位以上密码"
         :rules="rules.password"
       />
+
+      <div v-if="isShowSubmit" class="flex justify-center">
+        <q-btn type="submit">
+          {{ submitBtnText }}
+        </q-btn>
+      </div>
     </q-form>
   </div>
 </template>
 <script setup lang="ts">
 import { userApi } from 'api';
+
+const emailInputRef = ref();
+const emailHint = ref('');
+
 const params = ref({
   email: '',
   password: '',
 });
-
-const isExist = ref(false);
 
 const rules = {
   email: [
@@ -45,29 +55,46 @@ const rules = {
       hidePassword();
       return '请输入正确邮箱格式';
     },
-    checkEmail,
+    async function checkEmail(v) {
+      try {
+        const bol = await userApi.checkEmail(v);
+        isRegisteredEmail.value = bol;
+        emailHint.value = !bol ? '当前email未注册,请输入密码直接注册登录' : '';
+        return true;
+      } catch (error) {
+        console.error(error);
+        emailInputRef.value.validate();
+        return '检测失败,重试中...';
+      }
+    },
   ],
-  password: [(v) => !v || '请输入密码'],
+  password: [
+    (v) => !!v || '请输入密码',
+    (v) => v.length >= 6 || '请输入6位以上密码',
+  ],
 };
-function onSubmit() {}
+const isRegisteredEmail = ref(false);
 
-async function checkEmail(v) {
-  console.log(344, v);
-  const bol = await userApi.checkEmail(v);
-  isExist.value = bol;
-  if (bol) {
-    return true;
-  } else {
-    return '当前email未注册,请输入密码直接注册登录';
+const isShowSubmit = computed(() => {
+  return isShowPassword.value && !!params.value.password;
+});
+
+const submitBtnText = computed(() => {
+  if (isRegisteredEmail.value) {
+    return '登录';
   }
+  return '注册登录';
+});
+
+function onSubmit() {
+  console.log(3333, params.value);
 }
 
-const isPassword = ref(false);
+const isShowPassword = ref(false);
 function showPassword() {
-  isPassword.value = true;
+  isShowPassword.value = true;
 }
 function hidePassword() {
-  isPassword.value = false;
+  isShowPassword.value = false;
 }
 </script>
-<style lang="scss" scoped></style>
