@@ -47,7 +47,6 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach((to, from, next) => {
     const userStore = useUserStore();
-    console.log(1111, to, from, userStore.isLogin);
 
     if (userStore.isLogin) {
       // 已登录的情况下跳向login页面,直接询问他是不是要退出切换账号
@@ -60,9 +59,6 @@ export default route(function (/* { store, ssrContext } */) {
         })
           .onOk(() => {
             userStore.logout();
-            Router.replace({
-              name: 'Login',
-            });
           })
           .onCancel(() => {
             Router.replace({

@@ -14,13 +14,13 @@ declare module '@vue/runtime-core' {
 }
 
 interface RequestConfig extends InternalAxiosRequestConfig {
-  _config?: object;
+  _config?: any;
 }
 
 type HttpRequest = (
   url: string,
   params?: object | null,
-  config?: object,
+  config?: any,
 ) => Promise<any>;
 
 function handleError(message: string) {
@@ -38,9 +38,16 @@ const request = axios.create({ baseURL: BASE_URL });
 request.interceptors.request.use(
   async (config: RequestConfig) => {
     const { _config } = config; // _config 覆盖当前配置
+    const userStore = useUserStore();
+    const headers = {
+      ...config.headers,
+      ...(_config?.headers || {}),
+      Authorization: userStore.token,
+    };
     return {
       ...config,
       ...(_config || {}),
+      headers,
     };
   },
   (error) => {
@@ -76,7 +83,7 @@ const http: {
   post: HttpRequest;
   delete: HttpRequest;
 } = {
-  get: (url: string, params?: object | null, _config?: object) => {
+  get: (url: string, params?: object | null, _config?: any) => {
     // @ts-ignore
     return request({
       url,
@@ -85,7 +92,7 @@ const http: {
       _config,
     });
   },
-  post: (url: string, data?: object | null, _config?: object) => {
+  post: (url: string, data?: object | null, _config?: any) => {
     // @ts-ignore
     return request({
       url,
@@ -94,7 +101,7 @@ const http: {
       _config,
     });
   },
-  delete: (url: string, params?: object | null, _config?: object) => {
+  delete: (url: string, params?: object | null, _config?: any) => {
     // @ts-ignore
     return request({
       url,

@@ -1,1 +1,18 @@
 // app global css in SCSS form
+
+
+@font-face {
+  font-family: NoteSansSC-Regular;
+  src: url(./fonts/NotoSansSC-Regular.ttf);
+}
+
+@font-face {
+  font-family: NotoSansSC-Medium;
+  src: url(./fonts/NotoSansSC-Medium.ttf);
+}
+
+
+html,
+body {
+  font-family: NotoSansSC-Medium, NoteSansSC-Regular;
+}

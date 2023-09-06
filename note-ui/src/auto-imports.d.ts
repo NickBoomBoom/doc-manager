@@ -22,6 +22,7 @@ declare global {
   const isReadonly: typeof import('vue')['isReadonly']
   const isRef: typeof import('vue')['isRef']
   const markRaw: typeof import('vue')['markRaw']
+  const menuApi: typeof import('./apis/menu.api')['menuApi']
   const nextTick: typeof import('vue')['nextTick']
   const onActivated: typeof import('vue')['onActivated']
   const onBeforeMount: typeof import('vue')['onBeforeMount']

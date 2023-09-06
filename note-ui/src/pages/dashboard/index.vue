@@ -1,9 +1,12 @@
 <template>
   <q-layout view="hHh LpR fFf">
     <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
-      <div class="bg-blue h-20"></div>
-      <div>用户名</div>
-      <q-btn> 登录/注册 </q-btn>
+      <div class="h-full flex flex-col">
+        <user-info-card />
+        <q-scroll-area class="flex-1">
+          <menu-scroll-view :menus="menus" />
+        </q-scroll-area>
+      </div>
     </q-drawer>
 
     <q-drawer v-model="rightDrawerOpen" side="right" bordered>
@@ -18,6 +21,8 @@
 </template>
 
 <script setup lang="ts">
+import { MenuList } from 'interfaces/menu.interface';
+import UserInfoCard from './components/UserInfoCard.vue';
 const leftDrawerOpen = ref(false);
 const rightDrawerOpen = ref(false);
 
@@ -27,5 +32,14 @@ function toggleLeftDrawer() {
 
 function toggleRightDrawer() {
   rightDrawerOpen.value = !rightDrawerOpen.value;
+}
+
+onMounted(() => {
+  init();
+});
+const menus = ref<MenuList>([]);
+async function init() {
+  const res = await menuApi.get();
+  menus.value = res;
 }
 </script>

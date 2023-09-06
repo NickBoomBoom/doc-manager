@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { Cookies } from 'quasar';
 import { User, UserLogin } from 'interfaces/user.interface';
-
 const EXPIRES = 7; // 有效期7天
 const cookiesStorage = {
   setItem(key: string, state: any): void {

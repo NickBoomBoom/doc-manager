@@ -69,6 +69,7 @@
     "userApi": true,
     "stores": true,
     "useCounterStore": true,
-    "useUserStore": true
+    "useUserStore": true,
+    "menuApi": true
   }
 }
