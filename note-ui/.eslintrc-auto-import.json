@@ -64,6 +64,11 @@
     "watch": true,
     "watchEffect": true,
     "watchPostEffect": true,
-    "watchSyncEffect": true
+    "watchSyncEffect": true,
+    "GlobalLoadingService": true,
+    "userApi": true,
+    "stores": true,
+    "useCounterStore": true,
+    "useUserStore": true
   }
 }

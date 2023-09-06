@@ -54,7 +54,9 @@ module.exports = configure(function (/* ctx */) {
         node: 'node16',
       },
       alias: {
-        api: path.join(__dirname, './src/api'),
+        apis: path.join(__dirname, './src/apis'),
+        services: path.join(__dirname, './src/services'),
+        interfaces: path.join(__dirname, './src/interfaces'),
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'
@@ -104,9 +106,15 @@ module.exports = configure(function (/* ctx */) {
           'unplugin-auto-import/vite',
           {
             imports: ['vue', 'vue-router'],
+            dirs: [
+              './src/apis/**',
+              './src/services/**',
+              './src/stores/**',
+              './src/interfaces/**',
+            ],
             dts: './src/auto-imports.d.ts',
             eslintrc: {
-              enabled: false, // Default `false`
+              enabled: true, // Default `false`
               filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
               globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
             },
@@ -147,7 +155,7 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: ['Notify'],
+      plugins: ['Notify', 'Dialog', 'Cookies'],
     },
 
     // animations: 'all', // --- includes all animations

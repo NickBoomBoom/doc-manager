@@ -21,6 +21,8 @@ module.exports = {
 
   // Rules order is important, please avoid shuffling them
   extends: [
+    // 解决unplugin-auto-imports 未引入问题
+    './.eslintrc-auto-import.json',
     // Base ESLint recommended rules
     // 'eslint:recommended',
 
@@ -38,10 +40,6 @@ module.exports = {
     // https://github.com/prettier/eslint-config-prettier#installation
     // usage with Prettier, provided by 'eslint-config-prettier'.
     'prettier',
-
-    // 解决unplugin-auto-imports 未引入问题
-
-    './.eslintrc-auto-import.json',
   ],
 
   plugins: [

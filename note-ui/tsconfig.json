@@ -3,9 +3,9 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "api": ["src/api/index.ts"],
-      "api/*": ["src/api/*"]
+      "apis/*": ["src/apis/*"],
+      "services/*": ["src/services/*"],
+      "interfaces/*": ["src/interfaces/*"]
     }
-  },
-  "include": ["./src/auto-imports.d.ts", "./src/components.d.ts"]
+  }
 }

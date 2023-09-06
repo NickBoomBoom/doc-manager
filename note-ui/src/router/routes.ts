@@ -4,10 +4,12 @@ import Dashboard from 'pages/dashboard/index.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
+    name: 'Dashboard',
     component: Dashboard,
   },
   {
     path: '/login',
+    name: 'Login',
     component: () => import('pages/login/index.vue'),
   },
 

@@ -72,7 +72,7 @@ export class UserService {
 
   certificate(user: User): {
     token: string;
-    expireAt: Date;
+    expires: number;
   } {
     const { id, name, email, rootCategoryId } = user;
     const payload = {
@@ -81,20 +81,13 @@ export class UserService {
       email,
       rootCategoryId,
     };
-    const token = this.jwtService.sign(payload);
-    const expireAt = this.getExpirationTime(token);
+    const token = this.jwtService.sign(payload, {
+      expiresIn: '7d', // 设置过期时间为7天
+    });
     return {
       token: `Bearer ${token}`,
-      expireAt,
+      expires: 7,
     };
-  }
-
-  getExpirationTime(token: string): Date {
-    const decodedToken = this.jwtService.decode(token);
-    if (decodedToken && typeof decodedToken['exp'] === 'number') {
-      return new Date(decodedToken['exp'] * 1000);
-    }
-    return moment().add(30, 'days').toDate();
   }
 
   async checkEmail(email: string): Promise<boolean> {

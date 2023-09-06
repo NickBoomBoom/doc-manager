@@ -5,8 +5,8 @@ import {
   createWebHashHistory,
   createWebHistory,
 } from 'vue-router';
-
 import routes from './routes';
+import { Dialog } from 'quasar';
 
 /*
  * If not building with SSR mode, you can
@@ -33,5 +33,55 @@ export default route(function (/* { store, ssrContext } */) {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
+  const TO_HOME_ROUTES: string[] = ['Login']; // 已登录情况下,进入这些页面提示是否重新登录
+  let isFirst = true;
+  Router.afterEach((to, from) => {
+    // 初始化动画配置
+    if (isFirst) {
+      GlobalLoadingService.hide();
+    }
+    isFirst = false;
+
+    // 配置
+  });
+
+  Router.beforeEach((to, from, next) => {
+    const userStore = useUserStore();
+    console.log(1111, to, from, userStore.isLogin);
+
+    if (userStore.isLogin) {
+      // 已登录的情况下跳向login页面,直接询问他是不是要退出切换账号
+      if (TO_HOME_ROUTES.includes(to.name as string)) {
+        Dialog.create({
+          title: '嗯~~',
+          message: '你都登录了,还要再去登录,你是不是要重新登录呀?',
+          cancel: '不是不是',
+          ok: '是的是的',
+        })
+          .onOk(() => {
+            userStore.logout();
+            Router.replace({
+              name: 'Login',
+            });
+          })
+          .onCancel(() => {
+            Router.replace({
+              name: 'Dashboard',
+            });
+          });
+        next(false);
+      } else {
+        next();
+      }
+    } else {
+      if (['Login'].includes(to.name as string)) {
+        return next();
+      }
+      Router.replace({
+        name: 'Login',
+      });
+      next(false);
+    }
+  });
   return Router;
 });

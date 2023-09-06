@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center h-screen">
-    <q-form @submit="onSubmit" class="w-md -mt-120">
+    <q-form @submit="onSubmit" class="w-xs lg:w-md -mt-120">
       <q-input
         v-model="params.email"
         ref="emailInputRef"
@@ -19,7 +19,7 @@
         :rules="rules.password"
       />
 
-      <div v-if="isShowSubmit" class="flex justify-center">
+      <div v-if="isShowSubmit" class="flex justify-center mt-6">
         <q-btn type="submit">
           {{ submitBtnText }}
         </q-btn>
@@ -28,14 +28,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { userApi } from 'api';
-
+const userStore = useUserStore();
+const router = useRouter();
 const emailInputRef = ref();
 const emailHint = ref('');
 
 const params = ref({
-  email: '',
-  password: '',
+  email: 'w.cobunn@xfygvxui.md',
+  password: '123456',
 });
 
 const rules = {
@@ -59,7 +59,9 @@ const rules = {
       try {
         const bol = await userApi.checkEmail(v);
         isRegisteredEmail.value = bol;
-        emailHint.value = !bol ? '当前email未注册,请输入密码直接注册登录' : '';
+        emailHint.value = !bol
+          ? '当前email未注册，继续输入密码直接注册登录'
+          : '欢迎回来，我的朋友！';
         return true;
       } catch (error) {
         console.error(error);
@@ -86,8 +88,9 @@ const submitBtnText = computed(() => {
   return '注册登录';
 });
 
-function onSubmit() {
-  console.log(3333, params.value);
+async function onSubmit() {
+  await userStore.login(params.value);
+  router.replace('/');
 }
 
 const isShowPassword = ref(false);
