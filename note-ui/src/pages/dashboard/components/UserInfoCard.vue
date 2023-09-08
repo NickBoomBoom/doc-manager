@@ -1,5 +1,5 @@
 <template>
-  <q-btn-dropdown color="primary" align="between" class="h-20">
+  <q-btn-dropdown square color="primary" align="between" class="h-20">
     <template v-slot:label>
       <div class="text-left">
         {{ name }}

@@ -1,45 +1,80 @@
 <template>
-  <q-layout view="hHh LpR fFf">
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered>
+  <q-layout view="lHr LpR lFr">
+    <q-drawer
+      show-if-above
+      v-model="leftDrawerOpen"
+      side="left"
+      bordered
+      :width="leftDrawerWidth"
+    >
       <div class="h-full flex flex-col">
         <user-info-card />
-        <q-scroll-area class="flex-1">
-          <menu-scroll-view :menus="menus" />
-        </q-scroll-area>
+        <div class="flex-1 flex flex-col">
+          <header></header>
+          <div class="flex-1">
+            <menu-tree @selectNote="handleNoteSelect" />
+          </div>
+          <footer></footer>
+        </div>
       </div>
     </q-drawer>
 
-    <q-drawer v-model="rightDrawerOpen" side="right" bordered>
-      <!-- drawer content -->
-    </q-drawer>
-
     <q-page-container>
-      <q-btn @click="toggleLeftDrawer"> 收起 </q-btn>
-      <router-view />
+      <div class="relative h-screen">
+        <q-btn
+          dense
+          round
+          icon="menu"
+          color="white"
+          text-color="black"
+          class="absolute top-1 left-3 z-12"
+          @click="toggleLeftDrawer"
+        />
+        <q-btn
+          dense
+          round
+          color="white"
+          text-color="black"
+          icon="more_vert"
+          class="absolute top-1 right-3 z-12"
+        />
+        <q-scroll-area class="relative h-full">
+          <NoteEdit :noteId="currentNoteId" />
+        </q-scroll-area>
+      </div>
     </q-page-container>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { MenuList } from 'interfaces/menu.interface';
+import NoteEdit from './components/NoteEdit.vue';
 import UserInfoCard from './components/UserInfoCard.vue';
+import MenuTree from './components/MenuTree.vue';
 const leftDrawerOpen = ref(false);
-const rightDrawerOpen = ref(false);
+const leftDrawerWidth = ref(500);
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
+
+function handleResize() {
+  let width = 500;
+  const winWidth = window.innerWidth;
+  if (winWidth < width) {
+    width = winWidth * 0.9;
+  }
+  leftDrawerWidth.value = width;
+}
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 
-function toggleRightDrawer() {
-  rightDrawerOpen.value = !rightDrawerOpen.value;
-}
-
-onMounted(() => {
-  init();
-});
-const menus = ref<MenuList>([]);
-async function init() {
-  const res = await menuApi.get();
-  menus.value = res;
+const currentNoteId = ref<number>();
+function handleNoteSelect(e: number) {
+  currentNoteId.value = e;
 }
 </script>

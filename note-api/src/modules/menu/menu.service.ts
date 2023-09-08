@@ -197,6 +197,7 @@ export class MenuService {
       res.data = {
         title: data.title,
         tags: data.tags,
+        isLocked: data.isLocked,
         categoryId: data.categoryId,
         shareCode: data.shareCode,
       };
@@ -260,6 +261,36 @@ export class MenuService {
     return res;
   }
 
+  // TODO: 这边要修改  改成去拉所有note  category menus 然后内部去做整合
+  async getAll(userId: number, belongId: number): Promise<MenuList> {
+    const res: MenuList = [];
+    // 配置初始层
+    const rows = await this._getRows(userId, belongId);
+    res.push(...rows);
+
+    let target = rows;
+    for (let n = 0; n < target.length; n++) {
+      const item = target[n];
+      const isLast = n === target.length - 1;
+      if (item.isCategory) {
+        item.children = await this._getRows(userId, item.targetId);
+      }
+      if (isLast) {
+        const newTarget = [];
+        target
+          .filter((t) => t.isCategory)
+          .forEach((t) => {
+            if (t.children?.length) {
+              newTarget.push(...t.children);
+            }
+          });
+        target = newTarget;
+      }
+    }
+
+    return res;
+  }
+
   private async delete(userId: number, curId: string) {
     const item = await this.menuRepository.findOneBy({
       userId,
@@ -309,10 +340,10 @@ export class MenuService {
 
   async deleteByCategory(userId: number, categoryId: number) {
     const curId = this.getCategoryId(categoryId);
-    return this.delete(userId, curId);
+    return await this.delete(userId, curId);
   }
   async deleteByNote(userId: number, noteId: number) {
     const curId = this.getNoteId(noteId);
-    return this.delete(userId, curId);
+    return await this.delete(userId, curId);
   }
 }

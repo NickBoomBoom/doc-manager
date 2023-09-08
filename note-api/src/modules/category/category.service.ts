@@ -5,6 +5,7 @@ import { CreateCategoryDTO } from './dto/create-category.dto';
 import { Category } from './entities/category.entity';
 import { UpdateCategoryDTO } from './dto/update-category.dto';
 import { MenuService } from '../menu/menu.service';
+import { MenuItem } from '../menu/menu.interface';
 @Injectable()
 export class CategoryService {
   constructor(
@@ -25,7 +26,22 @@ export class CategoryService {
     const category = await this.categoryRepository.create(obj);
     const res = await this.categoryRepository.save(category);
     if (parentId) {
-      await this.menuService.createByCategory(userId, res.id, parentId);
+      const menuRow = await this.menuService.createByCategory(
+        userId,
+        res.id,
+        parentId,
+      );
+      return {
+        isCategory: true,
+        isNote: false,
+        menuId: menuRow.id,
+        targetId: res.id,
+        children: [],
+        data: {
+          name: res.name,
+          parentId: res.parentId,
+        },
+      } as MenuItem;
     }
     return res;
   }

@@ -104,7 +104,7 @@ module.exports = configure(function (/* ctx */) {
         [
           'unplugin-auto-import/vite',
           {
-            imports: ['vue', 'vue-router'],
+            imports: ['vue', 'vue-router', 'pinia'],
             dirs: [
               './src/apis/**',
               './src/services/**',
@@ -128,7 +128,7 @@ module.exports = configure(function (/* ctx */) {
       open: false, // opens browser window automatically
       proxy: {
         '/api': {
-          target: 'http://localhost:3000',
+          target: 'http://localhost:4399',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },
@@ -144,7 +144,7 @@ module.exports = configure(function (/* ctx */) {
       },
 
       // iconSet: 'material-icons', // Quasar icon set
-      // lang: 'en-US', // Quasar language pack
+      lang: 'zh-CN', // Quasar language pack
 
       // For special cases outside of where the auto-import strategy can have an impact
       // (like functional components as one of the examples),

@@ -1,6 +1,4 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { env } from './common/config';
 import { UserModule } from './modules/user/user.module';
@@ -22,9 +20,7 @@ import { MenuModule } from './modules/menu/menu.module';
     NoteModule,
     UserModule,
   ],
-  controllers: [AppController],
   providers: [
-    AppService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,

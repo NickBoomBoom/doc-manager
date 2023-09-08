@@ -62,15 +62,18 @@ request.interceptors.response.use(
     const { data, status } = response;
     if (status >= 200 && status < 300) {
       const { code, data: res, message } = data;
-      if ([200].includes(code)) {
+      if (!code || !message) {
+        return data;
+      } else if ([200].includes(code)) {
         return res;
       } else {
-        Promise.reject(`${code}: ${message}`);
+        const errorMessage = `${code}: ${message}`;
+        handleError(errorMessage);
+        return Promise.reject(errorMessage);
       }
     } else {
-      Promise.reject(`请求异常: ${status}`);
+      return Promise.reject(`请求异常: ${status}`);
     }
-    return data;
   },
   (error) => {
     handleError(error?.message || error);
@@ -81,6 +84,7 @@ request.interceptors.response.use(
 const http: {
   get: HttpRequest;
   post: HttpRequest;
+  patch: HttpRequest;
   delete: HttpRequest;
 } = {
   get: (url: string, params?: object | null, _config?: any) => {
@@ -98,6 +102,15 @@ const http: {
       url,
       data,
       method: 'post',
+      _config,
+    });
+  },
+  patch: (url: string, data?: object | null, _config?: any) => {
+    // @ts-ignore
+    return request({
+      url,
+      data,
+      method: 'patch',
       _config,
     });
   },

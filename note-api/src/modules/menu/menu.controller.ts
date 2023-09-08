@@ -48,4 +48,15 @@ export class MenuController {
     } = request;
     return this.menuService.get(id, categoryId || rootCategoryId, level);
   }
+
+  @Get('/all')
+  @ApiOperation({
+    summary: '全部菜单',
+  })
+  async getAll(@Request() request, @Query('categoryId') categoryId: number) {
+    const {
+      user: { id, rootCategoryId },
+    } = request;
+    return this.menuService.getAll(id, categoryId || rootCategoryId);
+  }
 }

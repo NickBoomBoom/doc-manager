@@ -17,6 +17,7 @@ export interface MenuItem {
     | {
         title: string;
         tags: string;
+        isLocked: boolean;
         categoryId: number;
         shareCode: string;
       };

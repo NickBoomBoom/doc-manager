@@ -20,9 +20,11 @@
   "dependencies": {
     "@quasar/extras": "^1.16.6",
     "axios": "^1.5.0",
+    "lodash-es": "^4.17.21",
     "pinia": "^2.1.6",
     "pinia-plugin-persistedstate": "^3.2.0",
     "quasar": "^2.12.6",
+    "rxjs": "^7.8.1",
     "vue": "^3.3.4",
     "vue-i18n": "^9.2.2",
     "vue-router": "^4.2.4"
@@ -31,6 +33,7 @@
     "@intlify/unplugin-vue-i18n": "^0.13.0",
     "@intlify/vite-plugin-vue-i18n": "^7.0.0",
     "@quasar/app-vite": "^1.5.0",
+    "@types/lodash-es": "^4.17.9",
     "@types/node": "^20.5.9",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",

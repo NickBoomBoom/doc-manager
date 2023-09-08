@@ -18,12 +18,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status =
       exception instanceof HttpException
         ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+        : HttpStatus.OK;
 
-    const message = exception.message || 'Internal Server Error';
+    const message = exception?.message || 'Internal Server Error';
 
     response.status(status).json({
-      code: status,
+      code: 600, // 先用600 占个位
       message: message,
     });
   }
