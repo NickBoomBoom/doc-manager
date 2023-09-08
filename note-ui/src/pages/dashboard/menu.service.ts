@@ -186,7 +186,6 @@ class Menu {
           extra: { targetId },
         } = treeNode;
         await categoryApi.delete(targetId);
-        console.log(33444, index);
         this.remove(index);
       } catch (error) {
         console.error(error);
