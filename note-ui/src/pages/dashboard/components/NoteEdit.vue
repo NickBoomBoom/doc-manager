@@ -1,7 +1,5 @@
 <template>
-  <div class="pt-20 px-4">
-    {{ detail?.content }}
-  </div>
+  <div class="pt-20 px-4" v-html="detail?.content"></div>
 </template>
 <script setup lang="ts">
 import menuService, { TreeNode } from '../menu.service';

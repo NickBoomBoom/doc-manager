@@ -1,6 +1,6 @@
 <template>
   <q-btn-dropdown square color="primary" align="between" class="h-20">
-    <template v-slot:label>
+    <template #label>
       <div class="text-left">
         {{ name }}
         <br />

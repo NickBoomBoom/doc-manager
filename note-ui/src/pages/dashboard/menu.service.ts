@@ -1,3 +1,4 @@
+import { CategoryUpdate } from 'interfaces/category.interface';
 import { MenuItem } from 'interfaces/menu.interface';
 import { Dialog, Notify } from 'quasar';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -19,7 +20,6 @@ export interface OpenCategory {
 class Menu {
   menus$: BehaviorSubject<TreeNode[]> = new BehaviorSubject<TreeNode[]>([]);
   createNote$: Subject<TreeNode | undefined> = new Subject();
-  createCategory$: Subject<TreeNode | undefined> = new Subject();
   openCategory$: Subject<OpenCategory> = new Subject();
   // 同时只能做一件事
   insertTreeNode: TreeNode | undefined;
@@ -103,7 +103,7 @@ class Menu {
     const { isCategory, isNote, data, menuId } = item;
     const { children, ...extra } = item;
     const label = isCategory ? data.name : isNote ? data.title : '';
-    const icon = isCategory ? 'category' : isNote ? 'description' : '';
+    const icon = isCategory ? 'sort' : isNote ? 'description' : '';
     const res: any = {
       label,
       id: menuId,
@@ -143,31 +143,68 @@ class Menu {
     this.insertTreeNode = treeNode;
     this.createNote$.next(treeNode);
   }
-  notifyCreateCategory(treeNode?: TreeNode) {
-    this.insertTreeNode = treeNode;
-    this.createCategory$.next(treeNode);
+
+  createCategory(treeNode?: TreeNode) {
+    Dialog.create({
+      title: '添加分类',
+      prompt: {
+        model: '',
+        type: 'text',
+        isValid: (v: string) => !!v,
+      },
+      cancel: true,
+    }).onOk(async (name) => {
+      try {
+        const res = await categoryApi.add({
+          name,
+          parentId: treeNode?.extra?.targetId,
+        });
+        this.insert(res, treeNode);
+      } catch (error) {
+        console.error(error);
+        Notify.create({
+          message: '添加失败,请稍后再试',
+          progress: true,
+          type: 'negative',
+          position: 'top',
+        });
+      }
+    });
   }
 
-  async updateCategory(newValue: string, oldValue: string, treeNode: TreeNode) {
+  async updateCategory(treeNode: TreeNode) {
     const {
+      label: oldValue,
       index,
       extra: { targetId },
     } = treeNode;
-    try {
-      await categoryApi.update(targetId, {
-        name: newValue,
-      });
-      this.update(['label', 'extra.data.name'], [newValue, newValue], index);
-    } catch (error) {
-      console.error(error);
-      Notify.create({
-        message: '修改分类名称失败,请稍后再试',
-        progress: true,
-        type: 'negative',
-        position: 'top',
-      });
-      this.update(['label', 'extra.data.name'], [oldValue, oldValue], index);
-    }
+    Dialog.create({
+      title: '修改名称',
+      prompt: {
+        model: oldValue,
+        type: 'text',
+        isValid: (v: string) => !!v,
+      },
+      cancel: true,
+    }).onOk(async (newValue) => {
+      try {
+        // 先前置直接修改掉,后台静默调用接口
+        // 如果失败了 再将其复原
+        this.update(['label', 'extra.data.name'], [newValue, newValue], index);
+        await categoryApi.update(targetId, {
+          name: newValue,
+        });
+      } catch (error) {
+        console.error(error);
+        Notify.create({
+          message: '修改分类名称失败,请稍后再试',
+          progress: true,
+          type: 'negative',
+          position: 'top',
+        });
+        this.update(['label', 'extra.data.name'], [oldValue, oldValue], index);
+      }
+    });
   }
 
   async deleteCategory(treeNode: TreeNode) {

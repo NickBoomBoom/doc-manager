@@ -8,38 +8,19 @@
       :width="leftDrawerWidth"
     >
       <div class="h-full flex flex-col">
-        <user-info-card />
-        <div class="flex-1 flex flex-col">
-          <header></header>
-          <div class="flex-1">
-            <menu-tree @selectNote="handleNoteSelect" />
-          </div>
-          <footer></footer>
+        <header></header>
+        <div class="flex-1">
+          <menu-tree />
         </div>
+        <footer></footer>
       </div>
     </q-drawer>
 
     <q-page-container>
       <div class="relative h-screen">
-        <q-btn
-          dense
-          round
-          icon="menu"
-          color="white"
-          text-color="black"
-          class="absolute top-1 left-3 z-12"
-          @click="toggleLeftDrawer"
-        />
-        <q-btn
-          dense
-          round
-          color="white"
-          text-color="black"
-          icon="more_vert"
-          class="absolute top-1 right-3 z-12"
-        />
+        <top-float-btns @left="toggleLeftDrawer" />
         <q-scroll-area class="relative h-full">
-          <NoteEdit :noteId="currentNoteId" />
+          <tab-view />
         </q-scroll-area>
       </div>
     </q-page-container>
@@ -47,11 +28,13 @@
 </template>
 
 <script setup lang="ts">
-import NoteEdit from './components/NoteEdit.vue';
-import UserInfoCard from './components/UserInfoCard.vue';
+import TabView from './components/TabView.vue';
 import MenuTree from './components/MenuTree.vue';
+import TopFloatBtns from './components/TopFloatBtns.vue';
 const leftDrawerOpen = ref(false);
-const leftDrawerWidth = ref(500);
+const leftDrawerWidth = ref();
+
+handleResize();
 onMounted(() => {
   window.addEventListener('resize', handleResize);
 });
@@ -60,21 +43,16 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleResize);
 });
 
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+}
+
 function handleResize() {
-  let width = 500;
+  let width = 450;
   const winWidth = window.innerWidth;
   if (winWidth < width) {
     width = winWidth * 0.9;
   }
   leftDrawerWidth.value = width;
-}
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
-
-const currentNoteId = ref<number>();
-function handleNoteSelect(e: number) {
-  currentNoteId.value = e;
 }
 </script>
