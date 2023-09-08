@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-gray h-[3000px]">
+  <div class="pt-20 px-4">
     {{ detail?.content }}
   </div>
 </template>
