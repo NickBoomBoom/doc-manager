@@ -46,6 +46,8 @@
         node-key="id"
         :filter="filter"
         no-nodes-label=" "
+        dense
+         no-connectors
       >
         <template #default-header="{ node }">
           <div class="flex justify-between items-center w-full">
@@ -57,7 +59,7 @@
               }"
               @click="node.extra.isNote && handleSelectNote(node.extra)"
             >
-              <q-icon :name="node.icon" />
+              <!-- <q-icon :name="node.icon" /> -->
               <template v-if="node.extra.isCategory">
                 {{ node.extra.data.name }}
               </template>
