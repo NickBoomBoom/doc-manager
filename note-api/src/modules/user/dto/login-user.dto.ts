@@ -8,6 +8,11 @@ export class LoginUserDTO {
   email: string;
 
   @ApiProperty({
+    description: '昵称',
+  })
+  name?: string;
+
+  @ApiProperty({
     description: '密码',
   })
   @Length(5, 16)

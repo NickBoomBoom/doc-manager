@@ -1,6 +1,6 @@
 <template>
   <div class="flex justify-center items-center h-screen">
-    <q-form @submit="onSubmit" class="w-xs lg:w-md -mt-120">
+    <q-form @submit="onSubmit" class="w-xs lg:w-md -mt-1/7">
       <q-input
         v-model="params.email"
         ref="emailInputRef"
@@ -19,6 +19,14 @@
         :rules="rules.password"
       />
 
+      <q-input
+        v-if="isShowName"
+        v-model="params.name"
+        label="昵称 *"
+        hint="请输入昵称"
+        :rules="rules.name"
+      />
+
       <div v-if="isShowSubmit" class="flex justify-center mt-6">
         <q-btn type="submit">
           {{ submitBtnText }}
@@ -34,11 +42,13 @@ const emailInputRef = ref();
 const emailHint = ref('');
 
 const params = ref({
-  email: 'w.cobunn@xfygvxui.md',
-  password: '123456',
+  email: '',
+  name: '',
+  password: '',
 });
 
 const rules = {
+  name: [(v) => !!v || '请输入昵称'],
   email: [
     (v) => {
       if (!!v) {
@@ -60,7 +70,7 @@ const rules = {
         const bol = await userApi.checkEmail(v);
         isRegisteredEmail.value = bol;
         emailHint.value = !bol
-          ? '当前email未注册，继续输入密码直接注册登录'
+          ? '当前email未注册，继续输入密码昵称直接注册登录'
           : '欢迎回来，我的朋友！';
         return true;
       } catch (error) {
@@ -81,6 +91,9 @@ const isShowSubmit = computed(() => {
   return isShowPassword.value && !!params.value.password;
 });
 
+const isShowName = computed(() => {
+  return !isRegisteredEmail.value && isShowPassword && rules.password.map(t=> t(params.value.password)).every(t=> typeof t === 'boolean')
+})
 const submitBtnText = computed(() => {
   if (isRegisteredEmail.value) {
     return '登录';

@@ -54,20 +54,28 @@ export class UserService {
   }
 
   async login(loginUserDto: LoginUserDTO): Promise<LoginResponseDTO> {
-    const user = await this.usersRepository.findOne({
-      where: {
-        ...loginUserDto,
-      },
-    });
-    if (!user) {
-      throw new Error('账号或密码错误');
+    const { name, email, password } = loginUserDto;
+    const isExist = await this.checkEmail(loginUserDto.email);
+    if (isExist) {
+      const user = await this.usersRepository.findOne({
+        where: {
+          email,
+          password,
+        },
+      });
+
+      if (!user) {
+        throw new Error('账号或密码错误');
+      }
+      const loginInfo = await this.certificate(user);
+      const res = {
+        user,
+        ...loginInfo,
+      };
+      return res;
+    } else {
+      return await this.create(loginUserDto as CreateUserDTO);
     }
-    const loginInfo = await this.certificate(user);
-    const res = {
-      user,
-      ...loginInfo,
-    };
-    return res;
   }
 
   certificate(user: User): {
@@ -81,9 +89,7 @@ export class UserService {
       email,
       rootCategoryId,
     };
-    const token = this.jwtService.sign(payload, {
-      expiresIn: '7d', // 设置过期时间为7天
-    });
+    const token = this.jwtService.sign(payload);
     return {
       token: `Bearer ${token}`,
       expires: 7,

@@ -20,7 +20,7 @@ export default {
   JWT_CONFIG: {
     secret: 'secret_token_key',
     signOptions: {
-      expiresIn: '30d',
+      expiresIn: '7d',
     },
   },
 };
