@@ -19,8 +19,9 @@
     <q-page-container>
       <div class="relative h-screen">
         <top-float-btns @left="toggleLeftDrawer" />
-        <q-scroll-area class="relative h-full">
-          <tab-view />
+        <q-scroll-area class="relative h-full pt-10">
+          <!-- <tab-view /> -->
+          <editor />
         </q-scroll-area>
       </div>
     </q-page-container>
@@ -31,6 +32,7 @@
 import TabView from './components/TabView.vue';
 import MenuTree from './components/MenuTree.vue';
 import TopFloatBtns from './components/TopFloatBtns.vue';
+import Editor from './components/Editor.vue';
 const leftDrawerOpen = ref(false);
 const leftDrawerWidth = ref();
 

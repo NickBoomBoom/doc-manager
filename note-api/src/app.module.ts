@@ -10,9 +10,12 @@ import { JwtStrategy } from './common/strategy/jwt.strategy';
 import { NoteModule } from './modules/note/note.module';
 import { CategoryModule } from './modules/category/category.module';
 import { MenuModule } from './modules/menu/menu.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
+    UploadModule,
+
     TypeOrmModule.forRoot(env.DATABASE_CONFIG),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     MenuModule,

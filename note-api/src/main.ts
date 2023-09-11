@@ -9,6 +9,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   // 使用 morgan 中间件来记录 HTTP 请求
   app.use(morgan('combined'));
+  app.enableCors();
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new TransformInterceptor());
   await app.listen(env.SERVICE_CONFIG.port);
