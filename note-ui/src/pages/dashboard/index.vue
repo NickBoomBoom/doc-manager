@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHr LpR lFr">
+  <!-- <q-layout view="lHr LpR lFr">
     <q-drawer
       show-if-above
       v-model="leftDrawerOpen"
@@ -20,41 +20,52 @@
       <div class="relative h-screen">
         <top-float-btns @left="toggleLeftDrawer" />
         <q-scroll-area class="relative h-full pt-10">
-          <!-- <tab-view /> -->
+
           <editor />
         </q-scroll-area>
       </div>
     </q-page-container>
-  </q-layout>
+  </q-layout> -->
+
+  <q-splitter class="h-full" v-model="splitterModel" :limits="[0, 50]">
+    <template #before>
+      <div class="h-full overflow-hidden flex flex-col">
+        <header>header</header>
+        <q-scroll-area class="relative h-full flex-1 bg-red">
+          <div class="bg-yellow" style="height: 200vh">before</div>
+        </q-scroll-area>
+        <footer>footer</footer>
+      </div>
+    </template>
+    <template #after>
+      <div class="bg-green h-full">
+        <q-btn
+          dense
+          :icon="toggleIcon"
+          class="absolute top-1 left-3 z-12"
+          @click="handleLeftSplitter"
+        />
+      </div>
+    </template>
+  </q-splitter>
 </template>
 
 <script setup lang="ts">
 import TabView from './components/TabView.vue';
 import MenuTree from './components/MenuTree.vue';
-import TopFloatBtns from './components/TopFloatBtns.vue';
-import Editor from './components/Editor.vue';
-const leftDrawerOpen = ref(false);
-const leftDrawerWidth = ref();
 
-handleResize();
-onMounted(() => {
-  window.addEventListener('resize', handleResize);
-});
+const LEFT_WITH_PERCENT = 20;
 
-onUnmounted(() => {
-  window.removeEventListener('resize', handleResize);
-});
+const splitterModel = ref(LEFT_WITH_PERCENT);
 
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
-
-function handleResize() {
-  let width = 450;
-  const winWidth = window.innerWidth;
-  if (winWidth < width) {
-    width = winWidth * 0.9;
+const toggleIcon = computed(() => {
+  if (splitterModel.value) {
+    return 'menu_open';
   }
-  leftDrawerWidth.value = width;
+  return 'menu';
+});
+
+function handleLeftSplitter() {
+  splitterModel.value = splitterModel.value === 0 ? LEFT_WITH_PERCENT : 0;
 }
 </script>

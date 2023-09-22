@@ -11,6 +11,7 @@ import { NoteModule } from './modules/note/note.module';
 import { CategoryModule } from './modules/category/category.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { LinkCheckModule } from './modules/link-check/link-check.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { UploadModule } from './modules/upload/upload.module';
     CategoryModule,
     NoteModule,
     UserModule,
+    LinkCheckModule,
   ],
   providers: [
     {
