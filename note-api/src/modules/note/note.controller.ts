@@ -12,7 +12,6 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { NoteService } from './note.service';
 import { CreateNoteDTO } from './dto/create-note.dto';
 import { UpdateNoteDTO } from './dto/update-note.dto';
-import { Public } from 'src/common/decorator/public.decorator';
 
 @Controller('note')
 @ApiTags('笔记管理')
@@ -36,12 +35,12 @@ export class NoteController {
   })
   async create(@Body() createNoteDto: CreateNoteDTO, @Request() request) {
     const {
-      user: { id, rootCategoryId },
+      user: { id, rootSpaceId },
     } = request;
 
     return this.notesService.create(id, {
       ...createNoteDto,
-      categoryId: createNoteDto.categoryId || rootCategoryId,
+      spaceId: createNoteDto.spaceId || rootSpaceId,
     });
   }
 

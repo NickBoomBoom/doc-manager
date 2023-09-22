@@ -13,21 +13,21 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
 import { MoveMenuDTO } from './dto/move-menu.dto';
 @Controller('menu')
-@ApiTags('分类')
+@ApiTags('菜单')
 export class MenuController {
   constructor(private readonly menuService: MenuService) {}
 
   @Post('move')
   @ApiOperation({
-    summary: '分类,笔记移动',
+    summary: '空间,笔记移动',
   })
   async move(@Request() request, @Body() dto: MoveMenuDTO) {
     const {
-      user: { id, rootCategoryId },
+      user: { id, rootSpaceId },
     } = request;
 
     if (!dto.belongId) {
-      dto.belongId = rootCategoryId;
+      dto.belongId = rootSpaceId;
     }
     console.log(3333, dto);
 
@@ -40,23 +40,23 @@ export class MenuController {
   })
   async get(
     @Request() request,
-    @Query('categoryId') categoryId: number,
+    @Query('spaceId') spaceId: number,
     @Query('level') level = 4,
   ) {
     const {
-      user: { id, rootCategoryId },
+      user: { id, rootSpaceId },
     } = request;
-    return this.menuService.get(id, categoryId || rootCategoryId, level);
+    return this.menuService.get(id, spaceId || rootSpaceId, level);
   }
 
   @Get('/all')
   @ApiOperation({
     summary: '全部菜单',
   })
-  async getAll(@Request() request, @Query('categoryId') categoryId: number) {
+  async getAll(@Request() request, @Query('spaceId') spaceId: number) {
     const {
-      user: { id, rootCategoryId },
+      user: { id, rootSpaceId },
     } = request;
-    return this.menuService.getAll(id, categoryId || rootCategoryId);
+    return this.menuService.getAll(id, spaceId || rootSpaceId);
   }
 }

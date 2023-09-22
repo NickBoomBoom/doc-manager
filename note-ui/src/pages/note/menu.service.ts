@@ -1,4 +1,4 @@
-import { CategoryUpdate } from 'interfaces/category.interface';
+import { SpaceUpdate } from 'interfaces/category.interface';
 import { MenuItem } from 'interfaces/menu.interface';
 import { Dialog, Notify } from 'quasar';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
@@ -13,14 +13,14 @@ export interface TreeNode {
   lazy: boolean;
 }
 
-export interface OpenCategory {
+export interface OpenSpace {
   node: TreeNode;
   state: boolean;
 }
 class Menu {
   menus$: BehaviorSubject<TreeNode[]> = new BehaviorSubject<TreeNode[]>([]);
   createNote$: Subject<TreeNode | undefined> = new Subject();
-  openCategory$: Subject<OpenCategory> = new Subject();
+  openSpace$: Subject<OpenSpace> = new Subject();
   // 同时只能做一件事
   insertTreeNode: TreeNode | undefined;
 
@@ -55,7 +55,7 @@ class Menu {
     this.menus$.next(this.menus$.getValue());
     const parentByNode = this.getParentByIndex(node.index);
     parentByNode &&
-      this.openCategory$.next({
+      this.openSpace$.next({
         node: parentByNode,
         state: true,
       });
@@ -100,10 +100,10 @@ class Menu {
     return target;
   }
   formatData(item: MenuItem, index: string): TreeNode {
-    const { isCategory, isNote, data, menuId } = item;
+    const { isSpace, isNote, data, menuId } = item;
     const { children, ...extra } = item;
-    const label = isCategory ? data.name : isNote ? data.title : '';
-    const icon = isCategory ? 'sort' : isNote ? 'description' : '';
+    const label = isSpace ? data.name : isNote ? data.title : '';
+    const icon = isSpace ? 'sort' : isNote ? 'description' : '';
     const res: any = {
       label,
       id: menuId,
@@ -112,7 +112,7 @@ class Menu {
       extra,
       lazy: false,
     };
-    if (isCategory) {
+    if (isSpace) {
       res.children = (children || []).map((t, i) => {
         return this.formatData(t, `${index}-${i}`);
       });
@@ -144,7 +144,7 @@ class Menu {
     this.createNote$.next(treeNode);
   }
 
-  createCategory(treeNode?: TreeNode) {
+  createSpace(treeNode?: TreeNode) {
     Dialog.create({
       title: '添加分类',
       prompt: {
@@ -155,7 +155,7 @@ class Menu {
       cancel: true,
     }).onOk(async (name) => {
       try {
-        const res = await categoryApi.add({
+        const res = await spaceApi.add({
           name,
           parentId: treeNode?.extra?.targetId,
         });
@@ -172,7 +172,7 @@ class Menu {
     });
   }
 
-  async updateCategory(treeNode: TreeNode) {
+  async updateSpace(treeNode: TreeNode) {
     const {
       label: oldValue,
       index,
@@ -191,7 +191,7 @@ class Menu {
         // 先前置直接修改掉,后台静默调用接口
         // 如果失败了 再将其复原
         this.update(['label', 'extra.data.name'], [newValue, newValue], index);
-        await categoryApi.update(targetId, {
+        await spaceApi.update(targetId, {
           name: newValue,
         });
       } catch (error) {
@@ -207,7 +207,7 @@ class Menu {
     });
   }
 
-  async deleteCategory(treeNode: TreeNode) {
+  async deleteSpace(treeNode: TreeNode) {
     Dialog.create({
       title: '确定删除该分类?',
       cancel: true,
@@ -222,7 +222,7 @@ class Menu {
           index,
           extra: { targetId },
         } = treeNode;
-        await categoryApi.delete(targetId);
+        await spaceApi.delete(targetId);
         this.remove(index);
       } catch (error) {
         console.error(error);

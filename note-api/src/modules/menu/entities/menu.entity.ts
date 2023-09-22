@@ -16,20 +16,20 @@ export abstract class Menu extends Base {
   @Column({
     default: null,
   })
-  belongId: number; // 父级categoryId
+  belongId: number; // 父级spaceId
 
   @Column({
     default: null,
   })
-  prevId: string; // category-{number} note-{number}
+  prevId: string; // space-{number} note-{number}
 
   @Column({
     default: null,
   })
-  curId: string; // category-{number} note-{number}
+  curId: string; // space-{number} note-{number}
 
   @Column({
     default: null,
   })
-  nextId: string; // category-{number} note-{number}
+  nextId: string; // space-{number} note-{number}
 }

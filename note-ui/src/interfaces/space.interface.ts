@@ -1,4 +1,4 @@
-export interface CategoryUpdate {
+export interface SpaceUpdate {
   name: string;
   parentId?: number | null;
 }

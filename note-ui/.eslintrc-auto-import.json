@@ -71,7 +71,7 @@
     "useCounterStore": true,
     "useUserStore": true,
     "menuApi": true,
-    "categoryApi": true,
+    "spaceApi": true,
     "acceptHMRUpdate": true,
     "createPinia": true,
     "defineStore": true,

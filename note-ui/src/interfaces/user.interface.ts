@@ -1,7 +1,7 @@
 export interface User {
   email: string;
   name: string;
-  rootCategoryId: number | null;
+  rootSpaceId: number | null;
   token: string;
   expires: number | null;
   id: number | null;

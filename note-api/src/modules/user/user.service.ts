@@ -7,28 +7,27 @@ import { UpdateUserDTO } from './dto/update-user.dto';
 import { LoginUserDTO } from './dto/login-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDTO } from './dto/login-response.dto';
-import moment from 'moment';
-import { CategoryService } from '../category/category.service';
+import { SpaceService } from '../space/space.service';
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
     private readonly jwtService: JwtService,
-    @Inject(forwardRef(() => CategoryService))
-    private readonly categoryService: CategoryService,
+    @Inject(forwardRef(() => SpaceService))
+    private readonly spaceService: SpaceService,
   ) {}
 
   // 新增
   async create(createUserDto: CreateUserDTO): Promise<LoginResponseDTO> {
     const user = await this.usersRepository.save(createUserDto);
-    const rootCategory = await this.categoryService.create(+user.id, {
-      name: '根目录',
+    const rootSpace = await this.spaceService.create(+user.id, {
+      name: '根空间',
       parentId: null,
       updateAt: new Date(),
     });
     const { email, password } = await this.update(user.id, {
-      rootCategoryId: rootCategory.id,
+      rootSpaceId: rootSpace.id,
       updateAt: new Date(),
     });
 
@@ -82,12 +81,12 @@ export class UserService {
     token: string;
     expires: number;
   } {
-    const { id, name, email, rootCategoryId } = user;
+    const { id, name, email, rootSpaceId } = user;
     const payload = {
       id,
       name,
       email,
-      rootCategoryId,
+      rootSpaceId,
     };
     const token = this.jwtService.sign(payload);
     return {

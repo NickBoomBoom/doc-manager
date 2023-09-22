@@ -1,5 +1,5 @@
 import { Base } from 'src/common/entity/base.entity';
-import { Category } from 'src/modules/category/entities/category.entity';
+import { Space } from 'src/modules/space/entities/space.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
 @Entity({ name: 't_note' })
@@ -27,12 +27,12 @@ export abstract class Note extends Base {
   @Column({})
   userId: number;
 
-  @ManyToOne(() => Category)
-  @JoinColumn({ name: 'categoryId' })
-  category: Category;
+  @ManyToOne(() => Space)
+  @JoinColumn({ name: 'spaceId' })
+  space: Space;
 
   @Column({})
-  categoryId: number;
+  spaceId: number;
 
   @Column({
     type: 'varchar',

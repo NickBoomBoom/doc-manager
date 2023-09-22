@@ -11,7 +11,7 @@ export class MoveMenuDTO {
   prevMenuId: number | null;
 
   @ApiProperty({
-    description: '所属哪个分类下',
+    description: '所属哪个空间下',
   })
   belongId: number;
 }

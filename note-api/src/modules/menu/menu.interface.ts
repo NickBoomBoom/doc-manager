@@ -1,10 +1,10 @@
 export enum KEY {
-  CATEGORY = 'category',
+  CATEGORY = 'space',
   NOTE = 'note',
 }
 
 export interface MenuItem {
-  isCategory: boolean;
+  isSpace: boolean;
   isNote: boolean;
   menuId: number;
   targetId: number;
@@ -18,7 +18,7 @@ export interface MenuItem {
         title: string;
         tags: string;
         isLocked: boolean;
-        categoryId: number;
+        spaceId: number;
         shareCode: string;
       };
 }

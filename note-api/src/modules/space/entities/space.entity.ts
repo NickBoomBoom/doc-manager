@@ -2,8 +2,8 @@ import { User } from '../../user/entities/user.entity';
 import { Base } from '../../../common/entity/base.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
-@Entity({ name: 't_category' })
-export abstract class Category extends Base {
+@Entity({ name: 't_space' })
+export abstract class Space extends Base {
   @Column({})
   name: string;
 

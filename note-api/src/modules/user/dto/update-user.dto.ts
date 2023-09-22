@@ -15,7 +15,7 @@ export class UpdateUserDTO extends BaseDTO {
   password?: string;
 
   @ApiProperty({
-    description: '根分类id',
+    description: '根空间id',
   })
-  rootCategoryId?: number;
+  rootSpaceId?: number;
 }

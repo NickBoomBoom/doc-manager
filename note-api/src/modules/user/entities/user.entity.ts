@@ -26,5 +26,5 @@ export abstract class User extends Base {
   @Column({
     nullable: true,
   })
-  rootCategoryId: number | null;
+  rootSpaceId: number | null;
 }

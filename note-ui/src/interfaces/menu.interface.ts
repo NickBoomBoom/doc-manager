@@ -12,17 +12,17 @@ type MenuNote = {
   shareCode: string;
 };
 
-type MenuCategory = {
+type MenuSpace = {
   name: string;
   parentId: number;
 };
 export interface MenuItem {
-  isCategory: boolean;
+  isSpace: boolean;
   isNote: boolean;
   menuId: number;
   targetId: number;
   children?: MenuItem[];
-  data: MenuNote | MenuCategory;
+  data: MenuNote | MenuSpace;
 }
 
 export type MenuList = MenuItem[];

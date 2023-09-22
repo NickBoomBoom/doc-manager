@@ -8,7 +8,7 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
 import { NoteModule } from './modules/note/note.module';
-import { CategoryModule } from './modules/category/category.module';
+import { SpaceModule } from './modules/space/space.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { LinkCheckModule } from './modules/link-check/link-check.module';
@@ -20,7 +20,7 @@ import { LinkCheckModule } from './modules/link-check/link-check.module';
     TypeOrmModule.forRoot(env.DATABASE_CONFIG),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     MenuModule,
-    CategoryModule,
+    SpaceModule,
     NoteModule,
     UserModule,
     LinkCheckModule,

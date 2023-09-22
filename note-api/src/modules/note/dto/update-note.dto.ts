@@ -17,7 +17,7 @@ export class UpdateNoteDTO extends BaseDTO {
   tags?: string | null;
 
   @ApiProperty({
-    description: '分类id',
+    description: '空间id',
   })
-  categoryId?: number | null;
+  spaceId?: number | null;
 }

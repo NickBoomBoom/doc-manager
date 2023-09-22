@@ -17,7 +17,7 @@ export const useUserStore = defineStore('user', {
     id: null,
     email: '',
     name: '',
-    rootCategoryId: null,
+    rootSpaceId: null,
     token: '',
     expires: null,
   }),
@@ -29,12 +29,12 @@ export const useUserStore = defineStore('user', {
       const {
         token,
         expires,
-        user: { email, name, id, rootCategoryId },
+        user: { email, name, id, rootSpaceId },
       } = await userApi.login(body);
       this.id = id;
       this.email = email;
       this.name = name;
-      this.rootCategoryId = rootCategoryId;
+      this.rootSpaceId = rootSpaceId;
       this.expires = expires;
       this.token = token;
     },
@@ -43,7 +43,7 @@ export const useUserStore = defineStore('user', {
       this.id = null;
       this.email = '';
       this.name = '';
-      this.rootCategoryId = null;
+      this.rootSpaceId = null;
       this.token = '';
       this.expires = null;
     },

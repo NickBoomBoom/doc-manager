@@ -25,11 +25,7 @@ export class NoteService {
     };
     const note = await this.notesRepository.create(obj);
     const res: any = await this.notesRepository.save(note);
-    await this.menuService.createByNote(
-      userId,
-      res.id,
-      createNoteDto.categoryId,
-    );
+    await this.menuService.createByNote(userId, res.id, createNoteDto.spaceId);
     return res;
   }
 
@@ -39,7 +35,7 @@ export class NoteService {
         id: +noteId,
         userId,
       },
-      relations: ['user', 'category'],
+      relations: ['user', 'space'],
     });
   }
 
@@ -51,7 +47,7 @@ export class NoteService {
     const note = await this.notesRepository
       .createQueryBuilder('note')
       .leftJoinAndSelect('note.user', 'user')
-      .leftJoinAndSelect('note.category', 'category')
+      .leftJoinAndSelect('note.space', 'space')
       .where('note.id=:noteId', {
         noteId,
       })

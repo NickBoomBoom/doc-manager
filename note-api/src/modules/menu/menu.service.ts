@@ -2,7 +2,7 @@ import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { Menu } from './entities/menu.entity';
-import { CategoryService } from '../category/category.service';
+import { SpaceService } from '../space/space.service';
 import { NoteService } from '../note/note.service';
 import { MoveMenuDTO } from './dto/move-menu.dto';
 import { KEY, MenuItem, MenuList } from './menu.interface';
@@ -12,8 +12,8 @@ export class MenuService {
   constructor(
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
-    @Inject(forwardRef(() => CategoryService))
-    private readonly categoryService: CategoryService,
+    @Inject(forwardRef(() => SpaceService))
+    private readonly spaceService: SpaceService,
     @Inject(forwardRef(() => NoteService))
     private readonly noteService: NoteService,
   ) {}
@@ -22,18 +22,18 @@ export class MenuService {
     return `${KEY.NOTE}-${id}`;
   }
 
-  getCategoryId(id: number) {
+  getSpaceId(id: number) {
     return `${KEY.CATEGORY}-${id}`;
   }
 
   getType(str: string): {
-    isCategory: boolean;
+    isSpace: boolean;
     isNote: boolean;
     id: number;
   } {
     const [type, id] = str.split('-');
     return {
-      isCategory: type === KEY.CATEGORY,
+      isSpace: type === KEY.CATEGORY,
       isNote: type === KEY.NOTE,
       id: +id,
     };
@@ -71,8 +71,8 @@ export class MenuService {
     return this.create(userId, curId, belongId);
   }
 
-  async createByCategory(userId: number, categoryId: number, belongId: number) {
-    const curId = this.getCategoryId(categoryId);
+  async createBySpace(userId: number, spaceId: number, belongId: number) {
+    const curId = this.getSpaceId(spaceId);
     return this.create(userId, curId, belongId);
   }
 
@@ -174,18 +174,18 @@ export class MenuService {
 
   private async _getItem(userId: number, item): Promise<MenuItem> {
     const { curId, nextId, id: menuId } = item;
-    const { isCategory, isNote, id: targetId } = this.getType(curId);
+    const { isSpace, isNote, id: targetId } = this.getType(curId);
     const res: MenuItem = {
-      isCategory,
+      isSpace,
       isNote,
       menuId,
       targetId,
       data: null,
     };
 
-    if (isCategory) {
+    if (isSpace) {
       res.children = [];
-      const data = await this.categoryService.findOne(userId, targetId);
+      const data = await this.spaceService.findOne(userId, targetId);
       res.data = {
         name: data.name,
         parentId: data.parentId,
@@ -198,7 +198,7 @@ export class MenuService {
         title: data.title,
         tags: data.tags,
         isLocked: data.isLocked,
-        categoryId: data.categoryId,
+        spaceId: data.spaceId,
         shareCode: data.shareCode,
       };
     }
@@ -241,13 +241,13 @@ export class MenuService {
       for (let n = 0; n < target.length; n++) {
         const item = target[n];
         const isLast = n === target.length - 1;
-        if (item.isCategory) {
+        if (item.isSpace) {
           item.children = await this._getRows(userId, item.targetId);
         }
         if (isLast) {
           const newTarget = [];
           target
-            .filter((t) => t.isCategory)
+            .filter((t) => t.isSpace)
             .forEach((t) => {
               if (t.children?.length) {
                 newTarget.push(...t.children);
@@ -261,7 +261,7 @@ export class MenuService {
     return res;
   }
 
-  // TODO: 这边要修改  改成去拉所有note  category menus 然后内部去做整合
+  // TODO: 这边要修改  改成去拉所有note  space menus 然后内部去做整合
   async getAll(userId: number, belongId: number): Promise<MenuList> {
     const res: MenuList = [];
     // 配置初始层
@@ -272,13 +272,13 @@ export class MenuService {
     for (let n = 0; n < target.length; n++) {
       const item = target[n];
       const isLast = n === target.length - 1;
-      if (item.isCategory) {
+      if (item.isSpace) {
         item.children = await this._getRows(userId, item.targetId);
       }
       if (isLast) {
         const newTarget = [];
         target
-          .filter((t) => t.isCategory)
+          .filter((t) => t.isSpace)
           .forEach((t) => {
             if (t.children?.length) {
               newTarget.push(...t.children);
@@ -298,16 +298,16 @@ export class MenuService {
     });
 
     const { prevId, nextId } = item;
-    const { isCategory, isNote, id } = this.getType(item.curId);
+    const { isSpace, isNote, id } = this.getType(item.curId);
 
-    // 如果是分类,需要预检查该分类下是否存在其他分类或笔记
-    if (isCategory) {
+    // 如果是空间,需要预检查该空间下是否存在其他空间或笔记
+    if (isSpace) {
       const childCount = await this.menuRepository.countBy({
         belongId: id,
       });
       if (childCount > 0) {
         throw new Error(
-          '该分类下存在笔记或其他分类,请先清空内部数据再删除该分类',
+          '该空间下存在笔记或其他空间,请先清空内部数据再删除该空间',
         );
       }
     }
@@ -338,8 +338,8 @@ export class MenuService {
     return true;
   }
 
-  async deleteByCategory(userId: number, categoryId: number) {
-    const curId = this.getCategoryId(categoryId);
+  async deleteBySpace(userId: number, spaceId: number) {
+    const curId = this.getSpaceId(spaceId);
     return await this.delete(userId, curId);
   }
   async deleteByNote(userId: number, noteId: number) {

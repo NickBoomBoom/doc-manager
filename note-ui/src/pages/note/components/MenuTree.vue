@@ -47,7 +47,7 @@
         :filter="filter"
         no-nodes-label=" "
         dense
-         no-connectors
+        no-connectors
       >
         <template #default-header="{ node }">
           <div class="flex justify-between items-center w-full">
@@ -60,7 +60,7 @@
               @click="node.extra.isNote && handleSelectNote(node.extra)"
             >
               <!-- <q-icon :name="node.icon" /> -->
-              <template v-if="node.extra.isCategory">
+              <template v-if="node.extra.isSpace">
                 {{ node.extra.data.name }}
               </template>
               <span v-if="node.extra.isNote">
@@ -85,7 +85,7 @@
 <script setup lang="ts">
 import { MenuItem } from 'interfaces/menu.interface';
 import { cloneDeep } from 'lodash-es';
-import menuService, { OpenCategory, TreeNode } from '../menu.service';
+import menuService, { OpenSpace, TreeNode } from '../menu.service';
 import MenuTreeBtns from './MenuTreeBtns.vue';
 const treeRef = ref();
 const emits = defineEmits<{
@@ -95,7 +95,7 @@ const headerBtns = [
   {
     title: '添加分类',
     icon: 'create_new_folder',
-    handler: () => menuService.createCategory(),
+    handler: () => menuService.createSpace(),
   },
   {
     title: '添加笔记',
@@ -130,7 +130,7 @@ async function init() {
     menus.value = cloneDeep(res);
   });
 
-  menuService.openCategory$.subscribe((res: OpenCategory) => {
+  menuService.openSpace$.subscribe((res: OpenSpace) => {
     setTimeout(() => {
       treeRef.value.setExpanded(res.node.id, true);
     });

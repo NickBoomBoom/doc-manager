@@ -5,12 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { env } from '../../common/config/index';
-import { CategoryModule } from '../category/category.module';
+import { SpaceModule } from '../space/space.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.register(env.JWT_CONFIG),
-    forwardRef(() => CategoryModule),
+    forwardRef(() => SpaceModule),
   ],
   controllers: [UserController],
   providers: [UserService],

@@ -1,5 +1,5 @@
 <template>
-  <template v-if="node.extra.isCategory">
+  <template v-if="node.extra.isSpace">
     <q-menu v-if="isContext" touch-position context-menu :offset="[0, 4]">
       <q-list dense>
         <q-item
@@ -85,18 +85,18 @@ const categoryBtns = [
   {
     title: '打包下载',
     icon: 'browser_updated',
-    handler: handleDownloadByCategory,
+    handler: handleDownloadBySpace,
   },
 
   {
     title: '添加分类',
     icon: 'create_new_folder',
-    handler: (e: TreeNode) => menuService.createCategory(e),
+    handler: (e: TreeNode) => menuService.createSpace(e),
   },
   {
     title: '修改分类',
     icon: 'title',
-    handler: (e: TreeNode) => menuService.updateCategory(e),
+    handler: (e: TreeNode) => menuService.updateSpace(e),
   },
   {
     title: '添加笔记',
@@ -106,7 +106,7 @@ const categoryBtns = [
   {
     title: '删除分类',
     icon: 'delete',
-    handler: (e: TreeNode) => menuService.deleteCategory(e),
+    handler: (e: TreeNode) => menuService.deleteSpace(e),
   },
 ];
 
@@ -114,21 +114,21 @@ const noteBtns = [
   {
     title: '分享',
     icon: 'share',
-    handler: handleDownloadByCategory,
+    handler: handleDownloadBySpace,
   },
   {
     title: '下载笔记',
     icon: 'sim_card_download',
-    handler: handleDownloadByCategory,
+    handler: handleDownloadBySpace,
   },
   {
     title: '删除笔记',
     icon: 'delete',
-    handler: handleDownloadByCategory,
+    handler: handleDownloadBySpace,
   },
 ];
 
-function handleDownloadByCategory(item: TreeNode) {
+function handleDownloadBySpace(item: TreeNode) {
   console.log(item);
 }
 </script>
