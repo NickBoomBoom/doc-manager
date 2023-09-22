@@ -89,12 +89,12 @@ const categoryBtns = [
   },
 
   {
-    title: '添加分类',
+    title: '添加空间',
     icon: 'create_new_folder',
     handler: (e: TreeNode) => menuService.createSpace(e),
   },
   {
-    title: '修改分类',
+    title: '修改空间',
     icon: 'title',
     handler: (e: TreeNode) => menuService.updateSpace(e),
   },
@@ -104,7 +104,7 @@ const categoryBtns = [
     handler: (e: TreeNode) => menuService.notifyCreateNote(e),
   },
   {
-    title: '删除分类',
+    title: '删除空间',
     icon: 'delete',
     handler: (e: TreeNode) => menuService.deleteSpace(e),
   },

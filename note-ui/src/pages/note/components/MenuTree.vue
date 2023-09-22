@@ -20,23 +20,6 @@
           />
         </template>
       </q-input>
-      <q-btn class="mx-1" dense icon="add">
-        <q-menu anchor="bottom right" self="top right" :offset="[0, 4]">
-          <q-list dense>
-            <q-item
-              clickable
-              v-close-popup
-              v-for="item in headerBtns"
-              :key="item.title"
-              @click="item.handler()"
-              class="flex items-center"
-            >
-              <q-icon :name="item.icon" size="sm" class="mr-1" />
-              {{ item.title }}
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
     </div>
 
     <q-scroll-area class="flex-1 px-2">
@@ -57,7 +40,7 @@
                 'text-blue': node.extra.menuId === selected,
                 'cursor-pointer': node.extra.isNote,
               }"
-              @click="node.extra.isNote && handleSelectNote(node.extra)"
+              @click="handleSelectNote(node.extra, $event)"
             >
               <!-- <q-icon :name="node.icon" /> -->
               <template v-if="node.extra.isSpace">
@@ -88,24 +71,7 @@ import { cloneDeep } from 'lodash-es';
 import menuService, { OpenSpace, TreeNode } from '../menu.service';
 import MenuTreeBtns from './MenuTreeBtns.vue';
 const treeRef = ref();
-const emits = defineEmits<{
-  (e: 'selectNote', noteId: number): void;
-}>();
-const headerBtns = [
-  {
-    title: '添加分类',
-    icon: 'create_new_folder',
-    handler: () => menuService.createSpace(),
-  },
-  {
-    title: '添加笔记',
-    icon: 'post_add',
-    handler: () => {
-      selected.value = undefined;
-      menuService.notifyCreateNote();
-    },
-  },
-];
+
 const loading = ref(false);
 const selected = ref<number>();
 const filter = ref('');
@@ -117,9 +83,15 @@ function resetFilter() {
   filterRef.value.focus();
 }
 
-function handleSelectNote(item: MenuItem) {
-  selected.value = item.menuId;
-  emits('selectNote', item.targetId);
+function handleSelectNote(item: MenuItem, e: PointerEvent) {
+  if (item.isNote) {
+    selected.value = item.menuId;
+    if (e.altKey) {
+      menuService.openSecondNote$.next(item);
+    } else {
+      menuService.openNote$.next(item);
+    }
+  }
 }
 
 onMounted(() => {

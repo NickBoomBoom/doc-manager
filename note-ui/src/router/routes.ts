@@ -11,6 +11,9 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'note',
         name: 'Note',
+        meta: {
+          keepAlive: true,
+        },
         component: () => import('pages/note/index.vue'),
       },
       {

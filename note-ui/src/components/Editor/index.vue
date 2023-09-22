@@ -1,11 +1,35 @@
 <template>
-  <textarea :id="editorId"></textarea>
+  <textarea :id="editorId" v-model="content"> </textarea>
 </template>
 <script setup lang="ts">
-import { Editor, Ui } from 'src/tinymce';
+import { Editor } from 'src/tinymce';
+const props = withDefaults(
+  defineProps<{
+    modelValue: string;
+  }>(),
+  {
+    modelValue: '',
+  },
+);
+const emits = defineEmits<{
+  (event: 'update:modelValue', str: string): void;
+  (event: 'init'): void;
+}>();
+const content = ref(props.modelValue);
+watch(content, (v) => {
+  emits('update:modelValue', v);
+});
 
+watch(
+  () => props.modelValue,
+  (v) => {
+    console.log(34444, v);
+    content.value = v;
+    editorInstance.setContent(v);
+  },
+);
 const editorId = ref(`editor-${Date.now()}`);
-
+let editorInstance: Editor;
 // 插件及对应的toolbar配置
 const PLUGIN_TOOLBAR_CONFIG: {
   [key: string]: {
@@ -160,12 +184,19 @@ onMounted(() => {
   init();
 });
 
+onActivated(() => {
+  init();
+});
+
+onDeactivated(() => {
+  editorInstance.remove();
+});
+
 const { plugins, pluginsConfig } = initPluginToolbar();
 function init() {
   const selector: HTMLElement = document.querySelector(`#${editorId.value}`)!;
   const parent: any = selector!.parentNode;
   const { height: parentHeight } = parent.getBoundingClientRect();
-
   window.tinymce.init({
     // 基础配置
     selector: `#${editorId.value}`,
@@ -176,6 +207,11 @@ function init() {
     resize: false,
     font_size_input_default_unit: 'px',
     min_height: parentHeight,
+    init_instance_callback: (e: Editor) => {
+      setTimeout(() => {
+        emits('init');
+      }, 400);
+    },
     // 菜单栏配置 (不显示)
     menubar: false,
     statusbar: false,
@@ -190,14 +226,15 @@ function init() {
     plugins,
     ...pluginsConfig,
     setup: (editor: Editor) => {
+      editorInstance = editor;
       // 注册table sort 按钮
       registerTableSortBtn(editor);
       // 注册斜杠指令
       registerSlashCommands(editor);
       // 初始化
-      editor.on('init', (e) => {
-        console.log(33333, e.target.container);
-      });
+      // editor.on('init', (e) => {
+      //   emits('init');
+      // });
       editor.on('focus', (e) => {
         console.log('focus', e);
       });

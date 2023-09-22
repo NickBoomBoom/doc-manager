@@ -21,6 +21,8 @@ class Menu {
   menus$: BehaviorSubject<TreeNode[]> = new BehaviorSubject<TreeNode[]>([]);
   createNote$: Subject<TreeNode | undefined> = new Subject();
   openSpace$: Subject<OpenSpace> = new Subject();
+  openNote$: Subject<MenuItem> = new Subject();
+  openSecondNote$: Subject<MenuItem> = new Subject();
   // 同时只能做一件事
   insertTreeNode: TreeNode | undefined;
 
@@ -146,7 +148,7 @@ class Menu {
 
   createSpace(treeNode?: TreeNode) {
     Dialog.create({
-      title: '添加分类',
+      title: '添加空间',
       prompt: {
         model: '',
         type: 'text',
@@ -197,7 +199,7 @@ class Menu {
       } catch (error) {
         console.error(error);
         Notify.create({
-          message: '修改分类名称失败,请稍后再试',
+          message: '修改空间名称失败,请稍后再试',
           progress: true,
           type: 'negative',
           position: 'top',
@@ -209,7 +211,7 @@ class Menu {
 
   async deleteSpace(treeNode: TreeNode) {
     Dialog.create({
-      title: '确定删除该分类?',
+      title: '确定删除该空间?',
       cancel: true,
     }).onOk(async () => {
       const loadingDialog = Dialog.create({
