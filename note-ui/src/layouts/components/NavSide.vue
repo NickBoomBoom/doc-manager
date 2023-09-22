@@ -1,7 +1,11 @@
 <template>
-  <div class="w-15 flex flex-col items-center bg-gray-50">
-    <header>header</header>
-    <main class="flex-1">
+  <div class="w-15 flex flex-col items-center bg-gray-1">
+    <header class="flex flex-col items-center mb-2">
+      <div class="text-2xl h-12 leading-12 bold">
+        {{ nickname }}
+      </div>
+    </header>
+    <main class="flex-1 flex flex-col">
       <q-btn
         v-for="item in navList"
         :key="item.icon"
@@ -10,6 +14,10 @@
         flat
         :to="{
           name: item.routerName,
+        }"
+        class="mb-2"
+        :class="{
+          'text-primary': $route.name === item.routerName,
         }"
       >
         <q-tooltip anchor="center right" self="center left">
@@ -33,6 +41,7 @@
 <script setup lang="ts">
 const router = useRouter();
 const userStore = useUserStore();
+const { name } = storeToRefs(userStore);
 function logout() {
   userStore.logout();
   router.replace({
@@ -40,12 +49,20 @@ function logout() {
   });
 }
 
+const nickname = computed(() => {
+  return name.value.substring(0, 1);
+});
+
 const navList = reactive([
   {
     icon: 'note_alt',
     tip: '笔记',
     routerName: 'Note',
   },
+  {
+    icon: 'tag',
+    tip: '标签',
+    routerName: 'Tag',
+  },
 ]);
 </script>
-<style lang="scss" scoped></style>

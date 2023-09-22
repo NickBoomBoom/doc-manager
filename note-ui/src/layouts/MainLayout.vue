@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-screen">
     <nav-side />
-    <div class="flex-1 bg-gray">
+    <div class="flex-1">
       <router-view />
     </div>
   </div>

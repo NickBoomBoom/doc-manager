@@ -1,18 +1,22 @@
 import { RouteRecordRaw } from 'vue-router';
-import Dashboard from 'pages/dashboard/index.vue';
 import MainLayout from 'layouts/MainLayout.vue';
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: MainLayout,
     redirect: {
-      name: 'Dashboard',
+      name: 'Note',
     },
     children: [
       {
-        path: 'dashboard',
-        name: 'Dashboard',
-        component: Dashboard,
+        path: 'note',
+        name: 'Note',
+        component: () => import('pages/note/index.vue'),
+      },
+      {
+        path: 'tag',
+        name: 'Tag',
+        component: () => import('pages/tag/index.vue'),
       },
     ],
   },
