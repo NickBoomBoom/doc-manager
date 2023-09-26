@@ -590,4 +590,11 @@ function initPluginToolbar(): {
     toolbar,
   };
 }
+
+function focus() {
+  editorInstance.focus();
+}
+defineExpose({
+  focus,
+});
 </script>

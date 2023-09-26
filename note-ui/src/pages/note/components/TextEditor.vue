@@ -1,5 +1,10 @@
 <template>
-  <q-scroll-area ref="scrollViewRef" class="h-full px-5" @scroll="handleScroll">
+  <q-scroll-area
+    ref="scrollViewRef"
+    :class="[isInited ? '' : 'op-0']"
+    class="h-full px-5 transition-opacity"
+    @scroll="handleScroll"
+  >
     <q-input
       input-class="text-2xl font-bold"
       v-model="detail.title"
@@ -10,6 +15,7 @@
     <editor
       v-model="detail.content"
       class="h-full"
+      ref="editorRef"
       @init="handleInitEditor"
       @save="handleSave"
     />
@@ -35,6 +41,18 @@ const detail = ref<Note>({
 });
 const scrollTop = ref(0);
 const scrollViewRef = ref();
+const isInited = ref(false);
+const editorRef = ref();
+
+onActivated(() => {
+  resetScrollTop();
+  setTimeout(() => {
+    isInited.value = true;
+  }, 700);
+});
+onDeactivated(() => {
+  isInited.value = false;
+});
 
 watch(
   () => props.noteId,
@@ -46,6 +64,11 @@ watch(
   },
 );
 
+watch(isInited, (v: boolean) => {
+  if (v) {
+    editorRef.value.focus();
+  }
+});
 async function getDetail() {
   if (!props.noteId) {
     return;
@@ -61,12 +84,18 @@ async function getDetail() {
     loading.value = false;
   }
 }
+
 function handleScroll(info: any) {
   scrollTop.value = info.verticalPosition;
 }
 
+function resetScrollTop() {
+  scrollViewRef.value?.setScrollPosition('vertical', scrollTop.value, 0);
+}
+
 function handleInitEditor() {
-  scrollViewRef.value?.setScrollPosition('vertical', scrollTop.value);
+  resetScrollTop();
+  isInited.value = true;
 }
 
 function handleTitleChange() {
