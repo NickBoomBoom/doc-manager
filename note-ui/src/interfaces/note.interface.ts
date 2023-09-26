@@ -1,6 +1,7 @@
-export interface NoteUpdate {
+export interface Note {
+  id?: number;
   title: string;
+  tags?: string;
   content: string;
-  tags: string;
-  categoryId: number;
+  spaceId: number | null;
 }

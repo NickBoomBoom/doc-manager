@@ -1,8 +1,9 @@
 <template>
-  <textarea :id="editorId" v-model="content"> </textarea>
+  <textarea :id="editorId"> </textarea>
 </template>
 <script setup lang="ts">
 import { Editor } from 'src/tinymce';
+import { debounce } from 'lodash-es';
 const props = withDefaults(
   defineProps<{
     modelValue: string;
@@ -14,6 +15,7 @@ const props = withDefaults(
 const emits = defineEmits<{
   (event: 'update:modelValue', str: string): void;
   (event: 'init'): void;
+  (event: 'save', content: string): void;
 }>();
 const content = ref(props.modelValue);
 watch(content, (v) => {
@@ -22,12 +24,14 @@ watch(content, (v) => {
 
 watch(
   () => props.modelValue,
-  (v) => {
-    console.log(34444, v);
-    content.value = v;
-    editorInstance.setContent(v);
+  (v: string) => {
+    if (v !== content.value) {
+      content.value = v;
+      editorInstance.setContent(v);
+    }
   },
 );
+
 const editorId = ref(`editor-${Date.now()}`);
 let editorInstance: Editor;
 // 插件及对应的toolbar配置
@@ -134,7 +138,8 @@ const PLUGIN_TOOLBAR_CONFIG: {
   // 快捷工具栏
   quickbars: {
     props: {
-      quickbars_insert_toolbar: 'styles fontsize emoticons image table',
+      // quickbars_insert_toolbar: 'styles fontsize emoticons image table',
+      quickbars_insert_toolbar: false,
       quickbars_selection_toolbar:
         'styles bold italic underline strikethrough superscript subscript fontsize lineheight blockquote casechange quicklink removeformat indent outdent aligncenter alignjustify alignleft alignnone alignright | backcolor forecolor',
       contextmenu:
@@ -148,7 +153,8 @@ const PLUGIN_TOOLBAR_CONFIG: {
         console.log('Save canceled', e);
       },
       save_onsavecallback: (e) => {
-        console.log('Saved', e.getContent());
+        console.log('Saved', e);
+        emits('save', content.value);
       },
     },
     toolbar: 'cancel save',
@@ -236,14 +242,19 @@ function init() {
       //   emits('init');
       // });
       editor.on('focus', (e) => {
-        console.log('focus', e);
+        console.log('focus');
       });
       editor.on('blur', (e) => {
-        console.log('blur', e);
+        console.log('blur');
+        emits('save', content.value);
       });
-      editor.on('input', (e) => {
-        console.log('input', e, editor.getContent());
-      });
+      editor.on(
+        'input',
+        debounce((e: any) => {
+          content.value = editorInstance.getContent();
+          emits('save', content.value);
+        }, 500),
+      );
       // 监听dialog 打开
       editor.on('OpenWindow', (e) => {
         setTimeout(() => {

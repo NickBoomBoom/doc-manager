@@ -10,5 +10,6 @@ declare module 'vue' {
     Editor: typeof import('./components/Editor/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TextEditor: typeof import('./components/TextEditor/index.vue')['default']
   }
 }

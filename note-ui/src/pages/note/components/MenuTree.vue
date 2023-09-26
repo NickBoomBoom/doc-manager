@@ -22,7 +22,7 @@
       </q-input>
     </div>
 
-    <q-scroll-area class="flex-1 px-2">
+    <q-scroll-area class="flex-1">
       <q-tree
         ref="treeRef"
         :nodes="menus"
@@ -42,12 +42,13 @@
               }"
               @click="handleSelectNote(node.extra, $event)"
             >
-              <!-- <q-icon :name="node.icon" /> -->
-              <template v-if="node.extra.isSpace">
-                {{ node.extra.data.name }}
-              </template>
-              <span v-if="node.extra.isNote">
-                {{ node.extra.data.title }}
+              <!-- <q-icon v-if="node.extra.isNote" :name="node.icon" /> -->
+              <span
+                :class="{
+                  'text-gray': !node.children?.length && node.extra.isSpace,
+                }"
+              >
+                {{ node.label }}
               </span>
 
               <menu-tree-btns :node="node" type="context" />
@@ -60,7 +61,7 @@
     </q-scroll-area>
 
     <q-inner-loading :showing="loading">
-      <q-spinner-hourglass size="xl" color="primary" />
+      <q-spinner-cube size="xl" color="primary" :thickness="10" />
       <div class="mt-2 text-primary">时间换空间</div>
     </q-inner-loading>
   </div>
@@ -71,7 +72,6 @@ import { cloneDeep } from 'lodash-es';
 import menuService, { OpenSpace, TreeNode } from '../menu.service';
 import MenuTreeBtns from './MenuTreeBtns.vue';
 const treeRef = ref();
-
 const loading = ref(false);
 const selected = ref<number>();
 const filter = ref('');
@@ -85,7 +85,6 @@ function resetFilter() {
 
 function handleSelectNote(item: MenuItem, e: PointerEvent) {
   if (item.isNote) {
-    selected.value = item.menuId;
     if (e.altKey) {
       menuService.openSecondNote$.next(item);
     } else {
@@ -100,6 +99,11 @@ onMounted(() => {
 async function init() {
   menuService.menus$.subscribe((res) => {
     menus.value = cloneDeep(res);
+    console.log(3444, menus.value);
+  });
+
+  menuService.openNote$.subscribe((res: MenuItem) => {
+    selected.value = res.menuId;
   });
 
   menuService.openSpace$.subscribe((res: OpenSpace) => {
@@ -107,6 +111,7 @@ async function init() {
       treeRef.value.setExpanded(res.node.id, true);
     });
   });
+
   loading.value = true;
   menuService
     .load()

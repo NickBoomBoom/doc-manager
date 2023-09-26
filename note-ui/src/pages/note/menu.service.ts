@@ -1,5 +1,5 @@
-import { SpaceUpdate } from 'interfaces/category.interface';
 import { MenuItem } from 'interfaces/menu.interface';
+import { Note } from 'interfaces/note.interface';
 import { Dialog, Notify } from 'quasar';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
@@ -19,7 +19,6 @@ export interface OpenSpace {
 }
 class Menu {
   menus$: BehaviorSubject<TreeNode[]> = new BehaviorSubject<TreeNode[]>([]);
-  createNote$: Subject<TreeNode | undefined> = new Subject();
   openSpace$: Subject<OpenSpace> = new Subject();
   openNote$: Subject<MenuItem> = new Subject();
   openSecondNote$: Subject<MenuItem> = new Subject();
@@ -44,11 +43,11 @@ class Menu {
   insert(
     menuItem: MenuItem,
     insertItem: TreeNode | undefined = this.insertTreeNode,
-  ) {
+  ): TreeNode {
     const index = insertItem
       ? insertItem.index + '-' + insertItem.children?.length
       : this.menus$.value.length + '';
-    const node = this.formatData(menuItem, index);
+    const node: TreeNode = this.formatData(menuItem, index);
     if (insertItem) {
       this.getTargetByIndex(insertItem.index).children!.push(node);
     } else {
@@ -61,6 +60,7 @@ class Menu {
         node: parentByNode,
         state: true,
       });
+    return node;
   }
 
   remove(index: string) {
@@ -73,6 +73,33 @@ class Menu {
       this.menus$.value.splice(+index, 1);
     }
     this.menus$.next(this.menus$.getValue());
+  }
+
+  find(
+    id: number,
+    arr: TreeNode[] = this.menus$.value,
+    _isNote: boolean = true,
+  ): TreeNode {
+    let res: TreeNode;
+    for (let i = 0; i < arr.length; i++) {
+      const t = arr[i];
+      const {
+        children,
+        extra: { isNote, targetId },
+      } = t;
+
+      if (targetId === id && isNote === _isNote) {
+        res = t;
+        break;
+      } else if (children?.length) {
+        const res2 = this.find(id, children, _isNote);
+        if (res2) {
+          res = res2;
+          break;
+        }
+      }
+    }
+    return res;
   }
 
   getParentByIndex(index: string): TreeNode {
@@ -101,12 +128,13 @@ class Menu {
     });
     return target;
   }
+
   formatData(item: MenuItem, index: string): TreeNode {
     const { isSpace, isNote, data, menuId } = item;
     const { children, ...extra } = item;
     const label = isSpace ? data.name : isNote ? data.title : '';
-    const icon = isSpace ? 'sort' : isNote ? 'description' : '';
-    const res: any = {
+    const icon = isSpace ? 'sort' : isNote ? 'article' : '';
+    const res: TreeNode = {
       label,
       id: menuId,
       icon,
@@ -141,9 +169,16 @@ class Menu {
     });
   }
 
-  notifyCreateNote(treeNode?: TreeNode) {
+  async notifyCreateNote(treeNode?: TreeNode) {
     this.insertTreeNode = treeNode;
-    this.createNote$.next(treeNode);
+    const body: Note = {
+      title: '新笔记',
+      content: '',
+      spaceId: treeNode?.extra.targetId || null,
+    };
+    const res: MenuItem = await noteApi.add(body);
+    this.insert(res);
+    this.openNote$.next(res);
   }
 
   createSpace(treeNode?: TreeNode) {
@@ -172,6 +207,12 @@ class Menu {
         });
       }
     });
+  }
+
+  updateNote(note: Note) {
+    const { id, title, spaceId } = note;
+    const target: TreeNode = this.find(id!);
+    this.update(['label', 'extra.data.title'], [title, title], target.index);
   }
 
   async updateSpace(treeNode: TreeNode) {

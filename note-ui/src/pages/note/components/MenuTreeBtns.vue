@@ -15,7 +15,14 @@
         </q-item>
       </q-list>
     </q-menu>
-    <q-btn v-else flat dense @click.stop icon="more_horiz">
+    <q-btn
+      v-else
+      flat
+      dense
+      @click.stop
+      icon="more_horiz"
+      class="text-gray-300 hover:text-black"
+    >
       <q-menu anchor="bottom right" self="top right" :offset="[0, 4]">
         <q-list dense>
           <q-item
@@ -49,7 +56,14 @@
         </q-item>
       </q-list>
     </q-menu>
-    <q-btn v-else flat dense @click.stop icon="more_horiz">
+    <q-btn
+      v-else
+      flat
+      dense
+      @click.stop
+      icon="more_horiz"
+      class="text-gray-300 hover:text-black"
+    >
       <q-menu anchor="bottom right" self="top right" :offset="[0, 4]">
         <q-list dense>
           <q-item

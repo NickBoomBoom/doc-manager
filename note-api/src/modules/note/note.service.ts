@@ -7,6 +7,7 @@ import { v4 as uuidV4 } from 'uuid';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { TagsResponseDTO } from './dto/tag-response.dto';
 import { MenuService } from '../menu/menu.service';
+import { MenuItem } from '../menu/menu.interface';
 @Injectable()
 export class NoteService {
   constructor(
@@ -16,7 +17,10 @@ export class NoteService {
     private readonly menuService: MenuService,
   ) {}
 
-  async create(userId: number, createNoteDto: CreateNoteDTO): Promise<Note> {
+  async create(
+    userId: number,
+    createNoteDto: CreateNoteDTO,
+  ): Promise<MenuItem> {
     const shareCode = uuidV4();
     const obj: any = {
       ...createNoteDto,
@@ -25,8 +29,24 @@ export class NoteService {
     };
     const note = await this.notesRepository.create(obj);
     const res: any = await this.notesRepository.save(note);
-    await this.menuService.createByNote(userId, res.id, createNoteDto.spaceId);
-    return res;
+    const menu = await this.menuService.createByNote(
+      userId,
+      res.id,
+      createNoteDto.spaceId,
+    );
+    return {
+      isSpace: false,
+      isNote: true,
+      menuId: menu.id,
+      targetId: res.id,
+      data: {
+        title: res.title,
+        tags: res.tags,
+        isLocked: res.isLocked,
+        spaceId: res.spaceId,
+        shareCode: res.shareCode,
+      },
+    } as MenuItem;
   }
 
   async findOne(userId: number, noteId: number): Promise<Note> {
@@ -35,7 +55,7 @@ export class NoteService {
         id: +noteId,
         userId,
       },
-      relations: ['user', 'space'],
+      // relations: ['user', 'space'],
     });
   }
 

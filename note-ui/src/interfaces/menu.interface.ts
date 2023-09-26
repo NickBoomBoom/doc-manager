@@ -22,7 +22,7 @@ export interface MenuItem {
   menuId: number;
   targetId: number;
   children?: MenuItem[];
-  data: MenuNote | MenuSpace;
+  data: MenuNote & MenuSpace;
 }
 
 export type MenuList = MenuItem[];

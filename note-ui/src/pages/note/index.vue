@@ -3,9 +3,9 @@
     <template #before>
       <div class="h-full overflow-hidden flex flex-col">
         <header>header</header>
-        <div class="relative h-full flex-1">
+        <main class="relative h-full flex-1">
           <menu-tree />
-        </div>
+        </main>
         <footer class="flex flex-col p-2">
           <q-btn dense class="mb-2" @click="noticeCreateSpace">
             新建空间
@@ -14,16 +14,23 @@
         </footer>
       </div>
     </template>
-    <template #after>
-      <div class="h-full">
+
+    <template v-slot:separator>
+      <div class="flex flex-col">
         <q-btn
           dense
+          round
           :icon="toggleIcon"
-          class="absolute top-1 left-3 z-12"
+          class="bg-white"
           @click="handleLeftSplitter"
         />
+      </div>
+    </template>
+
+    <template #after>
+      <div class="h-full">
         <Welcome v-if="isShowWelcome" />
-        <content-split-view />
+        <content-split-view v-show="!isShowWelcome" />
       </div>
     </template>
   </q-splitter>
@@ -34,10 +41,11 @@ import MenuTree from './components/MenuTree.vue';
 import menuService from './menu.service';
 import Welcome from './components/Welcome.vue';
 import ContentSplitView from './components/ContentSplitView.vue';
+import { merge } from 'rxjs';
 
 const isShowWelcome = ref(true);
-menuService.openNote$.subscribe((e) => {
-  console.log(32344, e);
+
+merge(menuService.openNote$).subscribe(() => {
   isShowWelcome.value = false;
 });
 
@@ -47,9 +55,9 @@ const splitterModel = ref(LEFT_WITH_PERCENT);
 
 const toggleIcon = computed(() => {
   if (splitterModel.value) {
-    return 'menu_open';
+    return 'arrow_circle_left';
   }
-  return 'menu';
+  return 'arrow_circle_right';
 });
 
 function handleLeftSplitter() {
