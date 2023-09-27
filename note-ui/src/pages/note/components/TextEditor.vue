@@ -45,13 +45,19 @@ const isInited = ref(false);
 const editorRef = ref();
 
 onActivated(() => {
-  resetScrollTop();
+  setScrollTop();
   setTimeout(() => {
     isInited.value = true;
   }, 700);
 });
 onDeactivated(() => {
   isInited.value = false;
+});
+
+watch(isInited, (v: boolean) => {
+  if (v) {
+    editorRef.value.focus();
+  }
 });
 
 watch(
@@ -64,13 +70,13 @@ watch(
   },
 );
 
-watch(isInited, (v: boolean) => {
-  if (v) {
-    editorRef.value.focus();
-  }
-});
 async function getDetail() {
   if (!props.noteId) {
+    detail.value = {
+      title: '',
+      content: '',
+      spaceId: null,
+    };
     return;
   }
   try {
@@ -78,6 +84,7 @@ async function getDetail() {
     scrollTop.value = 0;
     const res = await noteApi.get(props.noteId);
     detail.value = res;
+    setScrollTop();
   } catch (error) {
     console.error(error);
   } finally {
@@ -89,12 +96,12 @@ function handleScroll(info: any) {
   scrollTop.value = info.verticalPosition;
 }
 
-function resetScrollTop() {
+function setScrollTop() {
   scrollViewRef.value?.setScrollPosition('vertical', scrollTop.value, 0);
 }
 
 function handleInitEditor() {
-  resetScrollTop();
+  setScrollTop();
   isInited.value = true;
 }
 

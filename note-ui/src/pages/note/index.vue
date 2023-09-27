@@ -16,7 +16,7 @@
     </template>
 
     <template v-slot:separator>
-      <div class="flex flex-col">
+      <div class="flex flex-col -mt-20">
         <q-btn
           dense
           round
@@ -30,7 +30,7 @@
     <template #after>
       <div class="h-full">
         <Welcome v-if="isShowWelcome" />
-        <content-split-view v-show="!isShowWelcome" />
+        <content-split-view @content-null="handleContentNull" v-else />
       </div>
     </template>
   </q-splitter>
@@ -38,15 +38,15 @@
 
 <script setup lang="ts">
 import MenuTree from './components/MenuTree.vue';
-import menuService from './menu.service';
+import menuService, { NoteSubject } from './menu.service';
 import Welcome from './components/Welcome.vue';
 import ContentSplitView from './components/ContentSplitView.vue';
 import { merge } from 'rxjs';
 
 const isShowWelcome = ref(true);
 
-merge(menuService.openNote$).subscribe(() => {
-  isShowWelcome.value = false;
+merge(menuService.openNote$).subscribe((res: NoteSubject) => {
+  res && (isShowWelcome.value = false);
 });
 
 const LEFT_WITH_PERCENT = 20;
@@ -70,5 +70,9 @@ function noticeCreateSpace() {
 
 function noticeCreateNote() {
   menuService.notifyCreateNote();
+}
+
+function handleContentNull() {
+  isShowWelcome.value = true;
 }
 </script>

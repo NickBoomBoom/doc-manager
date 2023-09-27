@@ -31,18 +31,37 @@
   </div>
 </template>
 <script setup lang="ts">
-import menuService from '../menu.service';
+import menuService, { NoteSubject, SecondNoteSubject } from '../menu.service';
 import { MenuItem } from 'interfaces/menu.interface';
 import TextEditor from './TextEditor.vue';
+const emits = defineEmits<{
+  (event: 'contentNull'): void;
+}>();
 const splitterModel = ref(100);
 const beforeNoteId = ref();
 const afterNoteId = ref();
 
-menuService.openNote$.subscribe((res: MenuItem) => {
-  getDetail(res, 'before');
+menuService.deleteNote$.subscribe((res: MenuItem) => {
+  const { targetId } = res;
+  if (beforeNoteId.value === targetId) {
+    beforeNoteId.value = undefined;
+    if (!afterNoteId.value) {
+      emits('contentNull');
+    }
+  }
+  if (afterNoteId.value === targetId) {
+    closeSecondView();
+  }
 });
 
-menuService.openSecondNote$.subscribe((res: MenuItem) => {
+menuService.openNote$.subscribe((res: NoteSubject) => {
+  res && getDetail(res, 'before');
+});
+
+menuService.openSecondNote$.subscribe((res: SecondNoteSubject) => {
+  if (!res) {
+    return;
+  }
   if (res.targetId === beforeNoteId.value) {
     return;
   }
@@ -67,7 +86,7 @@ async function getDetail(item: MenuItem, type: 'before' | 'after') {
 }
 
 function closeSecondView() {
-  afterNoteId.value = null;
+  afterNoteId.value = undefined;
   splitterModel.value = 100;
 }
 </script>

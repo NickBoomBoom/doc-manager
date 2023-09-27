@@ -1,83 +1,53 @@
 <template>
   <template v-if="node.extra.isSpace">
-    <q-menu v-if="isContext" touch-position context-menu :offset="[0, 4]">
-      <q-list dense>
-        <q-item
-          clickable
-          v-close-popup
-          v-for="item in categoryBtns"
-          :key="item.title"
-          @click="item.handler(node)"
-          class="flex items-center"
-        >
-          <q-icon :name="item.icon" size="sm" class="mr-1" />
-          {{ item.title }}
-        </q-item>
-      </q-list>
-    </q-menu>
     <q-btn
-      v-else
       flat
       dense
       @click.stop
       icon="more_horiz"
       class="text-gray-300 hover:text-black"
     >
-      <q-menu anchor="bottom right" self="top right" :offset="[0, 4]">
-        <q-list dense>
-          <q-item
-            clickable
+      <q-menu anchor="bottom right" self="top right" auto-close>
+        <q-btn-group>
+          <q-btn
             v-close-popup
+            dense
             v-for="item in categoryBtns"
             :key="item.title"
             @click="item.handler(node)"
-            class="flex items-center"
+            :icon="item.icon"
           >
-            <q-icon :name="item.icon" size="sm" class="mr-1" />
-            {{ item.title }}
-          </q-item>
-        </q-list>
+            <q-tooltip>
+              {{ item.title }}
+            </q-tooltip>
+          </q-btn>
+        </q-btn-group>
       </q-menu>
     </q-btn>
   </template>
   <template v-if="node.extra.isNote">
-    <q-menu v-if="isContext" touch-position context-menu :offset="[0, 4]">
-      <q-list dense>
-        <q-item
-          clickable
-          v-close-popup
-          v-for="item in noteBtns"
-          :key="item.title"
-          @click="item.handler(node)"
-          class="flex items-center"
-        >
-          <q-icon :name="item.icon" size="sm" class="mr-1" />
-          {{ item.title }}
-        </q-item>
-      </q-list>
-    </q-menu>
     <q-btn
-      v-else
       flat
       dense
       @click.stop
       icon="more_horiz"
       class="text-gray-300 hover:text-black"
     >
-      <q-menu anchor="bottom right" self="top right" :offset="[0, 4]">
-        <q-list dense>
-          <q-item
-            clickable
+      <q-menu anchor="bottom right" self="top right" auto-close>
+        <q-btn-group>
+          <q-btn
             v-close-popup
+            dense
             v-for="item in noteBtns"
             :key="item.title"
             @click="item.handler(node)"
-            class="flex items-center"
+            :icon="item.icon"
           >
-            <q-icon :name="item.icon" size="sm" class="mr-1" />
-            {{ item.title }}
-          </q-item>
-        </q-list>
+            <q-tooltip>
+              {{ item.title }}
+            </q-tooltip>
+          </q-btn>
+        </q-btn-group>
       </q-menu>
     </q-btn>
   </template>
@@ -87,29 +57,25 @@ import menuService, { TreeNode } from '../menu.service';
 
 const props = defineProps<{
   node: TreeNode;
-  type: 'context' | 'btn';
 }>();
 
 const node = computed(() => props.node);
 
-const isContext = computed(() => {
-  return props.type === 'context';
-});
 const categoryBtns = [
-  {
-    title: '打包下载',
-    icon: 'browser_updated',
-    handler: handleDownloadBySpace,
-  },
+  // {
+  //   title: '打包下载',
+  //   icon: 'browser_updated',
+  //   handler: handleDownloadBySpace,
+  // },
 
   {
-    title: '添加空间',
+    title: '新增空间',
     icon: 'create_new_folder',
     handler: (e: TreeNode) => menuService.createSpace(e),
   },
   {
-    title: '修改空间',
-    icon: 'title',
+    title: '编辑空间',
+    icon: 'mode_edit',
     handler: (e: TreeNode) => menuService.updateSpace(e),
   },
   {
@@ -125,20 +91,20 @@ const categoryBtns = [
 ];
 
 const noteBtns = [
+  // {
+  //   title: '分享',
+  //   icon: 'share',
+  //   handler: handleDownloadBySpace,
+  // },
+  // {
+  //   title: '下载',
+  //   icon: 'sim_card_download',
+  //   handler: handleDownloadBySpace,
+  // },
   {
-    title: '分享',
-    icon: 'share',
-    handler: handleDownloadBySpace,
-  },
-  {
-    title: '下载笔记',
-    icon: 'sim_card_download',
-    handler: handleDownloadBySpace,
-  },
-  {
-    title: '删除笔记',
+    title: '删除',
     icon: 'delete',
-    handler: handleDownloadBySpace,
+    handler: (e: TreeNode) => menuService.deleteNote(e),
   },
 ];
 

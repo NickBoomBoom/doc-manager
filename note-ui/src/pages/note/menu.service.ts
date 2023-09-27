@@ -17,11 +17,22 @@ export interface OpenSpace {
   node: TreeNode;
   state: boolean;
 }
+
+export type SpaceSubject = OpenSpace | null;
+export type NoteSubject = MenuItem | null;
+export type SecondNoteSubject = MenuItem | null;
+
 class Menu {
   menus$: BehaviorSubject<TreeNode[]> = new BehaviorSubject<TreeNode[]>([]);
-  openSpace$: Subject<OpenSpace> = new Subject();
-  openNote$: Subject<MenuItem> = new Subject();
-  openSecondNote$: Subject<MenuItem> = new Subject();
+  openSpace$: BehaviorSubject<SpaceSubject> = new BehaviorSubject<SpaceSubject>(
+    null,
+  );
+  openNote$: BehaviorSubject<NoteSubject> = new BehaviorSubject<NoteSubject>(
+    null,
+  );
+  openSecondNote$: BehaviorSubject<SecondNoteSubject> =
+    new BehaviorSubject<SecondNoteSubject>(null);
+  deleteNote$: Subject<MenuItem> = new Subject();
   // 同时只能做一件事
   insertTreeNode: TreeNode | undefined;
 
@@ -222,7 +233,7 @@ class Menu {
       extra: { targetId },
     } = treeNode;
     Dialog.create({
-      title: '修改名称',
+      title: '编辑空间',
       prompt: {
         model: oldValue,
         type: 'text',
@@ -267,6 +278,29 @@ class Menu {
         } = treeNode;
         await spaceApi.delete(targetId);
         this.remove(index);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        loadingDialog.hide();
+      }
+    });
+  }
+  async deleteNote(treeNode: TreeNode) {
+    Dialog.create({
+      title: '确定删除该笔记?',
+      cancel: true,
+    }).onOk(async () => {
+      const loadingDialog = Dialog.create({
+        title: '正在删除中...',
+        progress: true,
+        ok: false,
+      });
+      try {
+        const { index, extra } = treeNode;
+        const { targetId } = extra;
+        await noteApi.delete(targetId);
+        this.remove(index);
+        this.deleteNote$.next(extra);
       } catch (error) {
         console.error(error);
       } finally {

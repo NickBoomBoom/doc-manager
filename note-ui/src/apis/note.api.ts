@@ -11,4 +11,7 @@ export const noteApi = {
   add: (data: Note) => {
     return http.post('/note', data);
   },
+  delete: (id: number) => {
+    return http.delete(`/note/${id}`);
+  },
 };

@@ -50,11 +50,9 @@
               >
                 {{ node.label }}
               </span>
-
-              <menu-tree-btns :node="node" type="context" />
             </div>
 
-            <menu-tree-btns :node="node" type="btn" />
+            <menu-tree-btns :node="node" />
           </div>
         </template>
       </q-tree>
@@ -69,7 +67,11 @@
 <script setup lang="ts">
 import { MenuItem } from 'interfaces/menu.interface';
 import { cloneDeep } from 'lodash-es';
-import menuService, { OpenSpace, TreeNode } from '../menu.service';
+import menuService, {
+  NoteSubject,
+  SpaceSubject,
+  TreeNode,
+} from '../menu.service';
 import MenuTreeBtns from './MenuTreeBtns.vue';
 const treeRef = ref();
 const loading = ref(false);
@@ -99,17 +101,18 @@ onMounted(() => {
 async function init() {
   menuService.menus$.subscribe((res) => {
     menus.value = cloneDeep(res);
-    console.log(3444, menus.value);
   });
 
-  menuService.openNote$.subscribe((res: MenuItem) => {
-    selected.value = res.menuId;
+  menuService.openNote$.subscribe((res: NoteSubject) => {
+    res && (selected.value = res.menuId);
   });
 
-  menuService.openSpace$.subscribe((res: OpenSpace) => {
-    setTimeout(() => {
-      treeRef.value.setExpanded(res.node.id, true);
-    });
+  menuService.openSpace$.subscribe((res: SpaceSubject) => {
+    if (res) {
+      setTimeout(() => {
+        treeRef.value.setExpanded(res.node.id, true);
+      });
+    }
   });
 
   loading.value = true;

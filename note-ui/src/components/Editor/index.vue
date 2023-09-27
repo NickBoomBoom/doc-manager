@@ -18,6 +18,20 @@ const emits = defineEmits<{
   (event: 'save', content: string): void;
 }>();
 const content = ref(props.modelValue);
+const isInitSuccess = ref(false);
+
+onMounted(() => {
+  init();
+});
+
+onActivated(() => {
+  init();
+});
+
+onDeactivated(() => {
+  editorInstance.remove();
+  isInitSuccess.value = false;
+});
 watch(content, (v) => {
   emits('update:modelValue', v);
 });
@@ -27,10 +41,16 @@ watch(
   (v: string) => {
     if (v !== content.value) {
       content.value = v;
-      editorInstance.setContent(v);
+      if (isInitSuccess.value) {
+        editorInstance.setContent(v);
+      }
     }
   },
 );
+
+watch(isInitSuccess, (v: boolean) => {
+  v && editorInstance.setContent(content.value);
+});
 
 const editorId = ref(`editor-${Date.now()}`);
 let editorInstance: Editor;
@@ -186,23 +206,10 @@ const PLUGIN_TOOLBAR_CONFIG: {
   },
 };
 
-onMounted(() => {
-  init();
-});
-
-onActivated(() => {
-  init();
-});
-
-onDeactivated(() => {
-  editorInstance.remove();
-});
-
 const { plugins, pluginsConfig } = initPluginToolbar();
 function init() {
-  const selector: HTMLElement = document.querySelector(`#${editorId.value}`)!;
-  const parent: any = selector!.parentNode;
-  const { height: parentHeight } = parent.getBoundingClientRect();
+  // const selector: HTMLElement = document.querySelector(`#${editorId.value}`)!;
+
   window.tinymce.init({
     // 基础配置
     selector: `#${editorId.value}`,
@@ -212,8 +219,9 @@ function init() {
     automatic_uploads: true, // 图片自动上传
     resize: false,
     font_size_input_default_unit: 'px',
-    min_height: parentHeight,
+    min_height: 800,
     init_instance_callback: (e: Editor) => {
+      isInitSuccess.value = true;
       setTimeout(() => {
         emits('init');
       }, 400);
