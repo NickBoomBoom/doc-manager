@@ -129,7 +129,7 @@ const PLUGIN_TOOLBAR_CONFIG: {
     props: {
       // image_caption: true,
       file_picker_types: 'image',
-      images_upload_url: 'http://127.0.0.1:4399/upload',
+      images_upload_url: '/api/upload',
     },
     toolbar: 'image',
   },

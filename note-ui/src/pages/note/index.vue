@@ -17,13 +17,13 @@
 
     <template v-slot:separator>
       <div class="flex flex-col -mt-20">
-        <q-btn
-          dense
-          round
-          :icon="toggleIcon"
-          class="bg-white"
+        <q-icon
+          size="md"
+          class="cursor-pointer"
           @click="handleLeftSplitter"
-        />
+          :name="toggleIcon"
+        >
+        </q-icon>
       </div>
     </template>
 
