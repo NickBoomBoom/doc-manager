@@ -23,4 +23,12 @@ export default {
       expiresIn: '7d',
     },
   },
+
+  MINIO_CONFIG: {
+    endPoint: '172.17.0.2',
+    port: 9000,
+    accessKey: '1PXGcdUzNo8UxCg3LlSq',
+    secretKey: 'CsZ8ZAqbP1aPJKZId603P9yUTj1k3DWtj3FVsDaL',
+    bucket: 'note',
+  },
 };

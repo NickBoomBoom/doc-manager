@@ -21,7 +21,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         : HttpStatus.OK;
 
     const message = exception?.message || 'Internal Server Error';
-
+    console.log(exception);
+    console.log(5555, status);
     response.status(status).json({
       code: 600, // 先用600 占个位
       message: message,
