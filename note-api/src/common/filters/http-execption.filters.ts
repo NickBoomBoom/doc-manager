@@ -20,7 +20,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.OK;
 
-    const message = exception?.message || 'Internal Server Error';
+    const message =
+      exception?.message || exception?.toString() || 'Internal Server Error';
     console.log(exception);
     console.log(5555, status);
     response.status(status).json({
