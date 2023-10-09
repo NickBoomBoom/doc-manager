@@ -260,6 +260,7 @@ function init() {
         'input',
         debounce((e: any) => {
           content.value = editorInstance.getContent();
+
           emits('save', content.value);
         }, 500),
       );

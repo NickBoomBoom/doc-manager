@@ -16,7 +16,6 @@ import { LinkCheckModule } from './modules/link-check/link-check.module';
 @Module({
   imports: [
     UploadModule,
-
     TypeOrmModule.forRoot(env.DATABASE_CONFIG),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     MenuModule,

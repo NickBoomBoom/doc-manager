@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 // 直接返回结果
-const NO_TRANSFORM_URL = ['POST:/upload'];
+const NO_TRANSFORM_URL = [];
 @Injectable()
 export class TransformInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {

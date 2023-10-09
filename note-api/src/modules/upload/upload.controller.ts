@@ -4,6 +4,7 @@ import {
   UseInterceptors,
   UploadedFile,
   Get,
+  Request,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Public } from 'src/common/decorator/public.decorator';
@@ -12,24 +13,28 @@ import { env } from '../../common/config';
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
-  @Public()
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: any) {
-    console.log(1111, file);
+  async uploadFile(
+    @UploadedFile() file: any,
+    @Request() request,
+  ): Promise<any> {
+    const {
+      user: { id: userId },
+    } = request;
+
     const metaData = {
       'Content-Type': file.mimetype,
     };
-    await this.uploadService.uploadFile(
+    return await this.uploadService.uploadFile(
       env.MINIO_CONFIG.bucket,
       file.originalname,
       file.buffer,
       metaData,
+      userId,
     );
-    return 'File uploaded successfully';
   }
 
-  @Public()
   @Get()
   async get() {
     return await this.uploadService.bucket();
