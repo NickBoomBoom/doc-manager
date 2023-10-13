@@ -183,6 +183,7 @@ export class MenuService {
       data: null,
     };
 
+    console.log(55555, isNote, curId);
     if (isSpace) {
       res.children = [];
       const data = await this.spaceService.findOne(userId, targetId);
@@ -235,6 +236,8 @@ export class MenuService {
     // 配置初始层
     const rows = await this._getRows(userId, belongId);
     res.push(...rows);
+
+    console.log(3333, rows);
 
     let target = rows;
     for (let i = 0; i < level - 1; i++) {

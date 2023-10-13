@@ -4,6 +4,7 @@
       class="h-full"
       :modelValue="splitterModel"
       after-class="!overflow-unset"
+      :limits="[40, 60]"
       :separator-class="{
         invisible: !afterNoteId,
       }"

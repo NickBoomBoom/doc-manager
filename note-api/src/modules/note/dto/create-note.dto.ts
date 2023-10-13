@@ -9,7 +9,7 @@ export class CreateNoteDTO extends BaseDTO {
   @ApiProperty({
     description: '内容',
   })
-  content: string;
+  content: object;
 
   @ApiProperty({
     description: '标签',

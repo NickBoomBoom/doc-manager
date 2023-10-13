@@ -7,8 +7,8 @@ export abstract class Note extends Base {
   @Column()
   title: string;
 
-  @Column('text')
-  content: string;
+  @Column('json')
+  content: object;
 
   @Column({
     default: false,

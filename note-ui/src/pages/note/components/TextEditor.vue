@@ -1,10 +1,10 @@
 <template>
-  <q-scroll-area
-    ref="scrollViewRef"
-    :class="[isInited ? '' : 'op-0']"
-    class="h-full px-5 transition-opacity"
-    @scroll="handleScroll"
-  >
+  <q-inner-loading :showing="loading">
+    <q-spinner-cube size="xl" color="primary" :thickness="20" />
+    <div class="mt-2 text-primary">每天一记,勤劳又聪明...</div>
+  </q-inner-loading>
+
+  <q-scroll-area v-if="!loading" class="h-full px-3">
     <q-input
       input-class="text-2xl font-bold"
       v-model="detail.title"
@@ -12,53 +12,40 @@
       placeholder="标题"
       @update:model-value="handleTitleChange"
     />
-    <editor
-      v-model="detail.content"
-      class="h-full"
+    <block-json-editor
       ref="editorRef"
-      @init="handleInitEditor"
-      @save="handleSave"
+      v-model="detail.content"
+      :config="editorConfig"
     />
   </q-scroll-area>
-
-  <q-inner-loading :showing="loading">
-    <q-spinner-cube size="xl" color="primary" :thickness="20" />
-    <div class="mt-2 text-primary">每天一记,勤劳又聪明...</div>
-  </q-inner-loading>
 </template>
 
 <script setup lang="ts">
 import { Note } from 'interfaces/note.interface';
 import menuService from '../menu.service';
+import BlockJsonEditor from 'block-json-editor';
+import _ from 'lodash-es';
 const props = defineProps<{
   noteId?: number;
 }>();
-const loading = ref(false);
+const loading = ref(true);
 const detail = ref<Note>({
   title: '',
-  content: '',
+  content: {},
   spaceId: null,
 });
-const scrollTop = ref(0);
-const scrollViewRef = ref();
-const isInited = ref(false);
 const editorRef = ref();
-
-onActivated(() => {
-  setScrollTop();
-  setTimeout(() => {
-    isInited.value = true;
-  }, 700);
-});
-onDeactivated(() => {
-  isInited.value = false;
-});
-
-watch(isInited, (v: boolean) => {
-  if (v) {
-    editorRef.value.focus();
-  }
-});
+const editorConfig = {
+  media: {
+    config: {},
+  },
+};
+watch(
+  () => detail.value.content,
+  _.debounce(() => {
+    handleSave();
+  }),
+);
 
 watch(
   () => props.noteId,
@@ -74,35 +61,20 @@ async function getDetail() {
   if (!props.noteId) {
     detail.value = {
       title: '',
-      content: '',
+      content: {},
       spaceId: null,
     };
     return;
   }
   try {
     loading.value = true;
-    scrollTop.value = 0;
     const res = await noteApi.get(props.noteId);
     detail.value = res;
-    setScrollTop();
   } catch (error) {
     console.error(error);
   } finally {
     loading.value = false;
   }
-}
-
-function handleScroll(info: any) {
-  scrollTop.value = info.verticalPosition;
-}
-
-function setScrollTop() {
-  scrollViewRef.value?.setScrollPosition('vertical', scrollTop.value, 0);
-}
-
-function handleInitEditor() {
-  setScrollTop();
-  isInited.value = true;
 }
 
 function handleTitleChange() {
