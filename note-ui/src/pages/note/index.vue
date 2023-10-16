@@ -2,7 +2,7 @@
   <q-splitter class="h-full" v-model="splitterModel" :limits="[0, 50]">
     <template #before>
       <div class="h-full overflow-hidden flex flex-col">
-        <header>header</header>
+        <!-- <header>header</header> -->
         <main class="relative h-full flex-1">
           <menu-tree />
         </main>
@@ -10,7 +10,7 @@
           <q-btn dense class="mb-2" @click="noticeCreateSpace">
             新建空间
           </q-btn>
-          <q-btn dense @click="noticeCreateNote"> 新建笔记 </q-btn>
+          <q-btn dense @click="noticeCreateNote"> 新建文档 </q-btn>
         </footer>
       </div>
     </template>

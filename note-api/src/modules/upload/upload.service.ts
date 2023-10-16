@@ -18,29 +18,26 @@ export class UploadService {
 
   async uploadFile(
     bucketName: string,
-    objectName: string,
-    data: Buffer,
-    metaData: any,
+    file: any,
     userId: number,
   ): Promise<any> {
+    const { size, originalname, buffer, mimetype } = file;
     const fileUrl = `${userId}/${moment().format(
       'YYYY-MM-DD/HH:mm',
-    )}/${objectName}`;
-    await this.minioClient.putObject(bucketName, fileUrl, data, metaData);
-
-    return await this.minioClient.getObject(bucketName, fileUrl);
-    const policy = 'http:';
+    )}/${originalname}`;
+    await this.minioClient.putObject(bucketName, fileUrl, buffer, {
+      mimetype,
+    });
     //  http://localhost:9001/note/1/2023-10-07/16:32/startButton.png
-    return (
-      policy +
-      env.MINIO_CONFIG.endPoint +
-      ':' +
-      env.MINIO_CONFIG.port +
-      '/' +
-      bucketName +
-      '/' +
-      fileUrl
-    );
+    const url = `http://${env.MINIO_CONFIG.endPoint}:${env.MINIO_CONFIG.port}/${bucketName}/${fileUrl}`;
+    const names = originalname.split('.');
+    const extension = names[names.length - 1];
+    return {
+      title: originalname,
+      size: size,
+      url,
+      extension,
+    };
   }
 
   async bucket() {

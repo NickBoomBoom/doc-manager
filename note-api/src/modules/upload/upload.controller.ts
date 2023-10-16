@@ -22,15 +22,9 @@ export class UploadController {
     const {
       user: { id: userId },
     } = request;
-
-    const metaData = {
-      'Content-Type': file.mimetype,
-    };
     return await this.uploadService.uploadFile(
       env.MINIO_CONFIG.bucket,
-      file.originalname,
-      file.buffer,
-      metaData,
+      file,
       userId,
     );
   }

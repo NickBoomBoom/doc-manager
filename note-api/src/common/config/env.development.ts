@@ -27,8 +27,8 @@ export default {
   MINIO_CONFIG: {
     endPoint: 'localhost',
     port: 9001,
-    accessKey: '104quVtuTiE7TiwZ0GwL',
-    secretKey: 'XZO9W2Vy7lDHkwsrzEHgkZng6lugb6sJDSGu3VgX',
+    accessKey: 'faV8ouYbz6OoogQ8x2Km',
+    secretKey: 'tlXkv2Kb0xg8DtmmKagzo1d0X3ioZo8hPi6sBVV1',
     bucket: 'note',
   },
 };

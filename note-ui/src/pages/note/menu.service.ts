@@ -183,8 +183,12 @@ class Menu {
   async notifyCreateNote(treeNode?: TreeNode) {
     this.insertTreeNode = treeNode;
     const body: Note = {
-      title: '新笔记',
-      content: {},
+      title: '新文档',
+      content: {
+        time: Date.now(),
+        blocks: [],
+        version: '2.28.0',
+      },
       spaceId: treeNode?.extra.targetId || null,
     };
     const res: MenuItem = await noteApi.add(body);
@@ -287,7 +291,7 @@ class Menu {
   }
   async deleteNote(treeNode: TreeNode) {
     Dialog.create({
-      title: '确定删除该笔记?',
+      title: '确定删除该文档?',
       cancel: true,
     }).onOk(async () => {
       const loadingDialog = Dialog.create({

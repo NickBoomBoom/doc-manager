@@ -5,13 +5,25 @@
   </q-inner-loading>
 
   <q-scroll-area v-if="!loading" class="h-full px-3">
-    <q-input
-      input-class="text-2xl font-bold"
-      v-model="detail.title"
-      :debounce="500"
-      placeholder="标题"
-      @update:model-value="handleTitleChange"
-    />
+    <div class="flex items-end py-2">
+      <q-input
+        input-class="text-2xl font-bold"
+        v-model="detail.title"
+        class="flex-1"
+        dense
+        :debounce="500"
+        placeholder="标题"
+        @update:model-value="handleTitleChange"
+      />
+
+      <span
+        :class="[saveLoading ? 'visible' : 'invisible']"
+        class="ml-6 text-sm text-gray"
+      >
+        保存中
+        <q-spinner-dots />
+      </span>
+    </div>
     <block-json-editor
       ref="editorRef"
       v-model="detail.content"
@@ -25,27 +37,74 @@ import { Note } from 'interfaces/note.interface';
 import menuService from '../menu.service';
 import BlockJsonEditor from 'block-json-editor';
 import _ from 'lodash-es';
+function checkContent(
+  v: Note = {
+    title: '',
+    content: {},
+    spaceId: null,
+  },
+): Note {
+  return _.cloneDeep(v);
+}
 const props = defineProps<{
-  noteId?: number;
+  noteId: number;
 }>();
 const loading = ref(true);
-const detail = ref<Note>({
-  title: '',
-  content: {},
-  spaceId: null,
-});
+const saveLoading = ref(false);
+const detail = ref<Note>(checkContent());
 const editorRef = ref();
 const editorConfig = {
-  media: {
-    config: {},
+  tools: {
+    media: {
+      config: {
+        uploader: {
+          async uploadByFile(file: any) {
+            const fileData = new FormData();
+            fileData.append('file', file);
+            const { url } = await uploadApi.upload(fileData);
+            return {
+              success: 1,
+              file: {
+                url,
+              },
+            };
+          },
+          async uploadByUrl(url: string) {
+            return {
+              success: 1,
+              file: {
+                url,
+              },
+            };
+          },
+        },
+      },
+    },
+    attaches: {
+      config: {
+        uploader: {
+          /**
+           * Upload file to the server and return an uploaded image data
+           * @param {File} file - file selected from the device or pasted by drag-n-drop
+           * @return {Promise.<{success, file: {url}}>}
+           */
+          async uploadByFile(file: any) {
+            console.log(111, file);
+            const fileData = new FormData();
+            fileData.append('file', file);
+            const res = await uploadApi.upload(fileData);
+            return {
+              success: 1,
+              file: res,
+            };
+          },
+        },
+      },
+    },
   },
 };
-watch(
-  () => detail.value.content,
-  _.debounce(() => {
-    handleSave();
-  }),
-);
+
+let unwatch = () => {};
 
 watch(
   () => props.noteId,
@@ -58,18 +117,18 @@ watch(
 );
 
 async function getDetail() {
-  if (!props.noteId) {
-    detail.value = {
-      title: '',
-      content: {},
-      spaceId: null,
-    };
-    return;
-  }
   try {
+    unwatch();
     loading.value = true;
     const res = await noteApi.get(props.noteId);
-    detail.value = res;
+    detail.value = checkContent(res);
+    unwatch = watch(
+      () => detail.value.content,
+      _.debounce((v, ov) => {
+        console.log(v, ov);
+        handleSave();
+      }),
+    );
   } catch (error) {
     console.error(error);
   } finally {
@@ -79,13 +138,30 @@ async function getDetail() {
 
 function handleTitleChange() {
   if (!detail.value.title) {
-    detail.value.title = '新笔记';
+    detail.value.title = '新文档';
   }
   menuService.updateNote(detail.value);
   handleSave();
 }
 
 async function handleSave() {
-  noteApi.update(detail.value.id as number, detail.value);
+  const now = Date.now();
+  try {
+    saveLoading.value = true;
+    noteApi.update(detail.value.id as number, detail.value);
+    menuService.updateNote(detail.value);
+  } catch (error) {
+    console.error(error);
+  } finally {
+    const ms = 1000;
+    const end = Date.now();
+    let time = end - now;
+    if (time > ms) {
+      time = 0;
+    }
+    setTimeout(() => {
+      saveLoading.value = false;
+    }, time);
+  }
 }
 </script>

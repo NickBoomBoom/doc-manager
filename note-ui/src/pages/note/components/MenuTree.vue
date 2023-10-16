@@ -3,26 +3,27 @@
     <div class="flex items-center">
       <q-input
         ref="filterRef"
-        dense
         dark
+        dense
         v-model="filter"
         label="搜索"
-        class="bg-grey-3 flex-1 text-black"
-        standout="bg-white text-black"
+        class="bg-grey-3 flex-1 m-1"
+        standout="bg-white text-black hover:bg-white "
         label-color="black"
+        input-class=" text-black"
       >
         <template #append>
           <q-icon
             v-if="!!filter"
             name="clear"
-            class="cursor-pointer"
+            class="cursor-pointer text-black"
             @click="resetFilter"
           />
         </template>
       </q-input>
     </div>
 
-    <q-scroll-area class="flex-1">
+    <q-scroll-area class="flex-1" content-style="left:0;right:0">
       <q-tree
         ref="treeRef"
         :nodes="menus"
@@ -33,9 +34,9 @@
         no-connectors
       >
         <template #default-header="{ node }">
-          <div class="flex justify-between items-center w-full">
+          <div class="flex items-center w-full">
             <div
-              class="flex-1 pr-6 flex items-center"
+              class="flex-1 flex items-center overflow-hidden"
               :class="{
                 'text-blue': node.extra.menuId === selected,
                 'cursor-pointer': node.extra.isNote,
@@ -47,12 +48,18 @@
                 :class="{
                   'text-gray': !node.children?.length && node.extra.isSpace,
                 }"
+                class="text-truncate"
               >
                 {{ node.label }}
+                <q-tooltip anchor="center right" self="center left">
+                  {{ node.label }}
+                </q-tooltip>
               </span>
             </div>
 
-            <menu-tree-btns :node="node" />
+            <div class="ml-4">
+              <menu-tree-btns :node="node" />
+            </div>
           </div>
         </template>
       </q-tree>

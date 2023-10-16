@@ -56,7 +56,7 @@ const nickname = computed(() => {
 const navList = reactive([
   {
     icon: 'note_alt',
-    tip: '笔记',
+    tip: '文档',
     routerName: 'Note',
   },
   {

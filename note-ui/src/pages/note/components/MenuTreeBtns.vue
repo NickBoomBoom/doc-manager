@@ -79,7 +79,7 @@ const categoryBtns = [
     handler: (e: TreeNode) => menuService.updateSpace(e),
   },
   {
-    title: '添加笔记',
+    title: '添加文档',
     icon: 'post_add',
     handler: (e: TreeNode) => menuService.notifyCreateNote(e),
   },
