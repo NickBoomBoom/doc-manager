@@ -16,7 +16,6 @@ export interface MenuItem {
       }
     | {
         title: string;
-        tags: string;
         isLocked: boolean;
         spaceId: number;
         shareCode: string;

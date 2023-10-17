@@ -78,6 +78,6 @@ export class NoteController {
     const {
       user: { id },
     } = request;
-    return this.notesService.findTags(id);
+    // return this.notesService.findTags(id);
   }
 }

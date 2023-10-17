@@ -12,17 +12,21 @@ import { SpaceModule } from './modules/space/space.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { LinkCheckModule } from './modules/link-check/link-check.module';
+import { TagModule } from './modules/tag/tag.module';
+import { NoteTagModule } from './modules/note-tag/note-tag.module';
 
 @Module({
   imports: [
-    UploadModule,
     TypeOrmModule.forRoot(env.DATABASE_CONFIG),
     PassportModule.register({ defaultStrategy: 'jwt' }),
+    UploadModule,
     MenuModule,
     SpaceModule,
     NoteModule,
     UserModule,
     LinkCheckModule,
+    TagModule,
+    NoteTagModule,
   ],
   providers: [
     {

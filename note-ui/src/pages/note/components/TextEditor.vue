@@ -5,25 +5,29 @@
   </q-inner-loading>
 
   <q-scroll-area v-if="!loading" class="h-full px-3">
-    <div class="flex items-end py-2">
-      <q-input
-        input-class="text-2xl font-bold"
-        v-model="detail.title"
-        class="flex-1"
-        dense
-        :debounce="500"
-        placeholder="标题"
-        @update:model-value="handleTitleChange"
-      />
+    <div>
+      <div class="flex items-end py-2">
+        <q-input
+          input-class="text-2xl font-bold"
+          v-model="detail.title"
+          class="flex-1"
+          dense
+          :debounce="500"
+          placeholder="标题"
+          @update:model-value="handleTitleChange"
+        />
 
-      <span
-        :class="[saveLoading ? 'visible' : 'invisible']"
-        class="ml-6 text-sm text-gray"
-      >
-        保存中
-        <q-spinner-dots />
-      </span>
+        <span
+          :class="[saveLoading ? 'visible' : 'invisible']"
+          class="ml-6 text-sm text-gray"
+        >
+          保存中
+          <q-spinner-dots />
+        </span>
+      </div>
+      <tag-select :noteId="detail.id!" :note-tag-id="detail.noteTagId!" />
     </div>
+
     <block-json-editor
       ref="editorRef"
       v-model="detail.content"
@@ -33,15 +37,17 @@
 </template>
 
 <script setup lang="ts">
+import BlockJsonEditor from 'block-json-editor';
+import TagSelect from './TagSelect.vue';
 import { Note } from 'interfaces/note.interface';
 import menuService from '../menu.service';
-import BlockJsonEditor from 'block-json-editor';
 import _ from 'lodash-es';
 function checkContent(
   v: Note = {
     title: '',
     content: {},
     spaceId: null,
+    tags: [],
   },
 ): Note {
   return _.cloneDeep(v);
@@ -144,22 +150,26 @@ function handleTitleChange() {
   handleSave();
 }
 
+let timer: NodeJS.Timeout;
+
 async function handleSave() {
   const now = Date.now();
   try {
     saveLoading.value = true;
     noteApi.update(detail.value.id as number, detail.value);
-    menuService.updateNote(detail.value);
   } catch (error) {
     console.error(error);
   } finally {
+    clearTimeout(timer);
     const ms = 1000;
     const end = Date.now();
     let time = end - now;
     if (time > ms) {
       time = 0;
+    } else {
+      time = 2000 - time;
     }
-    setTimeout(() => {
+    timer = setTimeout(() => {
       saveLoading.value = false;
     }, time);
   }

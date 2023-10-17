@@ -85,6 +85,8 @@
     "setMapStoreSuffix": true,
     "storeToRefs": true,
     "noteApi": true,
-    "uploadApi": true
+    "uploadApi": true,
+    "tagApi": true,
+    "noteTagApi": true
   }
 }

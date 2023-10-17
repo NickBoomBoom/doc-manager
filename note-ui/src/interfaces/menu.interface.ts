@@ -6,9 +6,8 @@ export interface MenuMove {
 
 type MenuNote = {
   title: string;
-  tags: string;
   isLocked: boolean;
-  categoryId: number;
+  spaceId: number;
   shareCode: string;
 };
 

@@ -5,9 +5,9 @@ import { Repository } from 'typeorm';
 import { CreateNoteDTO } from './dto/create-note.dto';
 import { v4 as uuidV4 } from 'uuid';
 import { UpdateNoteDTO } from './dto/update-note.dto';
-import { TagsResponseDTO } from './dto/tag-response.dto';
 import { MenuService } from '../menu/menu.service';
 import { MenuItem } from '../menu/menu.interface';
+import { NoteTagService } from '../note-tag/note-tag.service';
 @Injectable()
 export class NoteService {
   constructor(
@@ -15,6 +15,7 @@ export class NoteService {
     public readonly notesRepository: Repository<Note>,
     @Inject(forwardRef(() => MenuService))
     private readonly menuService: MenuService,
+    private readonly noteTagRepository: NoteTagService,
   ) {}
 
   async create(
@@ -34,6 +35,15 @@ export class NoteService {
       res.id,
       createNoteDto.spaceId,
     );
+    const noteTag = await this.noteTagRepository.create({
+      noteId: res.id,
+      tagIds: '',
+      updateAt: new Date(),
+    });
+    await this.update(userId, res.id, {
+      ...res,
+      noteTagId: noteTag.id,
+    });
     return {
       isSpace: false,
       isNote: true,
@@ -41,7 +51,6 @@ export class NoteService {
       targetId: res.id,
       data: {
         title: res.title,
-        tags: res.tags,
         isLocked: res.isLocked,
         spaceId: res.spaceId,
         shareCode: res.shareCode,
@@ -55,7 +64,7 @@ export class NoteService {
         id: +noteId,
         userId,
       },
-      // relations: ['user', 'space'],
+      // relations: ['noteTag'],
     });
   }
 
@@ -79,28 +88,6 @@ export class NoteService {
 
     await this.notesRepository.update(noteId, updateNoteDto);
     return true;
-  }
-
-  async findTags(userId: number): Promise<TagsResponseDTO> {
-    const notes = await this.notesRepository.find({
-      where: {
-        userId,
-      },
-    });
-
-    const res: TagsResponseDTO = {};
-    notes.forEach((t) => {
-      const { tags } = t;
-      const arr = tags.split(',');
-      arr.forEach((tt) => {
-        if (res[tt]) {
-          res[tt].push(t);
-        } else {
-          res[tt] = [t];
-        }
-      });
-    });
-    return res;
   }
 
   async delete(userId: number, noteId: number) {

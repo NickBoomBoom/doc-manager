@@ -1,7 +1,17 @@
 import { Base } from 'src/common/entity/base.entity';
+import { NoteTag } from 'src/modules/note-tag/entities/note-tag.entity';
 import { Space } from 'src/modules/space/entities/space.entity';
+import { Tag } from 'src/modules/tag/entities/tag.entity';
 import { User } from 'src/modules/user/entities/user.entity';
-import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 @Entity({ name: 't_note' })
 export abstract class Note extends Base {
   @Column()
@@ -34,9 +44,9 @@ export abstract class Note extends Base {
   @Column({})
   spaceId: number;
 
-  @Column({
-    type: 'varchar',
-    default: '',
-  })
-  tags: string;
+  @OneToOne(() => NoteTag, (noteTag) => noteTag.tagIds)
+  noteTag: NoteTag;
+
+  @Column()
+  noteTagId: number;
 }
