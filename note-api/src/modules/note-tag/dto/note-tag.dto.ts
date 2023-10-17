@@ -12,4 +12,10 @@ export class NoteTagDTO extends BaseDTO {
     example: '1',
   })
   noteId: number;
+
+  @ApiProperty({
+    description: 'userId',
+    example: '1',
+  })
+  userId: number;
 }

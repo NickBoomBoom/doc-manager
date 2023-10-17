@@ -17,7 +17,10 @@ export abstract class Note extends Base {
   @Column()
   title: string;
 
-  @Column('json')
+  @Column({
+    type: 'json',
+    nullable: true,
+  })
   content: object;
 
   @Column({
@@ -47,6 +50,8 @@ export abstract class Note extends Base {
   @OneToOne(() => NoteTag, (noteTag) => noteTag.tagIds)
   noteTag: NoteTag;
 
-  @Column()
-  noteTagId: number;
+  @Column({
+    nullable: true,
+  })
+  noteTagId: number | null;
 }

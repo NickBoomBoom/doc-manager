@@ -39,7 +39,9 @@ export class NoteService {
       noteId: res.id,
       tagIds: '',
       updateAt: new Date(),
+      userId,
     });
+
     await this.update(userId, res.id, {
       ...res,
       noteTagId: noteTag.id,

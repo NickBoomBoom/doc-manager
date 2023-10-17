@@ -1,20 +1,99 @@
 <template>
-  <div>
-    <div v-for="item in list" :key="item.id">
-      {{ item.id }} - {{ item.name }}
-    </div>
-  </div>
+  <div ref="targetRef" class="h-full"></div>
 </template>
 <script setup lang="ts">
-import { Tag } from 'interfaces/tag.interface';
+import { NoteTagItem } from 'interfaces/note-tag.interface';
 
-const list = ref<Tag[]>([]);
+import * as echarts from 'echarts';
+const targetRef = ref();
+let instance: any;
 async function init() {
   try {
-    list.value = await tagApi.all();
+    instance = echarts.init(targetRef.value);
+    instance.showLoading();
+    const res = await noteTagApi.all();
+    const series: any[] = [];
+    const nodes: any[] = [];
+    const links: any[] = [];
+    const categories = [{ name: 'Tag' }, { name: 'Document' }];
+    res.forEach((t: NoteTagItem) => {
+      const { id, name, notes } = t;
+      nodes.push({
+        name: name,
+        value: id,
+        category: 'Tag',
+        symbolSize: 40,
+      });
+      notes.forEach((tt) => {
+        const noteName = `文章ID${tt}`;
+        if (!nodes.some((ttt) => ttt.name === noteName)) {
+          nodes.push({
+            name: noteName,
+            value: tt,
+            category: 'Document',
+            symbolSize: 30,
+          });
+        }
+        links.push({
+          source: name,
+          target: noteName,
+        });
+      });
+    });
+    series.push({
+      name: '关系图',
+      type: 'graph',
+      layout: 'force',
+      data: nodes,
+      links,
+      categories,
+      roam: true,
+      label: {
+        show: true,
+        position: 'right',
+        formatter: '{b}',
+      },
+      labelLayout: {
+        hideOverlap: true,
+      },
+      scaleLimit: {
+        min: 0.4,
+        max: 2,
+      },
+      lineStyle: {
+        color: 'source',
+        curveness: 0.3,
+      },
+      emphasis: {
+        focus: 'adjacency',
+        lineStyle: {
+          width: 10,
+        },
+      },
+      force: {
+        repulsion: 600, // 斥力因子，控制节点之间的距离
+        gravity: 0.1, // 节点受到的重力大小，值越大节点趋向于聚集在图表中心
+        edgeLength: 200, // 边的默认长度
+      },
+    });
+    const option = {
+      tooltip: {},
+      series,
+    };
+
+    instance.setOption(option);
+    instance.on('click', (params: any) => {
+      console.log(params);
+    });
   } catch (error) {
     console.error(error);
+  } finally {
+    instance?.hideLoading();
   }
+}
+
+function handelItem(...args) {
+  console.log(args);
 }
 onMounted(init);
 </script>

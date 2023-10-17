@@ -27,7 +27,7 @@
     </main>
     <footer class="pb-4">
       <q-btn dense icon="more_horiz">
-        <q-menu anchor="bottom right" self="bottom left">
+        <q-menu anchor="center right" self="center start" :offset="[10, 0]">
           <q-list dense>
             <q-item clickable @click="logout">
               <q-item-section> 退出登录 </q-item-section>

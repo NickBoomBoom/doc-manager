@@ -13,6 +13,9 @@
     :loading="saveLoading"
     @new-value="createNewValue"
   >
+    <template #prepend>
+      <q-icon name="bookmark" color="primary" />
+    </template>
     <template #selected-item="{ opt, removeAtIndex, index }">
       <q-chip
         dense
@@ -64,6 +67,7 @@ async function createNewValue(
   ) => void,
 ) {
   try {
+    val = val.trim();
     if (!val) {
       return;
     }
@@ -92,9 +96,5 @@ async function bind() {
     noteId: props.noteId,
     tagIds: model.value.map((t: any) => t.id).toString(),
   });
-}
-
-function handleEnter(e) {
-  console.log(3333, e);
 }
 </script>

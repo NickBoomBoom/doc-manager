@@ -12,4 +12,7 @@ export abstract class NoteTag extends Base {
 
   @Column()
   noteId: number;
+
+  @Column()
+  userId: number;
 }

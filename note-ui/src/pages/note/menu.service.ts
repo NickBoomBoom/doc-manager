@@ -184,7 +184,7 @@ class Menu {
     this.insertTreeNode = treeNode;
     const body: Note = {
       title: '新文档',
-      content: {},
+      content: null,
       spaceId: treeNode?.extra.targetId || null,
     };
     const res: MenuItem = await noteApi.add(body);

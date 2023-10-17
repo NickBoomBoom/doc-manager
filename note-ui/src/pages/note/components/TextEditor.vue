@@ -167,7 +167,7 @@ async function handleSave() {
     if (time > ms) {
       time = 0;
     } else {
-      time = 2000 - time;
+      time = ms - time;
     }
     timer = setTimeout(() => {
       saveLoading.value = false;
