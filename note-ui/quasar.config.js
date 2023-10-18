@@ -113,7 +113,7 @@ module.exports = configure(function (/* ctx */) {
             ],
             dts: './src/auto-imports.d.ts',
             eslintrc: {
-              enabled: true, // Default `false`
+              enabled: false, // Default `false`
               filepath: './.eslintrc-auto-import.json', // Default `./.eslintrc-auto-import.json`
               globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
             },

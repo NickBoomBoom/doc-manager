@@ -32,8 +32,7 @@ function handleError(message: string) {
   });
 }
 
-const { BASE_URL } = process.env;
-const request = axios.create({ baseURL: BASE_URL });
+const request = axios.create({ baseURL: process.env.BASE_URL });
 // 添加请求拦截器
 request.interceptors.request.use(
   async (config: RequestConfig) => {

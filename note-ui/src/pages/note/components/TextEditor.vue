@@ -38,6 +38,7 @@
 
 <script setup lang="ts">
 import BlockJsonEditor from 'block-json-editor';
+import 'block-json-editor/style.css'
 import TagSelect from './TagSelect.vue';
 import { Note } from 'interfaces/note.interface';
 import menuService from '../menu.service';
