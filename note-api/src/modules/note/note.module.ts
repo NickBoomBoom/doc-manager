@@ -1,10 +1,11 @@
 import { Module, forwardRef } from '@nestjs/common';
-import { Note } from './entities/note.entity';
-import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { NoteController } from './note.controller';
 import { NoteService } from './note.service';
 import { MenuModule } from '../menu/menu.module';
 import { NoteTagModule } from '../note-tag/note-tag.module';
+import { Note } from './entities/note.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [

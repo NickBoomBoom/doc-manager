@@ -1,18 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { env } from '../../common/config';
 import * as Minio from 'minio';
 import * as moment from 'moment';
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class UploadService {
   private readonly minioClient: Minio.Client;
 
-  constructor() {
+  constructor(private configService: ConfigService) {
     this.minioClient = new Minio.Client({
-      endPoint: env.MINIO_CONFIG.endPoint,
-      port: env.MINIO_CONFIG.port,
+      ...this.configService.get('minio'),
       useSSL: false,
-      accessKey: env.MINIO_CONFIG.accessKey,
-      secretKey: env.MINIO_CONFIG.secretKey,
     });
   }
 
@@ -29,7 +26,9 @@ export class UploadService {
       mimetype,
     });
     //  http://localhost:9001/note/1/2023-10-07/16:32/startButton.png
-    const url = `http://${env.MINIO_CONFIG.endPoint}:${env.MINIO_CONFIG.port}/${bucketName}/${fileUrl}`;
+    const url = `http://${this.configService.get(
+      'minio.endPoint',
+    )}:${this.configService.get('minio.port')}/${bucketName}/${fileUrl}`;
     const names = originalname.split('.');
     const extension = names[names.length - 1];
     return {

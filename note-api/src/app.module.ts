@@ -1,9 +1,8 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { env } from './common/config';
 import { UserModule } from './modules/user/user.module';
 import { APP_GUARD } from '@nestjs/core';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
@@ -14,10 +13,21 @@ import { UploadModule } from './modules/upload/upload.module';
 import { LinkCheckModule } from './modules/link-check/link-check.module';
 import { TagModule } from './modules/tag/tag.module';
 import { NoteTagModule } from './modules/note-tag/note-tag.module';
-
+import configuration from './common/config/configuration';
 @Module({
   imports: [
-    TypeOrmModule.forRoot(env.DATABASE_CONFIG),
+    ConfigModule.forRoot({
+      load: [configuration],
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return configService.get('mysql');
+      },
+    }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     UploadModule,
     MenuModule,
@@ -33,6 +43,7 @@ import { NoteTagModule } from './modules/note-tag/note-tag.module';
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
     },
+    ConfigService,
     JwtStrategy,
   ],
 })

@@ -1,0 +1,15 @@
+version: '3.5'
+services:
+  web:
+    restart: always
+    image: nickboomboomboom/doc:0.0.2
+    ports:
+      - 8080:80
+  nginx:
+    image: nginx:latest
+    ports:
+      - 80:80
+    environment:
+      - API_URL=http://backend-api-url # 设置API_URL环境变量
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf # 将自

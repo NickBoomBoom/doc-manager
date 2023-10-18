@@ -1,15 +1,21 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { JwtModule } from '@nestjs/jwt';
+import { SpaceModule } from '../space/space.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { JwtModule } from '@nestjs/jwt';
-import { env } from '../../common/config/index';
-import { SpaceModule } from '../space/space.module';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
-    JwtModule.register(env.JWT_CONFIG),
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
+        return configService.get('jwt');
+      },
+    }),
     forwardRef(() => SpaceModule),
   ],
   controllers: [UserController],
