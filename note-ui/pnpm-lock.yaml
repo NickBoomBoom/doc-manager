@@ -12,8 +12,8 @@ dependencies:
     specifier: ^1.5.1
     version: 1.5.1
   block-json-editor:
-    specifier: ^0.0.3
-    version: 0.0.3
+    specifier: ^0.0.4
+    version: 0.0.4
   echarts:
     specifier: ^5.4.3
     version: 5.4.3
@@ -1679,8 +1679,8 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  /block-json-editor@0.0.3:
-    resolution: {integrity: sha512-rT+JcC7WM9GBtfPQbxtqx38KQPk9jH4E/hSU6ZuvpfpRszf71n7JTUkt52mgGzzmDGkjPpeHcmKnPEYaZyMSOA==}
+  /block-json-editor@0.0.4:
+    resolution: {integrity: sha512-SaRiv4BJUckQzffBrbuAESNu9O/3VvkbZ8HM1pS4rwhikFWpoe2a8qfzqgaS0mqQzjMakfXuqrc6FgNCv4EZGQ==}
     dependencies:
       '@codexteam/ajax': 4.2.0
       '@codexteam/icons': 0.3.0
