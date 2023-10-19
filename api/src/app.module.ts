@@ -19,7 +19,7 @@ import configuration from './common/config/configuration';
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath: ['.env.local', '.env'],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

@@ -5,16 +5,16 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: MainLayout,
     redirect: {
-      name: 'Note',
+      name: 'Doc',
     },
     children: [
       {
-        path: 'note',
-        name: 'Note',
+        path: 'doc',
+        name: 'Doc',
         meta: {
           keepAlive: true,
         },
-        component: () => import('pages/note/index.vue'),
+        component: () => import('pages/doc/index.vue'),
       },
       {
         path: 'tag',

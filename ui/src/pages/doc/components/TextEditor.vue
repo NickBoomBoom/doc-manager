@@ -38,7 +38,7 @@
 
 <script setup lang="ts">
 import BlockJsonEditor from 'block-json-editor';
-import 'block-json-editor/style.css'
+import 'block-json-editor/style.css';
 import TagSelect from './TagSelect.vue';
 import { Note } from 'interfaces/note.interface';
 import menuService from '../menu.service';
@@ -46,7 +46,7 @@ import _ from 'lodash-es';
 function checkContent(
   v: Note = {
     title: '',
-    content: {},
+    content: null,
     spaceId: null,
     tags: [],
   },
@@ -132,7 +132,6 @@ async function getDetail() {
     unwatch = watch(
       () => detail.value.content,
       _.debounce((v, ov) => {
-        console.log(v, ov);
         handleSave();
       }),
     );

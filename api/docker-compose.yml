@@ -11,11 +11,13 @@ services:
       - /Users/q.chen.work/Documents/test-app-data:/app # 将 NestJS 应用程序的数据挂载到宿主机
     depends_on:
       - mysql
+    networks:
+      - doc-server
 
   mysql:
     image: mysql:8.0
     ports:
-      - '${MYSQL_PORT}:3306'
+      - '4000:3306'
     env_file:
       - .env # 从宿主机的 .env 文件读取环境变量
     volumes:
@@ -25,17 +27,11 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USERNAME}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - doc-server
 
-  # minio:
-  #   image: minio/minio:latest
-  #   ports:
-  #     - '${MINIO_PORT}:9000'
-  #   env_file:
-  #     - .env # 从宿主机的 .env 文件读取环境变量
-  #   volumes:
-  #     - ./minio-data:/data # 将 Minio 数据挂载到宿主机
-  #   environment:
-  #     MINIO_ROOT_USER: ${MINIO_USER}
-  #     MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
-  #     MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
-  #     MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
+# 声明一下网桥  my-server。
+# 重要：将所有服务都挂载在同一网桥即可通过容器名来互相通信了
+# 如nestjs连接mysql和redis，可以通过容器名来互相通信
+networks:
+  doc-server:
