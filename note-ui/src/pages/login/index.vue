@@ -92,8 +92,14 @@ const isShowSubmit = computed(() => {
 });
 
 const isShowName = computed(() => {
-  return !isRegisteredEmail.value && isShowPassword && rules.password.map(t=> t(params.value.password)).every(t=> typeof t === 'boolean')
-})
+  return (
+    !isRegisteredEmail.value &&
+    isShowPassword &&
+    rules.password
+      .map((t) => t(params.value.password))
+      .every((t) => typeof t === 'boolean')
+  );
+});
 const submitBtnText = computed(() => {
   if (isRegisteredEmail.value) {
     return '登录';
@@ -102,8 +108,15 @@ const submitBtnText = computed(() => {
 });
 
 async function onSubmit() {
-  await userStore.login(params.value);
-  router.replace('/');
+  try {
+    GlobalLoadingService.show();
+    await userStore.login(params.value);
+    router.replace('/');
+  } catch (error) {
+    console.error(error);
+  } finally {
+    GlobalLoadingService.hide();
+  }
 }
 
 const isShowPassword = ref(false);
