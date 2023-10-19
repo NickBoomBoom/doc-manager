@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Length } from 'class-validator';
-import { BaseDTO } from 'src/common/dto/base.dto';
+import { BaseDTO } from '../../../common/dto/base.dto';
 export class UpdateUserDTO extends BaseDTO {
   @ApiProperty({
     description: '用户名',

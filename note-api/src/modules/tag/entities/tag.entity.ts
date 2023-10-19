@@ -1,6 +1,6 @@
-import { Base } from 'src/common/entity/base.entity';
-import { Note } from 'src/modules/note/entities/note.entity';
-import { User } from 'src/modules/user/entities/user.entity';
+import { Base } from '../../../common/entity/base.entity';
+import { Note } from '../../../modules/note/entities/note.entity';
+import { User } from '../../../modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity({ name: 't_tag' })

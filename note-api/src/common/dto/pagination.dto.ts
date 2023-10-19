@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, Matches } from 'class-validator';
-import { regPositiveOrEmpty } from 'src/common/utils/regex.util';
+import { regPositiveOrEmpty } from '../utils/regex.util';
 
 export class PaginationDTO {
   /**

@@ -1,5 +1,5 @@
-import { Base } from 'src/common/entity/base.entity';
-import { Note } from 'src/modules/note/entities/note.entity';
+import { Base } from '../../../common/entity/base.entity';
+import { Note } from '../../../modules/note/entities/note.entity';
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 
 @Entity({ name: 'm_note_tag' })

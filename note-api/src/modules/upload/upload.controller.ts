@@ -7,7 +7,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Public } from 'src/common/decorator/public.decorator';
+import { Public } from '../../common/decorator/public.decorator';
 import { UploadService } from './upload.service';
 import { ConfigService } from '@nestjs/config';
 @Controller('upload')

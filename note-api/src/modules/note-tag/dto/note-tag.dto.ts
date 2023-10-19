@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BaseDTO } from 'src/common/dto/base.dto';
+import { BaseDTO } from '../../../common/dto/base.dto';
 export class NoteTagDTO extends BaseDTO {
   @ApiProperty({
     description: '标签ids',

@@ -1,5 +1,5 @@
 import { IsEmail, Length } from 'class-validator';
-import { Base } from 'src/common/entity/base.entity';
+import { Base } from '../../../common/entity/base.entity';
 import { Column, Entity } from 'typeorm';
 
 export enum Status {

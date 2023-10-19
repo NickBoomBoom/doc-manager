@@ -1,8 +1,8 @@
-import { Base } from 'src/common/entity/base.entity';
-import { NoteTag } from 'src/modules/note-tag/entities/note-tag.entity';
-import { Space } from 'src/modules/space/entities/space.entity';
-import { Tag } from 'src/modules/tag/entities/tag.entity';
-import { User } from 'src/modules/user/entities/user.entity';
+import { Base } from '../../../common/entity/base.entity';
+import { NoteTag } from '../../../modules/note-tag/entities/note-tag.entity';
+import { Space } from '../../../modules/space/entities/space.entity';
+import { Tag } from '../../../modules/tag/entities/tag.entity';
+import { User } from '../../../modules/user/entities/user.entity';
 import {
   Column,
   Entity,

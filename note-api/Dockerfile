@@ -1,15 +1,14 @@
-# 阶段1：构建 Nest.js 应用
-FROM node:14 AS build
-WORKDIR /app
-COPY . /app 
-RUN npm i pnpm -g
+FROM node:18-alpine as builder
+WORKDIR /build
+COPY . /build
+RUN npm install -g pnpm
 RUN pnpm i
-RUN pnpm run build
+RUN pnpm build
+RUN ls -l /build
 
-# 阶段2：创建最终镜像
-FROM node:14
+FROM node:18-alpine 
 WORKDIR /app
-COPY --from=build /app/dist ./dist
-COPY package*.json ./
-RUN npm install --production
-CMD ["npm", "run", "start:prod"]
+COPY --from=builder /build/dist /app
+CMD ["node", "/app/main.js"]
+EXPOSE 3000
+ 

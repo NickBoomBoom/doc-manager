@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, Length } from 'class-validator';
-import { BaseDTO } from 'src/common/dto/base.dto';
+import { BaseDTO } from '../../../common/dto/base.dto';
 export class CreateUserDTO extends BaseDTO {
   @ApiProperty({
     description: '邮箱',

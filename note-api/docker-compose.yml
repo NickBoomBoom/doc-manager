@@ -1,0 +1,41 @@
+version: '3.5'
+services:
+  nestjs:
+    restart: always
+    image: nickboomboomboom/doc-backend:0.0.1
+    ports:
+      - '${PORT}:3000'
+    env_file:
+      - .env # 从宿主机的 .env 文件读取环境变量
+    volumes:
+      - /Users/q.chen.work/Documents/test-app-data:/app # 将 NestJS 应用程序的数据挂载到宿主机
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - '${MYSQL_PORT}:3306'
+    env_file:
+      - .env # 从宿主机的 .env 文件读取环境变量
+    volumes:
+      - /Users/q.chen.work/Documents/test-mysql-data:/var/lib/mysql # 将 MySQL 数据挂载到宿主机
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USERNAME}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+  # minio:
+  #   image: minio/minio:latest
+  #   ports:
+  #     - '${MINIO_PORT}:9000'
+  #   env_file:
+  #     - .env # 从宿主机的 .env 文件读取环境变量
+  #   volumes:
+  #     - ./minio-data:/data # 将 Minio 数据挂载到宿主机
+  #   environment:
+  #     MINIO_ROOT_USER: ${MINIO_USER}
+  #     MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+  #     MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
+  #     MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
