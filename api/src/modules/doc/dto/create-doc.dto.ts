@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { BaseDTO } from '../../../common/dto/base.dto';
-export class CreateNoteDTO extends BaseDTO {
+export class CreateDocDTO extends BaseDTO {
   @ApiProperty({
     description: '标题',
   })

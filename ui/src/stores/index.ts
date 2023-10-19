@@ -28,7 +28,7 @@ export default store((/* { ssrContext } */) => {
   // You can add Pinia plugins here
   pinia.use(
     createPersistedState({
-      key: (id) => `__note__${id}`,
+      key: (id) => `__doc__${id}`,
     }),
   );
   return pinia;

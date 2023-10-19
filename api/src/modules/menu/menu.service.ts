@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { Menu } from './entities/menu.entity';
 import { SpaceService } from '../space/space.service';
-import { NoteService } from '../note/note.service';
+import { DocService } from '../doc/doc.service';
 import { MoveMenuDTO } from './dto/move-menu.dto';
 import { KEY, MenuItem, MenuList } from './menu.interface';
 
@@ -14,11 +14,11 @@ export class MenuService {
     private readonly menuRepository: Repository<Menu>,
     @Inject(forwardRef(() => SpaceService))
     private readonly spaceService: SpaceService,
-    @Inject(forwardRef(() => NoteService))
-    private readonly noteService: NoteService,
+    @Inject(forwardRef(() => DocService))
+    private readonly docService: DocService,
   ) {}
 
-  getNoteId(id: number) {
+  getDocId(id: number) {
     return `${KEY.NOTE}-${id}`;
   }
 
@@ -28,13 +28,13 @@ export class MenuService {
 
   getType(str: string): {
     isSpace: boolean;
-    isNote: boolean;
+    isDoc: boolean;
     id: number;
   } {
     const [type, id] = str.split('-');
     return {
       isSpace: type === KEY.CATEGORY,
-      isNote: type === KEY.NOTE,
+      isDoc: type === KEY.NOTE,
       id: +id,
     };
   }
@@ -66,8 +66,8 @@ export class MenuService {
     return res;
   }
 
-  async createByNote(userId: number, noteId: number, belongId: number) {
-    const curId = this.getNoteId(noteId);
+  async createByDoc(userId: number, docId: number, belongId: number) {
+    const curId = this.getDocId(docId);
     return this.create(userId, curId, belongId);
   }
 
@@ -174,10 +174,10 @@ export class MenuService {
 
   private async _getItem(userId: number, item): Promise<MenuItem> {
     const { curId, nextId, id: menuId } = item;
-    const { isSpace, isNote, id: targetId } = this.getType(curId);
+    const { isSpace, isDoc, id: targetId } = this.getType(curId);
     const res: MenuItem = {
       isSpace,
-      isNote,
+      isDoc,
       menuId,
       targetId,
       data: null,
@@ -192,8 +192,8 @@ export class MenuService {
       };
     }
 
-    if (isNote) {
-      const data = await this.noteService.findOne(userId, targetId);
+    if (isDoc) {
+      const data = await this.docService.findOne(userId, targetId);
       res.data = {
         title: data.title,
         isLocked: data.isLocked,
@@ -260,7 +260,7 @@ export class MenuService {
     return res;
   }
 
-  // TODO: 这边要修改  改成去拉所有note  space menus 然后内部去做整合
+  // TODO: 这边要修改  改成去拉所有doc  space menus 然后内部去做整合
   async getAll(userId: number, belongId: number): Promise<MenuList> {
     const res: MenuList = [];
     // 配置初始层
@@ -297,7 +297,7 @@ export class MenuService {
     });
 
     const { prevId, nextId } = item;
-    const { isSpace, isNote, id } = this.getType(item.curId);
+    const { isSpace, isDoc, id } = this.getType(item.curId);
 
     // 如果是空间,需要预检查该空间下是否存在其他空间或笔记
     if (isSpace) {
@@ -341,8 +341,8 @@ export class MenuService {
     const curId = this.getSpaceId(spaceId);
     return await this.delete(userId, curId);
   }
-  async deleteByNote(userId: number, noteId: number) {
-    const curId = this.getNoteId(noteId);
+  async deleteByDoc(userId: number, docId: number) {
+    const curId = this.getDocId(docId);
     return await this.delete(userId, curId);
   }
 }

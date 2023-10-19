@@ -1,5 +1,5 @@
 import { Base } from '../../../common/entity/base.entity';
-import { NoteTag } from '../../../modules/note-tag/entities/note-tag.entity';
+import { DocTag } from '../../../modules/doc-tag/entities/doc-tag.entity';
 import { Space } from '../../../modules/space/entities/space.entity';
 import { Tag } from '../../../modules/tag/entities/tag.entity';
 import { User } from '../../../modules/user/entities/user.entity';
@@ -12,8 +12,8 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-@Entity({ name: 't_note' })
-export abstract class Note extends Base {
+@Entity({ name: 't_doc' })
+export abstract class Doc extends Base {
   @Column()
   title: string;
 
@@ -47,11 +47,11 @@ export abstract class Note extends Base {
   @Column({})
   spaceId: number;
 
-  @OneToOne(() => NoteTag, (noteTag) => noteTag.tagIds)
-  noteTag: NoteTag;
+  @OneToOne(() => DocTag, (docTag) => docTag.tagIds)
+  docTag: DocTag;
 
   @Column({
     nullable: true,
   })
-  noteTagId: number | null;
+  docTagId: number | null;
 }

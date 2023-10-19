@@ -33,8 +33,8 @@
 <script setup lang="ts">
 import _ from 'lodash-es';
 const props = defineProps<{
-  noteId: number;
-  noteTagId: number;
+  docId: number;
+  docTagId: number;
 }>();
 const model = ref([]);
 const list = ref<any[]>([]);
@@ -49,7 +49,7 @@ async function init() {
     loading.value = true;
     const [tagRes, selfRes] = await Promise.all([
       tagApi.all(),
-      noteTagApi.get(props.noteTagId),
+      docTagApi.get(props.docTagId),
     ]);
     list.value = tagRes;
     model.value = selfRes;
@@ -80,8 +80,8 @@ async function createNewValue(
       list.value.push(target as any);
     }
     done(target);
-    await noteTagApi.bind(props.noteTagId, {
-      noteId: props.noteId,
+    await docTagApi.bind(props.docTagId, {
+      docId: props.docId,
       tagIds: model.value.map((t: any) => t.id).toString(),
     });
   } catch (error) {
@@ -92,8 +92,8 @@ async function createNewValue(
 }
 
 async function bind() {
-  await noteTagApi.bind(props.noteTagId, {
-    noteId: props.noteId,
+  await docTagApi.bind(props.docTagId, {
+    docId: props.docId,
     tagIds: model.value.map((t: any) => t.id).toString(),
   });
 }

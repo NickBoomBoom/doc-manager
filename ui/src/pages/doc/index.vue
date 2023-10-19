@@ -10,7 +10,7 @@
           <q-btn dense class="mb-2" @click="noticeCreateSpace">
             新建空间
           </q-btn>
-          <q-btn dense @click="noticeCreateNote"> 新建文档 </q-btn>
+          <q-btn dense @click="noticeCreateDoc"> 新建文档 </q-btn>
         </footer>
       </div>
     </template>
@@ -38,14 +38,14 @@
 
 <script setup lang="ts">
 import MenuTree from './components/MenuTree.vue';
-import menuService, { NoteSubject } from './menu.service';
+import menuService, { DocSubject } from './menu.service';
 import Welcome from './components/Welcome.vue';
 import ContentSplitView from './components/ContentSplitView.vue';
 import { merge } from 'rxjs';
 
 const isShowWelcome = ref(true);
 
-merge(menuService.openNote$).subscribe((res: NoteSubject) => {
+merge(menuService.openDoc$).subscribe((res: DocSubject) => {
   res && (isShowWelcome.value = false);
 });
 
@@ -68,8 +68,8 @@ function noticeCreateSpace() {
   menuService.createSpace();
 }
 
-function noticeCreateNote() {
-  menuService.notifyCreateNote();
+function noticeCreateDoc() {
+  menuService.notifyCreateDoc();
 }
 
 function handleContentNull() {

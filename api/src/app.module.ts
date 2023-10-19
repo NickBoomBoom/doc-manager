@@ -6,13 +6,13 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { JwtStrategy } from './common/strategy/jwt.strategy';
-import { NoteModule } from './modules/note/note.module';
+import { DocModule } from './modules/doc/doc.module';
 import { SpaceModule } from './modules/space/space.module';
 import { MenuModule } from './modules/menu/menu.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { LinkCheckModule } from './modules/link-check/link-check.module';
 import { TagModule } from './modules/tag/tag.module';
-import { NoteTagModule } from './modules/note-tag/note-tag.module';
+import { DocTagModule } from './modules/doc-tag/doc-tag.module';
 import configuration from './common/config/configuration';
 @Module({
   imports: [
@@ -32,11 +32,11 @@ import configuration from './common/config/configuration';
     UploadModule,
     MenuModule,
     SpaceModule,
-    NoteModule,
+    DocModule,
     UserModule,
     LinkCheckModule,
     TagModule,
-    NoteTagModule,
+    DocTagModule,
   ],
   providers: [
     {

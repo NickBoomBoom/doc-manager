@@ -4,7 +4,7 @@ export interface MenuMove {
   belongId: number;
 }
 
-type MenuNote = {
+type MenuDoc = {
   title: string;
   isLocked: boolean;
   spaceId: number;
@@ -17,11 +17,11 @@ type MenuSpace = {
 };
 export interface MenuItem {
   isSpace: boolean;
-  isNote: boolean;
+  isDoc: boolean;
   menuId: number;
   targetId: number;
   children?: MenuItem[];
-  data: MenuNote & MenuSpace;
+  data: MenuDoc & MenuSpace;
 }
 
 export type MenuList = MenuItem[];

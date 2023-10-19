@@ -39,11 +39,11 @@
               class="flex-1 flex items-center overflow-hidden"
               :class="{
                 'text-blue': node.extra.menuId === selected,
-                'cursor-pointer': node.extra.isNote,
+                'cursor-pointer': node.extra.isDoc,
               }"
-              @click="handleSelectNote(node.extra, $event)"
+              @click="handleSelectDoc(node.extra, $event)"
             >
-              <!-- <q-icon v-if="node.extra.isNote" :name="node.icon" /> -->
+              <!-- <q-icon v-if="node.extra.isDoc" :name="node.icon" /> -->
               <span
                 :class="{
                   'text-gray': !node.children?.length && node.extra.isSpace,
@@ -75,7 +75,7 @@
 import { MenuItem } from 'interfaces/menu.interface';
 import { cloneDeep } from 'lodash-es';
 import menuService, {
-  NoteSubject,
+  DocSubject,
   SpaceSubject,
   TreeNode,
 } from '../menu.service';
@@ -92,12 +92,12 @@ function resetFilter() {
   filterRef.value.focus();
 }
 
-function handleSelectNote(item: MenuItem, e: PointerEvent) {
-  if (item.isNote) {
+function handleSelectDoc(item: MenuItem, e: PointerEvent) {
+  if (item.isDoc) {
     if (e.altKey) {
-      menuService.openSecondNote$.next(item);
+      menuService.openSecondDoc$.next(item);
     } else {
-      menuService.openNote$.next(item);
+      menuService.openDoc$.next(item);
     }
   }
 }
@@ -110,7 +110,7 @@ async function init() {
     menus.value = cloneDeep(res);
   });
 
-  menuService.openNote$.subscribe((res: NoteSubject) => {
+  menuService.openDoc$.subscribe((res: DocSubject) => {
     res && (selected.value = res.menuId);
   });
 

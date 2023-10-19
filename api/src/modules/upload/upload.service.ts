@@ -25,7 +25,7 @@ export class UploadService {
     await this.minioClient.putObject(bucketName, fileUrl, buffer, {
       mimetype,
     });
-    //  http://localhost:9001/note/1/2023-10-07/16:32/startButton.png
+    //  http://localhost:9001/doc/1/2023-10-07/16:32/startButton.png
     const url = `http://${this.configService.get(
       'minio.endPoint',
     )}:${this.configService.get('minio.port')}/${bucketName}/${fileUrl}`;

@@ -1,5 +1,5 @@
 import { Base } from '../../../common/entity/base.entity';
-import { Note } from '../../../modules/note/entities/note.entity';
+import { Doc } from '../../../modules/doc/entities/doc.entity';
 import { User } from '../../../modules/user/entities/user.entity';
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 

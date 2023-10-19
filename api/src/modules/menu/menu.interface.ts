@@ -1,11 +1,11 @@
 export enum KEY {
   CATEGORY = 'space',
-  NOTE = 'note',
+  NOTE = 'doc',
 }
 
 export interface MenuItem {
   isSpace: boolean;
-  isNote: boolean;
+  isDoc: boolean;
   menuId: number;
   targetId: number;
   children?: MenuItem[];

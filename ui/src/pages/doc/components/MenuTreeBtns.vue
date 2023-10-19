@@ -25,7 +25,7 @@
       </q-menu>
     </q-btn>
   </template>
-  <template v-if="node.extra.isNote">
+  <template v-if="node.extra.isDoc">
     <q-btn
       flat
       dense
@@ -38,7 +38,7 @@
           <q-btn
             v-close-popup
             dense
-            v-for="item in noteBtns"
+            v-for="item in docBtns"
             :key="item.title"
             @click="item.handler(node)"
             :icon="item.icon"
@@ -81,7 +81,7 @@ const categoryBtns = [
   {
     title: '添加文档',
     icon: 'post_add',
-    handler: (e: TreeNode) => menuService.notifyCreateNote(e),
+    handler: (e: TreeNode) => menuService.notifyCreateDoc(e),
   },
   {
     title: '删除空间',
@@ -90,7 +90,7 @@ const categoryBtns = [
   },
 ];
 
-const noteBtns = [
+const docBtns = [
   // {
   //   title: '分享',
   //   icon: 'share',
@@ -104,7 +104,7 @@ const noteBtns = [
   {
     title: '删除',
     icon: 'delete',
-    handler: (e: TreeNode) => menuService.deleteNote(e),
+    handler: (e: TreeNode) => menuService.deleteDoc(e),
   },
 ];
 

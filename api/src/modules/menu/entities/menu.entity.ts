@@ -21,15 +21,15 @@ export abstract class Menu extends Base {
   @Column({
     default: null,
   })
-  prevId: string; // space-{number} note-{number}
+  prevId: string; // space-{number} doc-{number}
 
   @Column({
     default: null,
   })
-  curId: string; // space-{number} note-{number}
+  curId: string; // space-{number} doc-{number}
 
   @Column({
     default: null,
   })
-  nextId: string; // space-{number} note-{number}
+  nextId: string; // space-{number} doc-{number}
 }

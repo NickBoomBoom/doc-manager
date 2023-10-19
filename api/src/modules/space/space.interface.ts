@@ -1,9 +1,9 @@
-export interface SpaceNote {
+export interface SpaceDoc {
   id: number;
   title: number;
   tags: string;
   isLocked: boolean;
-  isNote: boolean;
+  isDoc: boolean;
   shareCode: string;
 }
 
@@ -13,7 +13,7 @@ export interface SpaceItem {
   parentId: number | null;
   level: number;
   isSpace: boolean;
-  children: (SpaceItem | SpaceNote)[];
+  children: (SpaceItem | SpaceDoc)[];
 }
 
-export type SpaceMenuItem = SpaceNote | SpaceItem;
+export type SpaceMenuItem = SpaceDoc | SpaceItem;

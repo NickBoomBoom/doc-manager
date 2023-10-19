@@ -25,7 +25,7 @@
           <q-spinner-dots />
         </span>
       </div>
-      <tag-select :noteId="detail.id!" :note-tag-id="detail.noteTagId!" />
+      <tag-select :docId="detail.id!" :doc-tag-id="detail.docTagId!" />
     </div>
 
     <block-json-editor
@@ -40,25 +40,25 @@
 import BlockJsonEditor from 'block-json-editor';
 import 'block-json-editor/style.css';
 import TagSelect from './TagSelect.vue';
-import { Note } from 'interfaces/note.interface';
+import { Doc } from 'interfaces/doc.interface';
 import menuService from '../menu.service';
 import _ from 'lodash-es';
 function checkContent(
-  v: Note = {
+  v: Doc = {
     title: '',
     content: null,
     spaceId: null,
     tags: [],
   },
-): Note {
+): Doc {
   return _.cloneDeep(v);
 }
 const props = defineProps<{
-  noteId: number;
+  docId: number;
 }>();
 const loading = ref(true);
 const saveLoading = ref(false);
-const detail = ref<Note>(checkContent());
+const detail = ref<Doc>(checkContent());
 const editorRef = ref();
 const editorConfig = {
   tools: {
@@ -114,7 +114,7 @@ const editorConfig = {
 let unwatch = () => {};
 
 watch(
-  () => props.noteId,
+  () => props.docId,
   () => {
     getDetail();
   },
@@ -127,7 +127,7 @@ async function getDetail() {
   try {
     unwatch();
     loading.value = true;
-    const res = await noteApi.get(props.noteId);
+    const res = await docApi.get(props.docId);
     detail.value = checkContent(res);
     unwatch = watch(
       () => detail.value.content,
@@ -146,7 +146,7 @@ function handleTitleChange() {
   if (!detail.value.title) {
     detail.value.title = '新文档';
   }
-  menuService.updateNote(detail.value);
+  menuService.updateDoc(detail.value);
   handleSave();
 }
 
@@ -156,7 +156,7 @@ async function handleSave() {
   const now = Date.now();
   try {
     saveLoading.value = true;
-    noteApi.update(detail.value.id as number, detail.value);
+    docApi.update(detail.value.id as number, detail.value);
   } catch (error) {
     console.error(error);
   } finally {

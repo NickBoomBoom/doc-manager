@@ -1,62 +1,62 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { NoteTag } from './entities/note-tag.entity';
-import { NoteTagDTO } from './dto/note-tag.dto';
+import { DocTag } from './entities/doc-tag.entity';
+import { DocTagDTO } from './dto/doc-tag.dto';
 import { Tag } from '../tag/entities/tag.entity';
 import { TagService } from '../tag/tag.service';
 
-export interface AllNoteTags extends Tag {
-  notes: number[];
+export interface AllDocTags extends Tag {
+  docs: number[];
 }
 @Injectable()
-export class NoteTagService {
+export class DocTagService {
   constructor(
-    @InjectRepository(NoteTag)
-    private readonly noteTagRepository: Repository<NoteTag>,
+    @InjectRepository(DocTag)
+    private readonly docTagRepository: Repository<DocTag>,
     private readonly tagService: TagService,
   ) {}
   // 新增
-  async create(dto: NoteTagDTO): Promise<NoteTag> {
-    const res = await this.noteTagRepository.save({
+  async create(dto: DocTagDTO): Promise<DocTag> {
+    const res = await this.docTagRepository.save({
       ...dto,
     });
     return res;
   }
 
-  async findOne(userId: number, id: number): Promise<NoteTag> {
-    return await this.noteTagRepository.findOne({
+  async findOne(userId: number, id: number): Promise<DocTag> {
+    return await this.docTagRepository.findOne({
       where: { id, userId },
     });
   }
 
-  async getAll(userId: number): Promise<AllNoteTags[]> {
-    const noteTag = await this.noteTagRepository.find({
+  async getAll(userId: number): Promise<AllDocTags[]> {
+    const docTag = await this.docTagRepository.find({
       where: {
         userId,
       },
     });
     const tags = await this.tagService.findAllByUserId(userId);
-    const res: AllNoteTags[] = [];
+    const res: AllDocTags[] = [];
     tags.forEach((t: Tag) => {
       res.push({
         ...t,
-        notes: noteTag
-          .filter((tt: NoteTag) => tt.tagIds.includes(t.id + ''))
-          .map((tt: NoteTag) => tt.noteId),
+        docs: docTag
+          .filter((tt: DocTag) => tt.tagIds.includes(t.id + ''))
+          .map((tt: DocTag) => tt.docId),
       });
     });
     return res;
   }
 
   // 更新
-  async update(userId: number, id: number, dto: NoteTagDTO): Promise<NoteTag> {
+  async update(userId: number, id: number, dto: DocTagDTO): Promise<DocTag> {
     const res = await this.findOne(userId, id);
     const newItem = {
       ...res,
       ...dto,
     };
-    await this.noteTagRepository.update(id, {
+    await this.docTagRepository.update(id, {
       ...res,
       ...dto,
     });

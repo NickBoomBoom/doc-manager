@@ -84,9 +84,9 @@
     "setActivePinia": true,
     "setMapStoreSuffix": true,
     "storeToRefs": true,
-    "noteApi": true,
+    "docApi": true,
     "uploadApi": true,
     "tagApi": true,
-    "noteTagApi": true
+    "docTagApi": true
   }
 }

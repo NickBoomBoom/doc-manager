@@ -57,7 +57,7 @@ const navList = reactive([
   {
     icon: 'note_alt',
     tip: '文档',
-    routerName: 'Note',
+    routerName: 'Doc',
   },
   {
     icon: 'tag',

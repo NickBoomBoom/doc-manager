@@ -30,7 +30,7 @@ export class SpaceService {
       );
       return {
         isSpace: true,
-        isNote: false,
+        isDoc: false,
         menuId: menuRow.id,
         targetId: res.id,
         children: [],

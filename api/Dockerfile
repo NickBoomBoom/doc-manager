@@ -1,5 +1,4 @@
 FROM node:18-alpine as builder
-
 WORKDIR /build
 COPY . /build
 RUN npm install -g pnpm

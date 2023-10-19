@@ -1,5 +1,5 @@
 import { MenuItem } from 'interfaces/menu.interface';
-import { Note } from 'interfaces/note.interface';
+import { Doc } from 'interfaces/doc.interface';
 import { Dialog, Notify } from 'quasar';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 
@@ -19,20 +19,18 @@ export interface OpenSpace {
 }
 
 export type SpaceSubject = OpenSpace | null;
-export type NoteSubject = MenuItem | null;
-export type SecondNoteSubject = MenuItem | null;
+export type DocSubject = MenuItem | null;
+export type SecondDocSubject = MenuItem | null;
 
 class Menu {
   menus$: BehaviorSubject<TreeNode[]> = new BehaviorSubject<TreeNode[]>([]);
   openSpace$: BehaviorSubject<SpaceSubject> = new BehaviorSubject<SpaceSubject>(
     null,
   );
-  openNote$: BehaviorSubject<NoteSubject> = new BehaviorSubject<NoteSubject>(
-    null,
-  );
-  openSecondNote$: BehaviorSubject<SecondNoteSubject> =
-    new BehaviorSubject<SecondNoteSubject>(null);
-  deleteNote$: Subject<MenuItem> = new Subject();
+  openDoc$: BehaviorSubject<DocSubject> = new BehaviorSubject<DocSubject>(null);
+  openSecondDoc$: BehaviorSubject<SecondDocSubject> =
+    new BehaviorSubject<SecondDocSubject>(null);
+  deleteDoc$: Subject<MenuItem> = new Subject();
   // 同时只能做一件事
   insertTreeNode: TreeNode | undefined;
 
@@ -89,21 +87,21 @@ class Menu {
   find(
     id: number,
     arr: TreeNode[] = this.menus$.value,
-    _isNote: boolean = true,
+    _isDoc: boolean = true,
   ): TreeNode {
     let res: TreeNode;
     for (let i = 0; i < arr.length; i++) {
       const t = arr[i];
       const {
         children,
-        extra: { isNote, targetId },
+        extra: { isDoc, targetId },
       } = t;
 
-      if (targetId === id && isNote === _isNote) {
+      if (targetId === id && isDoc === _isDoc) {
         res = t;
         break;
       } else if (children?.length) {
-        const res2 = this.find(id, children, _isNote);
+        const res2 = this.find(id, children, _isDoc);
         if (res2) {
           res = res2;
           break;
@@ -141,10 +139,10 @@ class Menu {
   }
 
   formatData(item: MenuItem, index: string): TreeNode {
-    const { isSpace, isNote, data, menuId } = item;
+    const { isSpace, isDoc, data, menuId } = item;
     const { children, ...extra } = item;
-    const label = isSpace ? data.name : isNote ? data.title : '';
-    const icon = isSpace ? 'sort' : isNote ? 'article' : '';
+    const label = isSpace ? data.name : isDoc ? data.title : '';
+    const icon = isSpace ? 'sort' : isDoc ? 'article' : '';
     const res: TreeNode = {
       label,
       id: menuId,
@@ -180,16 +178,16 @@ class Menu {
     });
   }
 
-  async notifyCreateNote(treeNode?: TreeNode) {
+  async notifyCreateDoc(treeNode?: TreeNode) {
     this.insertTreeNode = treeNode;
-    const body: Note = {
+    const body: Doc = {
       title: '新文档',
       content: null,
       spaceId: treeNode?.extra.targetId || null,
     };
-    const res: MenuItem = await noteApi.add(body);
+    const res: MenuItem = await docApi.add(body);
     this.insert(res);
-    this.openNote$.next(res);
+    this.openDoc$.next(res);
   }
 
   createSpace(treeNode?: TreeNode) {
@@ -220,8 +218,8 @@ class Menu {
     });
   }
 
-  updateNote(note: Note) {
-    const { id, title, spaceId } = note;
+  updateDoc(doc: Doc) {
+    const { id, title, spaceId } = doc;
     const target: TreeNode = this.find(id!);
     this.update(['label', 'extra.data.title'], [title, title], target.index);
   }
@@ -285,7 +283,7 @@ class Menu {
       }
     });
   }
-  async deleteNote(treeNode: TreeNode) {
+  async deleteDoc(treeNode: TreeNode) {
     Dialog.create({
       title: '确定删除该文档?',
       cancel: true,
@@ -298,9 +296,9 @@ class Menu {
       try {
         const { index, extra } = treeNode;
         const { targetId } = extra;
-        await noteApi.delete(targetId);
+        await docApi.delete(targetId);
         this.remove(index);
-        this.deleteNote$.next(extra);
+        this.deleteDoc$.next(extra);
       } catch (error) {
         console.error(error);
       } finally {

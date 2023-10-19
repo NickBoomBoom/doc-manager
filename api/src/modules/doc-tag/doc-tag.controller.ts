@@ -11,13 +11,13 @@ import {
 } from '@nestjs/common';
 
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { NoteTagService } from './note-tag.service';
-import { NoteTagDTO } from './dto/note-tag.dto';
+import { DocTagService } from './doc-tag.service';
+import { DocTagDTO } from './dto/doc-tag.dto';
 
-@Controller('noteTag')
+@Controller('docTag')
 @ApiTags('笔记标签中间表')
-export class NoteTagController {
-  constructor(private readonly noteTagService: NoteTagService) {}
+export class DocTagController {
+  constructor(private readonly docTagService: DocTagService) {}
 
   @Get()
   @ApiOperation({ summary: '获取所有标签' })
@@ -25,31 +25,31 @@ export class NoteTagController {
     const {
       user: { id },
     } = request;
-    return this.noteTagService.getAll(id);
+    return this.docTagService.getAll(id);
   }
 
-  @Get(':noteTagId')
+  @Get(':docTagId')
   @ApiOperation({ summary: '获取当前文章对应的所有标签' })
-  async getByNoteTagId(
-    @Param('noteTagId') noteTagId: number,
+  async getByDocTagId(
+    @Param('docTagId') docTagId: number,
     @Request() request,
   ) {
     const {
       user: { id },
     } = request;
-    return this.noteTagService.get(id, noteTagId);
+    return this.docTagService.get(id, docTagId);
   }
 
-  @Patch(':noteTagId')
+  @Patch(':docTagId')
   @ApiOperation({ summary: '更改标签' })
   async update(
-    @Param('noteTagId') noteTagId: number,
-    @Body() dto: NoteTagDTO,
+    @Param('docTagId') docTagId: number,
+    @Body() dto: DocTagDTO,
     @Request() request,
   ) {
     const {
       user: { id },
     } = request;
-    return this.noteTagService.update(id, noteTagId, dto);
+    return this.docTagService.update(id, docTagId, dto);
   }
 }

@@ -2,7 +2,7 @@
   <div ref="targetRef" class="h-full"></div>
 </template>
 <script setup lang="ts">
-import { NoteTagItem } from 'interfaces/note-tag.interface';
+import { DocTagItem } from 'interfaces/doc-tag.interface';
 
 import * as echarts from 'echarts';
 const targetRef = ref();
@@ -11,24 +11,24 @@ async function init() {
   try {
     instance = echarts.init(targetRef.value);
     instance.showLoading();
-    const res = await noteTagApi.all();
+    const res = await docTagApi.all();
     const series: any[] = [];
     const nodes: any[] = [];
     const links: any[] = [];
     const categories = [{ name: 'Tag' }, { name: 'Document' }];
-    res.forEach((t: NoteTagItem) => {
-      const { id, name, notes } = t;
+    res.forEach((t: DocTagItem) => {
+      const { id, name, docs } = t;
       nodes.push({
         name: name,
         value: id,
         category: 'Tag',
         symbolSize: 40,
       });
-      notes.forEach((tt) => {
-        const noteName = `文章ID${tt}`;
-        if (!nodes.some((ttt) => ttt.name === noteName)) {
+      docs.forEach((tt) => {
+        const docName = `文章ID${tt}`;
+        if (!nodes.some((ttt) => ttt.name === docName)) {
           nodes.push({
-            name: noteName,
+            name: docName,
             value: tt,
             category: 'Document',
             symbolSize: 30,
@@ -36,7 +36,7 @@ async function init() {
         }
         links.push({
           source: name,
-          target: noteName,
+          target: docName,
         });
       });
     });
