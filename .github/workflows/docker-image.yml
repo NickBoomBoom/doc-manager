@@ -1,0 +1,32 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-api:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build and push API image
+        run: |
+          cd api
+          docker build . -t nickboomboomboom/doc-api:latest
+          docker push nickboomboomboom/doc-api:latest
+
+  build-ui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build and push UI image
+        run: |
+          cd ui
+          docker build . -t nickboomboomboom/doc:latest
+          docker push nickboomboomboom/doc-doc:latest
