@@ -9,7 +9,6 @@ export class UploadService {
   constructor(private configService: ConfigService) {
     this.minioClient = new Minio.Client({
       ...this.configService.get('minio'),
-      useSSL: false,
     });
   }
 
@@ -20,15 +19,19 @@ export class UploadService {
   ): Promise<any> {
     const { size, originalname, buffer, mimetype } = file;
     const fileUrl = `${userId}/${moment().format(
-      'YYYY-MM-DD/HH:mm',
+      'YYYY-MM-DD/HH/mm',
     )}/${originalname}`;
-    await this.minioClient.putObject(bucketName, fileUrl, buffer, {
-      mimetype,
-    });
-    //  http://localhost:9001/doc/1/2023-10-07/16:32/startButton.png
-    const url = `http://${this.configService.get(
+    try {
+      await this.minioClient.putObject(bucketName, fileUrl, buffer, {
+        mimetype,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+
+    const url = `https://${this.configService.get(
       'minio.endPoint',
-    )}:${this.configService.get('minio.port')}/${bucketName}/${fileUrl}`;
+    )}/${bucketName}/${fileUrl}`;
     const names = originalname.split('.');
     const extension = names[names.length - 1];
     return {

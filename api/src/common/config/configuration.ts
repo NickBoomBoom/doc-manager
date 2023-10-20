@@ -3,7 +3,6 @@ export default () => ({
   base: {
     port: +process.env.PORT,
   },
-
   // 数据库配置
   mysql: {
     type: 'mysql',

@@ -116,10 +116,10 @@ async function onSubmit() {
   try {
     GlobalLoadingService.show();
     await userStore.login(params.value);
-    router.replace('/');
+    await router.replace('/');
+    GlobalLoadingService.hide();
   } catch (error) {
     console.error(error);
-  } finally {
     GlobalLoadingService.hide();
   }
 }
