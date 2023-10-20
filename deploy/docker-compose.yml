@@ -2,7 +2,7 @@ version: '3.5'
 services:
   nestjs:
     restart: always
-    image: nickboomboomboom/doc-backend:0.0.1
+    image: nickboomboomboom/doc-backend:latest
     ports:
       - '${PORT}:3000'
     env_file:
@@ -29,6 +29,14 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     networks:
       - doc-server
+
+  ui: 
+    restart: always
+    image: nickboomboomboom/doc:latest
+    ports:
+      - 8080:80
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
 # 声明一下网桥  my-server。
 # 重要：将所有服务都挂载在同一网桥即可通过容器名来互相通信了
