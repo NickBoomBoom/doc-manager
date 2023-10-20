@@ -4,36 +4,37 @@
     <div class="mt-2 text-primary">每天一记,勤劳又聪明...</div>
   </q-inner-loading>
 
-  <q-scroll-area v-if="!loading" class="h-full px-3">
-    <div>
-      <div class="flex items-end py-2">
-        <q-input
-          input-class="text-2xl font-bold"
-          v-model="detail.title"
-          class="flex-1"
-          dense
-          :debounce="500"
-          placeholder="标题"
-          @update:model-value="handleTitleChange"
-        />
+  <div v-if="!loading" class="h-full flex flex-col">
+    <div class="flex items-end p-2">
+      <q-input
+        input-class="text-xl font-bold"
+        v-model="detail.title"
+        class="flex-1"
+        dense
+        :debounce="500"
+        placeholder="标题"
+        @update:model-value="handleTitleChange"
+      />
 
-        <span
-          :class="[saveLoading ? 'visible' : 'invisible']"
-          class="ml-6 text-sm text-gray"
-        >
-          保存中
-          <q-spinner-dots />
-        </span>
-      </div>
+      <span
+        :class="[saveLoading ? 'visible' : 'invisible']"
+        class="ml-6 text-sm text-gray"
+      >
+        保存中
+        <q-spinner-dots />
+      </span>
+    </div>
+    <q-scroll-area class="flex-1">
+      <block-json-editor
+        ref="editorRef"
+        v-model="detail.content"
+        :config="editorConfig"
+      />
+    </q-scroll-area>
+    <div class="px-2">
       <tag-select :docId="detail.id!" :doc-tag-id="detail.docTagId!" />
     </div>
-
-    <block-json-editor
-      ref="editorRef"
-      v-model="detail.content"
-      :config="editorConfig"
-    />
-  </q-scroll-area>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -96,7 +97,6 @@ const editorConfig = {
            * @return {Promise.<{success, file: {url}}>}
            */
           async uploadByFile(file: any) {
-            console.log(111, file);
             const fileData = new FormData();
             fileData.append('file', file);
             const res = await uploadApi.upload(fileData);
