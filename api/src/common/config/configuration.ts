@@ -30,6 +30,6 @@ export default () => ({
     accessKey: process.env.MINIO_ACCESS_KEY,
     secretKey: process.env.MINIO_SECRET_KEY,
     bucket: process.env.MINIO_BUCKET,
-    useSSL: false,
+    useSSL: true,
   },
 });
