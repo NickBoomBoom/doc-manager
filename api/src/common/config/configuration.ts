@@ -1,7 +1,6 @@
 export default () => ({
   // 服务基本配置
   base: {
-    // 端口
     port: +process.env.PORT,
   },
 
