@@ -1,12 +1,34 @@
 <template>
   <div class="flex justify-center items-center h-screen">
     <q-form @submit="onSubmit" class="w-xs lg:w-md -mt-1/7">
-      <q-input v-model="params.email" ref="emailInputRef" label="邮箱 *" :hint="emailHint" autofocus :rules="rules.email" />
+      <q-input
+        v-model="params.email"
+        ref="emailInputRef"
+        label="邮箱 *"
+        :hint="emailHint"
+        debounce="500"
+        autofocus
+        :rules="rules.email"
+      />
 
-      <q-input v-if="isShowPassword" type="password" v-model="params.password" label="密码 *" hint="请输入6位以上密码"
-        :rules="rules.password" />
+      <q-input
+        v-if="isShowPassword"
+        type="password"
+        v-model="params.password"
+        autofocus
+        label="密码 *"
+        hint="请输入6位以上密码"
+        :rules="rules.password"
+      />
 
-      <q-input v-if="isShowName" v-model="params.name" label="昵称 *" hint="请输入昵称" :rules="rules.name" />
+      <q-input
+        v-if="isShowName"
+        v-model="params.name"
+        label="昵称 *"
+        hint="请输入昵称"
+        autofocus
+        :rules="rules.name"
+      />
 
       <div v-if="isShowSubmit" class="flex justify-center mt-6">
         <q-btn type="submit">
@@ -40,24 +62,27 @@ const rules = {
     },
     (v, r) => {
       if (r.email(v)) {
-        showPassword();
         return true;
       }
       hidePassword();
       return '请输入正确邮箱格式';
     },
-    async function checkEmail(v) {
-      try {
-        const bol = await userApi.checkEmail(v);
-        isRegisteredEmail.value = bol;
-        emailHint.value = !bol
-          ? '当前email未注册，继续输入密码昵称直接注册登录'
-          : '欢迎回来，我的朋友！';
-        return true;
-      } catch (error) {
-        console.error(error);
-        return '检测失败,重试中...';
-      }
+    function checkEmail(v): Promise<any> {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const bol = await userApi.checkEmail(v);
+          isRegisteredEmail.value = bol;
+          emailHint.value = !bol
+            ? '当前email未注册，继续输入密码昵称直接注册登录'
+            : '欢迎回来，我的朋友！';
+          showPassword();
+          resolve(true);
+        } catch (error) {
+          console.error(error);
+          hidePassword();
+          reject('检测失败');
+        }
+      });
     },
   ],
   password: [

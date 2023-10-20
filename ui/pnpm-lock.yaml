@@ -12,8 +12,8 @@ dependencies:
     specifier: ^1.5.1
     version: 1.5.1
   block-json-editor:
-    specifier: ^0.0.7
-    version: 0.0.7
+    specifier: ^0.0.8
+    version: 0.0.8
   echarts:
     specifier: ^5.4.3
     version: 5.4.3
@@ -1707,8 +1707,8 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  /block-json-editor@0.0.7:
-    resolution: {integrity: sha512-V0iqBSbdnAFTcRaXK50mTPKLFE//V+N/ui4O9an4fHtspkx9KPudPltQgy/HP3JQ3A/RZag5AzVzuk33Zt7aSg==}
+  /block-json-editor@0.0.8:
+    resolution: {integrity: sha512-KYi7yPxVmddXY22/IONrcFTtErkebO5w6AfU3cQmlpYA0WNeSmArKnWCFd4jN99DHQiIpFJ1LsX1zGlvNBqSHQ==}
     dependencies:
       '@codexteam/ajax': 4.2.0
       '@codexteam/icons': 0.3.0
@@ -1723,7 +1723,7 @@ packages:
       '@sotaproject/strikethrough': 1.0.1
       editorjs-drag-drop: 1.1.13
       editorjs-text-color-plugin: 2.0.4
-      editorjs-undo: 2.0.23
+      editorjs-undo: 2.0.24
       katex: 0.16.9
       lodash-es: 4.17.21
       mermaid: 10.5.0
@@ -2748,8 +2748,8 @@ packages:
     resolution: {integrity: sha512-QpibTkOxs3ndlKNOLT8ZlC4ktc3/eKIajiLO0Jm/hh9AJug/CrM1/rAvHy+ldfUKavbWeI+YZvgjad0YTyoyGw==}
     dev: false
 
-  /editorjs-undo@2.0.23:
-    resolution: {integrity: sha512-lT3ixt5aZMrcEfv3bHSxc7vuEAA13m1jF2xSftHfgcT6CXHXkNR184CojFJPaNkNmMAdsbFCR6GcUdST7Yi4Dw==}
+  /editorjs-undo@2.0.24:
+    resolution: {integrity: sha512-b4UjTZfBKVJlHYy7iVS44FMvDN/K59EAKcW5cF8ncWPLFsEeJXL+r40fWv7bHoQDcmoDNdpoChcjXPdkQIDdmQ==}
     dependencies:
       vanilla-caret-js: 1.1.0
     dev: false
