@@ -12,26 +12,26 @@
         class="flex-1"
         dense
         :debounce="500"
-        placeholder="标题"
+        placeholder="请输入标题"
         @update:model-value="handleTitleChange"
       />
 
       <span
         :class="[saveLoading ? 'visible' : 'invisible']"
-        class="ml-6 text-sm text-gray"
+        class="ml-8 text-sm text-gray"
       >
         保存中
         <q-spinner-dots />
       </span>
     </div>
-    <q-scroll-area class="flex-1">
+    <q-scroll-area class="flex-1 scroll-area">
       <block-json-editor
         ref="editorRef"
         v-model="detail.content"
         :config="editorConfig"
       />
     </q-scroll-area>
-    <div class="px-2">
+    <div class="px-4">
       <tag-select :docId="detail.id!" :doc-tag-id="detail.docTagId!" />
     </div>
   </div>
@@ -143,9 +143,6 @@ async function getDetail() {
 }
 
 function handleTitleChange() {
-  if (!detail.value.title) {
-    detail.value.title = '新文档';
-  }
   menuService.updateDoc(detail.value);
   handleSave();
 }
@@ -175,3 +172,11 @@ async function handleSave() {
   }
 }
 </script>
+
+<style lang="scss">
+.scroll-area {
+  .q-scrollarea__content {
+    width: 100%;
+  }
+}
+</style>

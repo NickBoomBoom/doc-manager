@@ -14,7 +14,9 @@ import {
 } from 'typeorm';
 @Entity({ name: 't_doc' })
 export abstract class Doc extends Base {
-  @Column()
+  @Column({
+    nullable: true,
+  })
   title: string;
 
   @Column({

@@ -181,7 +181,6 @@ class Menu {
   async notifyCreateDoc(treeNode?: TreeNode) {
     this.insertTreeNode = treeNode;
     const body: Doc = {
-      title: '新文档',
       content: null,
       spaceId: treeNode?.extra.targetId || null,
     };

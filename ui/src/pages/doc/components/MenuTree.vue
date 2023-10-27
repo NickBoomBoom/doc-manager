@@ -50,9 +50,9 @@
                 }"
                 class="text-truncate"
               >
-                {{ node.label }}
+                {{ node.label || '无标题文档' }}
                 <q-tooltip anchor="center right" self="center left">
-                  {{ node.label }}
+                  {{ node.label || '无标题文档' }}
                 </q-tooltip>
               </span>
             </div>

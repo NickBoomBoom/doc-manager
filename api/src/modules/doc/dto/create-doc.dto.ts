@@ -4,7 +4,7 @@ export class CreateDocDTO extends BaseDTO {
   @ApiProperty({
     description: '标题',
   })
-  title: string;
+  title?: string;
 
   @ApiProperty({
     description: '内容',
