@@ -19,7 +19,7 @@ jobs:
           run: |
               echo "$SSH_PRAVITE_KEY" > ssh_key
               chmod 600 ssh_key
-              ssh -i ssh_key -p $SSH_PORT $SSH_USERNAME@$SSH_HOST "echo 'Hello from GitHub Actions'"
+              ssh -i ssh_key -p 48766 wuchong@h.tltr.top "echo 'Hello from GitHub Actions'"
           
 
   # build-api:
