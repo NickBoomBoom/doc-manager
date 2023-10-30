@@ -62,6 +62,7 @@ const saveLoading = ref(false);
 const detail = ref<Doc>(checkContent());
 const editorRef = ref();
 const editorConfig = {
+  readOnly:true,
   tools: {
     media: {
       config: {
