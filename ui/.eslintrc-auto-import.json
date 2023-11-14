@@ -87,6 +87,9 @@
     "docApi": true,
     "uploadApi": true,
     "tagApi": true,
-    "docTagApi": true
+    "docTagApi": true,
+    "ExtractDefaultPropTypes": true,
+    "ExtractPropTypes": true,
+    "ExtractPublicPropTypes": true
   }
 }

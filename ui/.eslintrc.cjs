@@ -23,7 +23,6 @@ module.exports = {
   extends: [
     // 解决unplugin-auto-imports 未引入问题
     './.eslintrc-auto-import.json',
-    './.eslintrc-tinymce.json',
     // Base ESLint recommended rules
     // 'eslint:recommended',
 

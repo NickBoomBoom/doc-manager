@@ -72,7 +72,6 @@ declare global {
   const unref: typeof import('vue')['unref']
   const uploadApi: typeof import('./apis/upload.api')['uploadApi']
   const useAttrs: typeof import('vue')['useAttrs']
-  const useCounterStore: typeof import('./stores/example-store')['useCounterStore']
   const useCssModule: typeof import('vue')['useCssModule']
   const useCssVars: typeof import('vue')['useCssVars']
   const useLink: typeof import('vue-router')['useLink']
@@ -89,5 +88,5 @@ declare global {
 // for type re-export
 declare global {
   // @ts-ignore
-  export type { Component, ComponentPublicInstance, ComputedRef, InjectionKey, PropType, Ref, VNode, WritableComputedRef } from 'vue'
+  export type { Component, ComponentPublicInstance, ComputedRef, ExtractDefaultPropTypes, ExtractPropTypes, ExtractPublicPropTypes, InjectionKey, PropType, Ref, VNode, WritableComputedRef } from 'vue'
 }
