@@ -62,7 +62,6 @@ const saveLoading = ref(false);
 const detail = ref<Doc>(checkContent());
 const editorRef = ref();
 const editorConfig = {
-  readOnly:true,
   tools: {
     media: {
       config: {
@@ -72,17 +71,20 @@ const editorConfig = {
             fileData.append('file', file);
             const { url } = await uploadApi.upload(fileData);
             return {
-              success: 1,
+              success: true,
               file: {
                 url,
               },
             };
           },
-          async uploadByUrl(url: string) {
+          async uploadByUrl(url: any) {
+            const res = await uploadApi.uploadByUrl({
+              url,
+            });
             return {
-              success: 1,
+              success: true,
               file: {
-                url,
+                url: res.url,
               },
             };
           },
@@ -92,17 +94,12 @@ const editorConfig = {
     attaches: {
       config: {
         uploader: {
-          /**
-           * Upload file to the server and return an uploaded image data
-           * @param {File} file - file selected from the device or pasted by drag-n-drop
-           * @return {Promise.<{success, file: {url}}>}
-           */
           async uploadByFile(file: any) {
             const fileData = new FormData();
             fileData.append('file', file);
             const res = await uploadApi.upload(fileData);
             return {
-              success: 1,
+              success: true,
               file: res,
             };
           },

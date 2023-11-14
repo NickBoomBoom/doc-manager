@@ -1,12 +1,19 @@
 import { Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import * as Minio from 'minio';
 import * as moment from 'moment';
 import { ConfigService } from '@nestjs/config';
+import * as uuid from 'uuid';
+import { fromBuffer } from 'file-type';
+
 @Injectable()
 export class UploadService {
-  private readonly minioClient: Minio.Client;
+  private minioClient: Minio.Client;
 
-  constructor(private configService: ConfigService) {
+  constructor(
+    private httpService: HttpService,
+    private configService: ConfigService,
+  ) {
     this.minioClient = new Minio.Client({
       ...this.configService.get('minio'),
     });
@@ -28,7 +35,6 @@ export class UploadService {
     } catch (error) {
       throw new Error(error);
     }
-
     const url = `https://${this.configService.get(
       'minio.endPoint',
     )}/${bucketName}/${fileUrl}`;
@@ -40,6 +46,38 @@ export class UploadService {
       url,
       extension,
     };
+  }
+
+  async uploadFileByUrl(dto: any, userId: number, bucketName: string) {
+    console.log(111, dto, userId);
+
+    const response = await this.httpService
+      .get(dto.url, {
+        responseType: 'arraybuffer',
+      })
+      .toPromise();
+
+    console.log(4444, response);
+    const buffer = Buffer.from(response.data);
+    const info = await fromBuffer(buffer);
+    console.log(4444, info);
+    const mimetype = info.mime;
+    const ext = info.ext;
+    const size = response.data.byteLength;
+
+    // 生成文件名
+    const originalname = `${uuid.v4()}.${ext}`;
+
+    return this.uploadFile(
+      bucketName,
+      {
+        buffer,
+        size,
+        originalname,
+        mimetype,
+      },
+      userId,
+    );
   }
 
   async bucket() {

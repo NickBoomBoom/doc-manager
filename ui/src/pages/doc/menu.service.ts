@@ -71,7 +71,6 @@ class Menu {
       });
     return node;
   }
-
   remove(index: string) {
     const parent = this.getParentByIndex(index);
     if (parent) {
@@ -83,7 +82,6 @@ class Menu {
     }
     this.menus$.next(this.menus$.getValue());
   }
-
   find(
     id: number,
     arr: TreeNode[] = this.menus$.value,
@@ -110,7 +108,6 @@ class Menu {
     }
     return res;
   }
-
   getParentByIndex(index: string): TreeNode {
     let target: TreeNode | any;
     const arr = index.split('-');
@@ -124,7 +121,6 @@ class Menu {
     });
     return target;
   }
-
   getTargetByIndex(index: string): TreeNode {
     let target: TreeNode | any;
     const arr = index.split('-');
@@ -137,7 +133,6 @@ class Menu {
     });
     return target;
   }
-
   formatData(item: MenuItem, index: string): TreeNode {
     const { isSpace, isDoc, data, menuId } = item;
     const { children, ...extra } = item;
@@ -168,6 +163,7 @@ class Menu {
           });
           this.menus$.next(formatRes);
           subscriber.next(formatRes);
+          console.log(23333, formatRes);
         })
         .catch((err) => {
           subscriber.error(err);

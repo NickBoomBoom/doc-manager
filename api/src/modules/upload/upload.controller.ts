@@ -5,15 +5,16 @@ import {
   UploadedFile,
   Get,
   Request,
+  Body,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Public } from '../../common/decorator/public.decorator';
 import { UploadService } from './upload.service';
 import { ConfigService } from '@nestjs/config';
+import { Public } from '../../common/decorator/public.decorator';
 @Controller('upload')
 export class UploadController {
   constructor(
-    private readonly uploadService: UploadService,
+    private uploadService: UploadService,
     private configService: ConfigService,
   ) {}
   @Post()
@@ -25,10 +26,23 @@ export class UploadController {
     const {
       user: { id: userId },
     } = request;
+
     return await this.uploadService.uploadFile(
       this.configService.get('minio.bucket'),
       file,
       userId,
+    );
+  }
+
+  @Post('url')
+  async uploadFileByUrl(@Request() request, @Body() dto: any) {
+    const {
+      user: { id: userId },
+    } = request;
+    return this.uploadService.uploadFileByUrl(
+      dto,
+      userId,
+      this.configService.get('minio.bucket'),
     );
   }
 

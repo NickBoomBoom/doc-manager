@@ -29,7 +29,6 @@ import configuration from './common/config/configuration';
       },
     }),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    UploadModule,
     MenuModule,
     SpaceModule,
     DocModule,
@@ -37,6 +36,7 @@ import configuration from './common/config/configuration';
     LinkCheckModule,
     TagModule,
     DocTagModule,
+    UploadModule,
   ],
   providers: [
     {

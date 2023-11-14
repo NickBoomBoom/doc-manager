@@ -6,4 +6,7 @@ export const uploadApi = {
       'Content-Type': 'multipart/form-data',
     });
   },
+  uploadByUrl: (data: any) => {
+    return http.post('/upload/url', data);
+  },
 };
