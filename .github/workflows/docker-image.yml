@@ -8,15 +8,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      VERSION: "unset"
     steps:
       - name: tag
         run: |
-          VERSION="${GITHUB_REF#refs/tags/}"
-          VERSION="${VERSION#v}"
-          echo "${VERSION}" >> $GITHUB_ENV
-          echo "env.VERSION"
+          DOCKER_VERSION="${GITHUB_REF#refs/tags/}"
+          DOCKER_VERSION="${DOCKER_VERSION#v}"
+          echo "DOCKER_VERSION=${DOCKER_VERSION}" >> $GITHUB_ENV
+          echo "env.DOCKER_VERSION"
 
   # build-api:
   #   runs-on: ubuntu-latest
