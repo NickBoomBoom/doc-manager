@@ -7,9 +7,12 @@
 
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js
-
-const { configure } = require('quasar/wrappers');
+const fs = require('fs');
 const path = require('path');
+const { configure } = require('quasar/wrappers');
+const packageJsonPath = './package.json';
+const packageJson = require(packageJsonPath);
+const currentVersion = packageJson.version;
 
 module.exports = configure(function (/* ctx */) {
   return {
@@ -69,6 +72,7 @@ module.exports = configure(function (/* ctx */) {
       // analyze: true,
       env: {
         BASE_URL: '/api',
+        VERSION: currentVersion,
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
