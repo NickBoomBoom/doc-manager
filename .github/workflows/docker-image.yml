@@ -9,11 +9,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      VERSION: replace(GITHUB_REF#refs/tags/,"v","")
+      VERSION: "unset"
     steps:
       - name: tag
         run: |
-          echo "Tag Name: ${replace(GITHUB_REF#refs/tags/,'v','')}"
+          VERSION=${replace(GITHUB_REF#refs/tags/,'v','')}
           echo "${{env.VERSION}}"
 
   # build-api:
