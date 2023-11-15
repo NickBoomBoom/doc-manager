@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: tag
-        run: echo githu.ref
+        run: echo github.ref
 
   # build-api:
   #   runs-on: ubuntu-latest
