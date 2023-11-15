@@ -11,7 +11,7 @@ sed -i '' "s/\"version\": \"$currentVersion\"/\"version\": \"$newVersion\"/" ./u
 
 # 打标签并推送到远程仓库
 git add .
-git commit "update version $newVersion"
+git commit -m "update version $newVersion"
 git tag -a v$newVersion -m "Release $newVersion"
 git push
 git push --tags
