@@ -9,7 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      VERSION: ${{ replace(GITHUB_REF#refs/tags/,"v","") }}
+      VERSION: replace(GITHUB_REF#refs/tags/,"v","")
     steps:
       - name: tag
         run: |
