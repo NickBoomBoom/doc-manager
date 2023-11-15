@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: tag
         run: |
-          VERSION=${replace(GITHUB_REF#refs/tags/,'v','')}
+          VERSION="${replace(GITHUB_REF#refs/tags/,'v','')}"
           echo "${{env.VERSION}}"
 
   # build-api:
