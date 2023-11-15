@@ -15,7 +15,7 @@ jobs:
         run: |
           VERSION="${GITHUB_REF#refs/tags/}"
           VERSION="${VERSION#v}"
-          echo "${{env.VERSION}}"
+          echo "${VERSION}" >> $GITHUB_ENV
 
   # build-api:
   #   runs-on: ubuntu-latest
