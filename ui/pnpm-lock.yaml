@@ -12,8 +12,8 @@ dependencies:
     specifier: ^1.6.1
     version: 1.6.1
   block-json-editor:
-    specifier: ^0.0.19
-    version: 0.0.19(@lezer/common@1.1.0)(typescript@5.2.2)
+    specifier: ^0.0.20
+    version: 0.0.20(@lezer/common@1.1.0)(typescript@5.2.2)
   echarts:
     specifier: ^5.4.3
     version: 5.4.3
@@ -2149,8 +2149,8 @@ packages:
       readable-stream: 3.6.2
     dev: true
 
-  /block-json-editor@0.0.19(@lezer/common@1.1.0)(typescript@5.2.2):
-    resolution: {integrity: sha512-N1/JZ8ZpuAClq1bqyVDs0KNwK05YjxUNMRRvkEMdEeKFcCSLZzl/XAzPVXNou/ziHQ1s0fY19w2HleUpknGZew==}
+  /block-json-editor@0.0.20(@lezer/common@1.1.0)(typescript@5.2.2):
+    resolution: {integrity: sha512-yjOfwxFfhU2jhY3p73zbnx2u0LhGwd5aLfYC0xzZSTaV/T6E2yEnVsXD9J3fr8ESlGY7qN7BM45WRI9PE/gxJg==}
     dependencies:
       '@codemirror/autocomplete': 6.10.2(@codemirror/language@6.9.2)(@codemirror/state@6.3.1)(@codemirror/view@6.21.4)(@lezer/common@1.1.0)
       '@codemirror/commands': 6.3.0
