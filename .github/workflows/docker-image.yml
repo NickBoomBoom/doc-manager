@@ -14,7 +14,11 @@ jobs:
           DOCKER_VERSION="${GITHUB_REF#refs/tags/}"
           DOCKER_VERSION="${DOCKER_VERSION#v}"
           echo "DOCKER_VERSION=${DOCKER_VERSION}" >> $GITHUB_ENV
-          echo "env.DOCKER_VERSION"
+          echo "${env.DOCKER_VERSION}"
+      - name: test 
+        run:  
+          echo "===> ${env.DOCKER_VERSION}"
+
 
   # build-api:
   #   runs-on: ubuntu-latest
