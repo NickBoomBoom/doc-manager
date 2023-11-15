@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: tag
-        run: echo "$github.ref"
+        run: |
+          echo "Tag Name: ${GITHUB_REF#refs/tags/}"
 
   # build-api:
   #   runs-on: ubuntu-latest
