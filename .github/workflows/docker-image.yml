@@ -8,14 +8,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ replace(GITHUB_REF#refs/tags/,"v","") }}
     steps:
       - name: tag
         run: |
-          echo "Tag Name: ${GITHUB_REF#refs/tags/}"
+          echo "Tag Name: ${replace(GITHUB_REF#refs/tags/,'v','')}"
+          echo "${{env.VERSION}}"
 
   # build-api:
   #   runs-on: ubuntu-latest
-    
+
   #   steps:
   #     - name: Checkout code
   #       uses: actions/checkout@v2
