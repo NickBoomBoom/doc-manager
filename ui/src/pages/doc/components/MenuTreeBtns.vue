@@ -1,4 +1,8 @@
 <template>
+  <q-icon
+    name="open_with"
+    class="handle text-gray-300 hover:text-black cursor-move mr-1"
+  />
   <template v-if="node.extra.isSpace">
     <q-btn
       flat

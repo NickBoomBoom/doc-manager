@@ -29,17 +29,15 @@
 
     <template #after>
       <div class="h-full">
-        <menu-tree />
-        <!-- <Welcome v-if="isShowWelcome" />
-        <content-split-view @content-null="handleContentNull" v-else /> -->
+        <Welcome v-if="isShowWelcome" />
+        <content-split-view @content-null="handleContentNull" v-else />
       </div>
     </template>
   </q-splitter>
 </template>
 
 <script setup lang="ts">
-import MenuTree from './components/MenuTree.vue';
-import MenuView from 'components/MenuView/index.vue';
+import MenuView from './components/MenuView.vue';
 import menuService from './menu.service';
 import { DocSubject } from 'interfaces/menu.interface';
 import Welcome from './components/Welcome.vue';

@@ -4,7 +4,7 @@
     :options="options"
     item-key="id"
     class="menu-item"
-    handle=".header-r"
+    handle=".handle"
     :group="{ name: 'g1' }"
     @end="handleEnd"
   >
@@ -17,12 +17,14 @@
         }"
       >
         <div class="header">
-          <div class="header-l ellipsis">
+          <div class="header-l ellipsis" @click="handleHeader(element, $event)">
             {{ index }}
             {{ element.label || '无标题文档' }}
           </div>
 
-          <div class="header-r">move</div>
+          <div class="header-r">
+            <menu-tree-btns :node="element" />
+          </div>
         </div>
         <div class="pl-5 children" v-if="element.extra.isSpace">
           <menu-item
@@ -39,6 +41,8 @@
 <script setup lang="ts">
 import { TreeNode } from 'interfaces/menu.interface';
 import draggable from 'vuedraggable';
+import MenuTreeBtns from './MenuTreeBtns.vue';
+import menuService from '../menu.service';
 const props = defineProps<{
   modelValue: TreeNode[];
 }>();
@@ -50,7 +54,6 @@ const options = ref({
   group: 'nested',
   animation: 150,
 });
-
 const items = ref(props.modelValue);
 
 watch(
@@ -65,6 +68,18 @@ watch(
 
 function handleEnd(...args) {
   console.log('end', args);
+}
+
+function handleHeader(item: TreeNode, e: PointerEvent) {
+  console.log(2222, item);
+  const { extra } = item;
+  if (extra.isDoc) {
+    if (e.altKey) {
+      menuService.openSecondDoc$.next(extra);
+    } else {
+      menuService.openDoc$.next(extra);
+    }
+  }
 }
 </script>
 
@@ -94,7 +109,9 @@ function handleEnd(...args) {
 
     &-r {
       margin-left: 2em;
-      cursor: move;
+      q-icon {
+        cursor: move;
+      }
     }
   }
   .children {
