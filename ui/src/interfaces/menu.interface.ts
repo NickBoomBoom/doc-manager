@@ -25,3 +25,22 @@ export interface MenuItem {
 }
 
 export type MenuList = MenuItem[];
+
+export interface TreeNode {
+  label: string;
+  id: number;
+  icon: string;
+  children?: TreeNode[];
+  index: string;
+  extra: MenuItem;
+  lazy: boolean;
+}
+
+export interface OpenSpace {
+  node: TreeNode;
+  state: boolean;
+}
+
+export type SpaceSubject = OpenSpace | null;
+export type DocSubject = MenuItem | null;
+export type SecondDocSubject = MenuItem | null;

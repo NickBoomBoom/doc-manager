@@ -32,8 +32,12 @@
   </div>
 </template>
 <script setup lang="ts">
-import menuService, { DocSubject, SecondDocSubject } from '../menu.service';
-import { MenuItem } from 'interfaces/menu.interface';
+import menuService from '../menu.service';
+import {
+  MenuItem,
+  DocSubject,
+  SecondDocSubject,
+} from 'interfaces/menu.interface';
 import TextEditor from './TextEditor.vue';
 const emits = defineEmits<{
   (event: 'contentNull'): void;

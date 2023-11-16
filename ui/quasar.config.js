@@ -31,7 +31,7 @@ module.exports = configure(function (/* ctx */) {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
-    boot: ['setup', 'i18n', 'axios'],
+    boot: ['setup', 'i18n', 'axios', 'global-components'],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
     css: ['app.scss'],
@@ -59,6 +59,7 @@ module.exports = configure(function (/* ctx */) {
         apis: path.join(__dirname, './src/apis'),
         services: path.join(__dirname, './src/services'),
         interfaces: path.join(__dirname, './src/interfaces'),
+        components: path.join(__dirname, './src/components'),
       },
 
       vueRouterMode: 'history', // available values: 'hash', 'history'

@@ -5,6 +5,7 @@
     "paths": {
       "apis/*": ["src/apis/*"],
       "services/*": ["src/services/*"],
+      "components/*": ["src/components/*"],
       "interfaces/*": ["src/interfaces/*"]
     }
   }

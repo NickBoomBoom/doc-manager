@@ -2,9 +2,9 @@
   <q-splitter class="h-full" v-model="splitterModel" :limits="[0, 50]">
     <template #before>
       <div class="h-full overflow-hidden flex flex-col">
-        <!-- <header>header</header> -->
-        <main class="relative h-full flex-1">
-          <menu-tree />
+        <header>header</header>
+        <main class="flex-1">
+          <menu-view />
         </main>
         <footer class="flex flex-col p-2">
           <q-btn dense class="mb-2" @click="noticeCreateSpace">
@@ -29,8 +29,9 @@
 
     <template #after>
       <div class="h-full">
-        <Welcome v-if="isShowWelcome" />
-        <content-split-view @content-null="handleContentNull" v-else />
+        <menu-tree />
+        <!-- <Welcome v-if="isShowWelcome" />
+        <content-split-view @content-null="handleContentNull" v-else /> -->
       </div>
     </template>
   </q-splitter>
@@ -38,7 +39,9 @@
 
 <script setup lang="ts">
 import MenuTree from './components/MenuTree.vue';
-import menuService, { DocSubject } from './menu.service';
+import MenuView from 'components/MenuView/index.vue';
+import menuService from './menu.service';
+import { DocSubject } from 'interfaces/menu.interface';
 import Welcome from './components/Welcome.vue';
 import ContentSplitView from './components/ContentSplitView.vue';
 import { merge } from 'rxjs';
@@ -76,3 +79,26 @@ function handleContentNull() {
   isShowWelcome.value = true;
 }
 </script>
+
+<style>
+pre {
+  outline: 1px solid #ccc;
+  padding: 5px;
+  margin: 5px;
+}
+.string {
+  color: green;
+}
+.number {
+  color: darkorange;
+}
+.boolean {
+  color: blue;
+}
+.null {
+  color: magenta;
+}
+.key {
+  color: red;
+}
+</style>

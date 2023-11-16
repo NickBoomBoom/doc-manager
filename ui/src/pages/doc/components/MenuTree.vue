@@ -72,13 +72,14 @@
   </div>
 </template>
 <script setup lang="ts">
-import { MenuItem } from 'interfaces/menu.interface';
-import { cloneDeep } from 'lodash-es';
-import menuService, {
+import {
+  MenuItem,
   DocSubject,
   SpaceSubject,
   TreeNode,
-} from '../menu.service';
+} from 'interfaces/menu.interface';
+import { cloneDeep } from 'lodash-es';
+import menuService from '../menu.service';
 import MenuTreeBtns from './MenuTreeBtns.vue';
 const treeRef = ref();
 const loading = ref(false);
@@ -107,20 +108,24 @@ onMounted(() => {
 });
 async function init() {
   menuService.menus$.subscribe((res) => {
-    menus.value = cloneDeep(res);
+    console.warn(res);
+    menus.value = [];
+    setTimeout(() => {
+      menus.value = cloneDeep(res);
+    }, 400);
   });
 
-  menuService.openDoc$.subscribe((res: DocSubject) => {
-    res && (selected.value = res.menuId);
-  });
+  // menuService.openDoc$.subscribe((res: DocSubject) => {
+  //   res && (selected.value = res.menuId);
+  // });
 
-  menuService.openSpace$.subscribe((res: SpaceSubject) => {
-    if (res) {
-      setTimeout(() => {
-        treeRef.value.setExpanded(res.node.id, true);
-      });
-    }
-  });
+  // menuService.openSpace$.subscribe((res: SpaceSubject) => {
+  //   if (res) {
+  //     setTimeout(() => {
+  //       treeRef.value.setExpanded(res.node.id, true);
+  //     });
+  //   }
+  // });
 
   loading.value = true;
   menuService

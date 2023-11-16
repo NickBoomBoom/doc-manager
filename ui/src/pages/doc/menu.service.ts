@@ -1,26 +1,14 @@
-import { MenuItem } from 'interfaces/menu.interface';
+import {
+  MenuItem,
+  TreeNode,
+  OpenSpace,
+  SpaceSubject,
+  DocSubject,
+  SecondDocSubject,
+} from 'interfaces/menu.interface';
 import { Doc } from 'interfaces/doc.interface';
 import { Dialog, Notify } from 'quasar';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-
-export interface TreeNode {
-  label: string;
-  id: number;
-  icon: string;
-  children?: TreeNode[];
-  index: string;
-  extra: MenuItem;
-  lazy: boolean;
-}
-
-export interface OpenSpace {
-  node: TreeNode;
-  state: boolean;
-}
-
-export type SpaceSubject = OpenSpace | null;
-export type DocSubject = MenuItem | null;
-export type SecondDocSubject = MenuItem | null;
 
 class Menu {
   menus$: BehaviorSubject<TreeNode[]> = new BehaviorSubject<TreeNode[]>([]);
@@ -163,7 +151,6 @@ class Menu {
           });
           this.menus$.next(formatRes);
           subscriber.next(formatRes);
-          console.log(23333, formatRes);
         })
         .catch((err) => {
           subscriber.error(err);

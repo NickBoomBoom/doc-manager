@@ -53,7 +53,8 @@
   </template>
 </template>
 <script setup lang="ts">
-import menuService, { TreeNode } from '../menu.service';
+import { TreeNode } from 'interfaces/menu.interface';
+import menuService from '../menu.service';
 
 const props = defineProps<{
   node: TreeNode;
