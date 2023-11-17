@@ -18,7 +18,12 @@
           space: element.extra.isSpace,
         }"
       >
-        <div class="header">
+        <div
+          class="header"
+          :class="{
+            selected: activeMenuId === element.id,
+          }"
+        >
           <div
             class="header-l ellipsis"
             @click="handleHeader(element, index, $event)"
@@ -26,7 +31,7 @@
             <!-- {{ element.id }}-{{ element.extra.targetId }} -->
             <span>
               <q-icon
-                :name="element.extra.isSpace ? 'chevron_right' : 'grain'"
+                :name="element.extra.isSpace ? 'chevron_right' : ''"
                 class="space-arrow text-xl -mt-.5"
                 :class="{
                   active: showChildrenIndex.includes(index),
@@ -74,6 +79,8 @@ const options = ref({
   group: 'nested',
   animation: 150,
 });
+const activeMenuId = inject('activeMenuId');
+const changeActiveMenuId = inject<(id: number) => void>('changeActiveMenuId');
 const items = ref(props.modelValue);
 const showChildrenIndex = ref<number[]>([]);
 
@@ -101,6 +108,8 @@ async function handleEnd(e: any) {
 
 function handleHeader(item: TreeNode, index: number, e: PointerEvent) {
   const { extra } = item;
+  changeActiveMenuId(item.id);
+
   if (extra.isDoc) {
     if (e.altKey) {
       menuService.openSecondDoc$.next(extra);
@@ -125,6 +134,7 @@ function handleExpand(i: number) {
 <style lang="scss" scoped>
 .menu-item {
   width: 100%;
+  padding-bottom: 5px;
   .wrap {
     // border: 1px solid #e5e5e5;
     border-radius: 4px;
@@ -142,10 +152,15 @@ function handleExpand(i: number) {
     cursor: pointer;
     height: 33px;
     line-height: 33px;
-
+    &.selected {
+      background-color: #ecf0f1;
+      .header-l {
+        border-bottom: none;
+      }
+    }
     &-l {
       flex: 1;
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid #f0efef;
       width: 0;
       .space-arrow {
         transition: all 0.3s;
@@ -156,7 +171,7 @@ function handleExpand(i: number) {
     }
 
     &-r {
-      margin-left: 2em;
+      margin-left: 1em;
       q-icon {
         cursor: move;
       }
@@ -169,8 +184,8 @@ function handleExpand(i: number) {
         content: '空空如也';
         display: block;
         color: grey;
-        text-align: center;
-        padding: 0 0 3px;
+        // text-align: center;
+        padding: 3px 0 3px 0.5rem;
       }
     }
   }

@@ -6,13 +6,18 @@
   ></menu-item>
 </template>
 <script setup lang="ts">
-import draggable from 'vuedraggable';
-import { DocSubject, SpaceSubject, TreeNode } from 'interfaces/menu.interface';
+import { TreeNode } from 'interfaces/menu.interface';
 import { cloneDeep, isEqual } from 'lodash-es';
 import menuService from 'pages/doc/menu.service';
-import MenuTreeBtns from 'pages/doc/components/MenuTreeBtns.vue';
 const loading = ref(false);
+const activeMenuId = ref();
 
+provide('activeMenuId', activeMenuId);
+provide('changeActiveMenuId', changeActiveMenuId);
+
+function changeActiveMenuId(id: number) {
+  activeMenuId.value = id;
+}
 const menus = ref<TreeNode[]>([]);
 onMounted(() => {
   init();
