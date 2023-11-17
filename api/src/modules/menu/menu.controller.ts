@@ -29,8 +29,6 @@ export class MenuController {
     if (!dto.belongId) {
       dto.belongId = rootSpaceId;
     }
-    console.log(3333, dto);
-
     return this.menuService.move(id, dto);
   }
 

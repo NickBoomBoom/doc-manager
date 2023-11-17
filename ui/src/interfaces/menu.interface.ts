@@ -1,7 +1,7 @@
 export interface MenuMove {
   menuId: number;
   prevMenuId: number | null;
-  belongId: number;
+  belongId: number | null;
 }
 
 type MenuDoc = {

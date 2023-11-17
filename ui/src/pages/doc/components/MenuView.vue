@@ -1,5 +1,9 @@
 <template>
-  <menu-item v-if="menus.length" v-model="menus"></menu-item>
+  <menu-item
+    v-if="menus.length"
+    :modelValue="menus"
+    @update:modelValue="handleChange"
+  ></menu-item>
 </template>
 <script setup lang="ts">
 import draggable from 'vuedraggable';
@@ -9,29 +13,21 @@ import menuService from 'pages/doc/menu.service';
 import MenuTreeBtns from 'pages/doc/components/MenuTreeBtns.vue';
 const loading = ref(false);
 
-const options = ref({
-  group: 'nested',
-  animation: 150,
-});
 const menus = ref<TreeNode[]>([]);
 onMounted(() => {
   init();
 });
-watch(
-  menus,
-  (v) => {
-    console.error('menu-view change ');
-    const isSame = isEqual(v, menuService.menus$.value);
-    if (!isSame) {
-      menuService.menus$.next(cloneDeep(v));
-    }
-  },
-  {
-    deep: true,
-  },
-);
+
+function handleChange(v) {
+  const isSame = isEqual(v, menuService.menus$.value);
+  console.warn('menu-view change', v, isSame);
+  if (!isSame) {
+    menuService.updateMenus(cloneDeep(v));
+  }
+}
+
 async function init() {
-  menuService.menus$.subscribe((res) => {
+  menuService.menus$.subscribe((res: TreeNode[]) => {
     menus.value = cloneDeep(res);
   });
 

@@ -113,10 +113,6 @@ export class MenuService {
         id: prevMenuId,
       });
 
-      if (item.prevId === prevItem.nextId) {
-        throw new Error('当前移动目标已在其后');
-      }
-
       item.prevId = prevItem.curId;
       item.nextId = prevItem.nextId;
       prevItem.nextId = item.curId;

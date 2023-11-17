@@ -96,6 +96,30 @@ class Menu {
     }
     return res;
   }
+
+  findByMenuId(menuId: number): TreeNode {
+    let bol = false;
+    let res: TreeNode;
+    const _f = (arr: TreeNode[]) => {
+      for (let i = 0; i < arr.length; i++) {
+        if (bol) {
+          break;
+        }
+        const item = arr[i];
+        const { id, children } = item;
+        if (id === menuId) {
+          res = item;
+          bol = true;
+          break;
+        } else if (children?.length) {
+          _f(children);
+        }
+      }
+    };
+
+    _f(this.menus$.value);
+    return res;
+  }
   getParentByIndex(index: string): TreeNode {
     let target: TreeNode | any;
     const arr = index.split('-');
@@ -121,6 +145,7 @@ class Menu {
     });
     return target;
   }
+
   formatData(item: MenuItem, index: string): TreeNode {
     const { isSpace, isDoc, data, menuId } = item;
     const { children, ...extra } = item;
@@ -130,7 +155,7 @@ class Menu {
       label,
       id: menuId,
       icon,
-      index: index,
+      index,
       extra,
       lazy: false,
     };
@@ -140,6 +165,22 @@ class Menu {
       });
     }
     return res;
+  }
+
+  updateMenus(data: TreeNode[]) {
+    const parse = (item: TreeNode, index: string): TreeNode => {
+      item.index = index;
+      if (item.children?.length) {
+        item.children = item.children.map((t, i) => {
+          return parse(t, `${index}-${i}`);
+        });
+      }
+      return item;
+    };
+    data.forEach((t, i) => {
+      t = parse(t, i + '');
+    });
+    this.menus$.next(data);
   }
   load() {
     return new Observable((subscriber) => {
@@ -287,6 +328,42 @@ class Menu {
         loadingDialog.hide();
       }
     });
+  }
+
+  // 层级index
+  async move(menuId: number) {
+    const target = this.findByMenuId(menuId);
+    console.log(3344, target);
+    const parent: TreeNode = this.getParentByIndex(target.index);
+    const children: TreeNode[] = parent?.children || this.menus$.value;
+    const index = children.findIndex((t) => t.id === menuId);
+    let prevMenuId = null;
+    const belongId = parent?.extra.targetId;
+    if (index > 0) {
+      prevMenuId = children[index - 1].id;
+    }
+    console.log(2222, {
+      menuId,
+      prevMenuId,
+      belongId,
+    });
+    try {
+      await menuApi.move({
+        menuId,
+        prevMenuId,
+        belongId,
+      });
+    } catch (error) {
+      console.error(error);
+      Dialog.create({
+        persistent: true,
+        title: 'Oops! 出了点意外',
+        message: '移动失败,请刷新页面再次重试',
+        ok: '好的好的',
+      }).onOk(() => {
+        window.location.reload();
+      });
+    }
   }
 }
 const menuService = new Menu();
