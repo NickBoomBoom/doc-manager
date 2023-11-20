@@ -4,8 +4,10 @@
     :options="options"
     item-key="id"
     class="menu-item"
+    :class="menuItemClass"
     handle=".handle"
     :group="{ name: 'g1' }"
+    @start="handleStart"
     @end="handleEnd"
   >
     <template #item="{ element, index }">
@@ -21,28 +23,28 @@
         <div
           class="header"
           :class="{
-            selected: activeMenuId === element.id,
+            selected: activeMenuItem?.id === element.id,
           }"
         >
           <div
             class="header-l ellipsis"
             @click="handleHeader(element, index, $event)"
           >
-            <!-- {{ element.id }}-{{ element.extra.targetId }} -->
+            <!-- {{ index }}-{{ element.id }}-{{ element.extra.targetId }} -->
             <span>
               <q-icon
                 :name="element.extra.isSpace ? 'chevron_right' : ''"
                 class="space-arrow text-xl -mt-.5"
                 :class="{
-                  active: showChildrenIndex.includes(index),
+                  opened: checkSpaceOpened(element),
                 }"
               />
             </span>
             {{ element.label || '无标题文档' }}
 
-            <q-tooltip anchor="center right" self="center left">
+            <!-- <q-tooltip anchor="center right" self="center left">
               {{ element.label || '无标题文档' }}
-            </q-tooltip>
+            </q-tooltip> -->
           </div>
 
           <div class="header-r">
@@ -50,17 +52,21 @@
           </div>
         </div>
 
-        <div v-show="showChildrenIndex.includes(index)">
+        <div v-show="checkSpaceOpened(element)">
           <div class="pl-5 children" v-if="element.extra.isSpace">
             <menu-item
               v-model="element.children"
               :class="{
                 empty: !element.children.length,
               }"
+              :isSpace="element.extra.isSpace"
             ></menu-item>
           </div>
         </div>
       </div>
+    </template>
+    <template #footer>
+      <template v-if="props.isSpace"> </template>
     </template>
   </draggable>
 </template>
@@ -71,6 +77,7 @@ import MenuTreeBtns from './MenuTreeBtns.vue';
 import menuService from '../menu.service';
 const props = defineProps<{
   modelValue: TreeNode[];
+  isSpace: boolean;
 }>();
 const emits = defineEmits<{
   (event: 'update:modelValue', data: any): void;
@@ -79,11 +86,27 @@ const options = ref({
   group: 'nested',
   animation: 150,
 });
-const activeMenuId = inject('activeMenuId');
-const changeActiveMenuId = inject<(id: number) => void>('changeActiveMenuId');
-const items = ref(props.modelValue);
-const showChildrenIndex = ref<number[]>([]);
 
+const activeMenuItem = inject<TreeNode>('activeMenuItem');
+const changeActiveMenuItem = inject<(item: TreeNode) => void>(
+  'changeActiveMenuItem',
+)!;
+
+const isDragging = inject<Ref<boolean>>('isDragging')!;
+const changeDragging = inject<(bol: boolean) => void>('changeDragging')!;
+
+const openedSpaceItems = inject<Ref<TreeNode[]>>('openedSpaceItems')!;
+const changeOpenedSpaceItems = inject<(t: TreeNode) => void>(
+  'changeOpenedSpaceItems',
+)!;
+
+const items = ref(props.modelValue);
+
+const menuItemClass = computed(() => {
+  return {
+    dragging: isDragging.value,
+  };
+});
 menuService.menus$.subscribe(() => {
   setTimeout(() => {
     items.value = props.modelValue;
@@ -99,16 +122,20 @@ watch(
   },
 );
 
+function handleStart() {
+  changeDragging(true);
+}
+
 async function handleEnd(e: any) {
   const { item } = e;
   const menuId = +item.getAttribute('data-menu-id');
-  console.log('menuId =>', menuId);
   menuService.move(menuId);
+  changeDragging(false);
 }
 
 function handleHeader(item: TreeNode, index: number, e: PointerEvent) {
   const { extra } = item;
-  changeActiveMenuId(item.id);
+  changeActiveMenuItem(item);
 
   if (extra.isDoc) {
     if (e.altKey) {
@@ -117,26 +144,28 @@ function handleHeader(item: TreeNode, index: number, e: PointerEvent) {
       menuService.openDoc$.next(extra);
     }
   } else {
-    handleExpand(index);
+    changeOpenedSpaceItems(item);
   }
 }
 
-function handleExpand(i: number) {
-  const index = showChildrenIndex.value.findIndex((t) => t === i);
-  if (index >= 0) {
-    showChildrenIndex.value.splice(index, 1);
-  } else {
-    showChildrenIndex.value.push(i);
-  }
+function checkSpaceOpened(item: TreeNode) {
+  return openedSpaceItems.value.some((t) => t.id === item.id);
 }
 </script>
 
 <style lang="scss" scoped>
 .menu-item {
   width: 100%;
-  padding-bottom: 5px;
+  transition: all 0.1s;
+  &.dragging {
+    min-height: 50px;
+    padding-bottom: 40px;
+    border: 1px dashed;
+    // border-left: none;
+    // border-right: none;
+    margin: 1px 0;
+  }
   .wrap {
-    // border: 1px solid #e5e5e5;
     border-radius: 4px;
     background: white;
   }
@@ -155,7 +184,7 @@ function handleExpand(i: number) {
     &.selected {
       background-color: #ecf0f1;
       .header-l {
-        border-bottom: none;
+        border: none;
       }
     }
     &-l {
@@ -163,8 +192,8 @@ function handleExpand(i: number) {
       border-bottom: 1px solid #f0efef;
       width: 0;
       .space-arrow {
-        transition: all 0.3s;
-        &.active {
+        transition: all 0.2s;
+        &.opened {
           transform: rotate(90deg);
         }
       }
@@ -180,12 +209,17 @@ function handleExpand(i: number) {
   .children {
     .empty {
       position: relative;
-      &::after {
+      min-height: 50px;
+      &::before {
         content: '空空如也';
         display: block;
         color: grey;
-        // text-align: center;
-        padding: 3px 0 3px 0.5rem;
+        text-align: center;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 10;
       }
     }
   }

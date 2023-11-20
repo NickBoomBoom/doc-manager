@@ -16,7 +16,7 @@
           <q-btn
             v-close-popup
             dense
-            v-for="item in categoryBtns"
+            v-for="item in spaceBtns"
             :key="item.title"
             @click="item.handler(node)"
             :icon="item.icon"
@@ -63,10 +63,7 @@ import menuService from '../menu.service';
 const props = defineProps<{
   node: TreeNode;
 }>();
-
-const node = computed(() => props.node);
-
-const categoryBtns = [
+const BASE_SPACE_BTNS = [
   // {
   //   title: '打包下载',
   //   icon: 'browser_updated',
@@ -86,14 +83,21 @@ const categoryBtns = [
   {
     title: '添加文档',
     icon: 'post_add',
-    handler: (e: TreeNode) => menuService.notifyCreateDoc(e),
-  },
-  {
-    title: '删除空间',
-    icon: 'delete',
-    handler: (e: TreeNode) => menuService.deleteSpace(e),
+    handler: (e: TreeNode) => menuService.createDoc(e),
   },
 ];
+const DELETE_SPACE_BTN = {
+  title: '删除空间',
+  icon: 'delete',
+  handler: (e: TreeNode) => menuService.deleteSpace(e),
+};
+const node = computed(() => props.node);
+const spaceBtns = computed(() => {
+  return [
+    ...BASE_SPACE_BTNS,
+    ...(props.node.children?.length ? [] : [DELETE_SPACE_BTN]),
+  ];
+});
 
 const docBtns = [
   // {

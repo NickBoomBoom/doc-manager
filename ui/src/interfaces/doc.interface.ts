@@ -1,6 +1,6 @@
 export interface Doc {
   id?: number;
-  title: string;
+  title?: string;
   tags?: string[];
   content: object | null;
   spaceId: number | null;

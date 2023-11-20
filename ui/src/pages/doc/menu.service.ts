@@ -202,18 +202,19 @@ class Menu {
     });
   }
 
-  async notifyCreateDoc(treeNode?: TreeNode) {
+  async createDoc(treeNode?: TreeNode, cb?: (t: TreeNode) => void) {
     this.insertTreeNode = treeNode;
     const body: Doc = {
       content: null,
       spaceId: treeNode?.extra.targetId || null,
     };
     const res: MenuItem = await docApi.add(body);
-    this.insert(res);
+    const node = this.insert(res);
     this.openDoc$.next(res);
+    cb?.(node);
   }
 
-  createSpace(treeNode?: TreeNode) {
+  createSpace(treeNode?: TreeNode, cb?: (t: TreeNode) => void) {
     Dialog.create({
       title: '添加空间',
       prompt: {
@@ -228,7 +229,8 @@ class Menu {
           name,
           parentId: treeNode?.extra?.targetId,
         });
-        this.insert(res, treeNode);
+        const node = this.insert(res, treeNode);
+        cb?.(node);
       } catch (error) {
         console.error(error);
         Notify.create({
@@ -333,7 +335,6 @@ class Menu {
   // 层级index
   async move(menuId: number) {
     const target = this.findByMenuId(menuId);
-    console.log(3344, target);
     const parent: TreeNode = this.getParentByIndex(target.index);
     const children: TreeNode[] = parent?.children || this.menus$.value;
     const index = children.findIndex((t) => t.id === menuId);
@@ -342,11 +343,7 @@ class Menu {
     if (index > 0) {
       prevMenuId = children[index - 1].id;
     }
-    console.log(2222, {
-      menuId,
-      prevMenuId,
-      belongId,
-    });
+
     try {
       await menuApi.move({
         menuId,
