@@ -3,7 +3,6 @@
     <q-spinner-cube size="xl" color="primary" :thickness="20" />
     <div class="mt-2 text-primary">每天一记,勤劳又聪明...</div>
   </q-inner-loading>
-
   <div v-if="!loading" class="h-full flex flex-col">
     <div class="flex items-end p-2">
       <q-input
@@ -29,6 +28,7 @@
         ref="editorRef"
         v-model="detail.content"
         :config="editorConfig"
+        @ready="handleReady"
       />
     </q-scroll-area>
     <div class="px-4">
@@ -121,6 +121,9 @@ watch(
   },
 );
 
+function handleReady() {
+  console.log(111);
+}
 async function getDetail() {
   try {
     unwatch();
