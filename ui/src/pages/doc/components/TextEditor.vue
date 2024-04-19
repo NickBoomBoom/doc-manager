@@ -122,8 +122,9 @@ watch(
 );
 
 function handleReady() {
-  console.log(111);
+  console.log('ready');
 }
+
 async function getDetail() {
   try {
     unwatch();
@@ -154,7 +155,7 @@ async function handleSave() {
   const now = Date.now();
   try {
     saveLoading.value = true;
-    docApi.update(detail.value.id as number, detail.value);
+    await docApi.update(detail.value.id as number, detail.value);
   } catch (error) {
     console.error(error);
   } finally {

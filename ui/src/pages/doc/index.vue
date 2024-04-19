@@ -2,7 +2,7 @@
   <q-splitter class="h-full" v-model="splitterModel" :limits="[0, 50]">
     <template #before>
       <div class="h-full overflow-hidden flex flex-col">
-        <header>header</header>
+        <!-- <header>header</header> -->
         <main class="flex-1">
           <menu-view />
         </main>
