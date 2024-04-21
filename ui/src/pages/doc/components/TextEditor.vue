@@ -23,7 +23,7 @@
         <q-spinner-dots />
       </span>
     </div>
-    <q-scroll-area class="flex-1 scroll-area">
+    <q-scroll-area class="flex-1 scroll-area bg-blue">
       <block-json-editor
         ref="editorRef"
         v-model="detail.content"
