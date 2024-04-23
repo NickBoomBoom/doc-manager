@@ -70,7 +70,7 @@ export default route(function (/* { store, ssrContext } */) {
         next();
       }
     } else {
-      if (['Login'].includes(to.name as string)) {
+      if (['Login', 'Test'].includes(to.name as string)) {
         return next();
       }
       Router.replace({
