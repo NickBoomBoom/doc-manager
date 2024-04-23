@@ -23,7 +23,7 @@
         <q-spinner-dots />
       </span>
     </div>
-    <q-scroll-area class="flex-1 scroll-area bg-blue">
+    <q-scroll-area class="flex-1 scroll-area">
       <block-json-editor
         ref="editorRef"
         v-model="detail.content"
@@ -52,7 +52,8 @@ function checkContent(
     tags: [],
   },
 ): Doc {
-  return _.cloneDeep(v);
+  const r = _.cloneDeep(v);
+  return r;
 }
 const props = defineProps<{
   docId: number;
@@ -122,7 +123,7 @@ watch(
 );
 
 function handleReady() {
-  console.log('ready');
+  // console.log('ready');
 }
 
 async function getDetail() {
@@ -149,28 +150,14 @@ function handleTitleChange() {
   handleSave();
 }
 
-let timer: NodeJS.Timeout;
-
 async function handleSave() {
-  const now = Date.now();
   try {
     saveLoading.value = true;
     await docApi.update(detail.value.id as number, detail.value);
   } catch (error) {
     console.error(error);
   } finally {
-    clearTimeout(timer);
-    const ms = 1000;
-    const end = Date.now();
-    let time = end - now;
-    if (time > ms) {
-      time = 0;
-    } else {
-      time = ms - time;
-    }
-    timer = setTimeout(() => {
-      saveLoading.value = false;
-    }, time);
+    saveLoading.value = false;
   }
 }
 </script>
